@@ -44,4 +44,8 @@ public class PolygonExplorer721Events
 	}
 	public string message;
 	public Result[] result;
+
+	public string chain;
+	public string network;
+	public List<string> blacklistContracts;
 }

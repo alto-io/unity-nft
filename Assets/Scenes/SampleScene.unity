@@ -304,7 +304,7 @@ MonoBehaviour:
   Content: {fileID: 1866722025}
   NFTPrefab: {fileID: 1901152470773523150, guid: 8379e8115ee16c14c8770a7518981f2c, type: 3}
   img: {fileID: 0}
-  Wallet: 0x1e55C85801a2C4F0beC57c84742a8eF3d72dE57B
+  Wallet: 0x3233f67E541444DDbbf9391630D92D7F7Aaf508D
   LoadedNFTs: []
 --- !u!4 &696283022
 Transform:
@@ -712,7 +712,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 1316704667}
   m_Direction: 2
   m_Value: 0
-  m_Size: 0.78264534
+  m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -789,8 +789,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0.66826665}
-  m_SizeDelta: {x: 0, y: 300}
+  m_AnchoredPosition: {x: 0, y: 0.000056709956}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &1866722026
 MonoBehaviour:
@@ -805,7 +805,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_HorizontalFit: 0
-  m_VerticalFit: 0
+  m_VerticalFit: 2
 --- !u!114 &1866722027
 MonoBehaviour:
   m_ObjectHideFlags: 0

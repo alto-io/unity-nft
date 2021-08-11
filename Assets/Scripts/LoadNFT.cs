@@ -40,8 +40,14 @@ public class LoadNFT : MonoBehaviour
 
 	public List<NFTItemData> LoadedNFTs = new List<NFTItemData>();
 
-    async void Start()
+	public List<PolygonExplorer721Events> EventsList = new List<PolygonExplorer721Events>();
+
+	private bool loadNFTURIDone = false;
+
+    private IEnumerator Start()
     {
+		if (_Config.Account != "0x0000000000000000000000000000000000000001")
+			Wallet = _Config.Account;
 
 		ChainData[] chains = Resources.LoadAll<ChainData>("");
 		foreach (var c in chains)
@@ -50,11 +56,76 @@ public class LoadNFT : MonoBehaviour
 				continue;
 			
 			Debug.LogFormat("Found ChainData: {0}", c.Chain);
-			await LoadChain(c);
+			yield return StartCoroutine(LoadChainTemp(c));
 		}
 
-		StartCoroutine(LoadURIData());
+		LoadNFTURI();
+
+		while (loadNFTURIDone == false)
+			yield return null;
+
+		yield return StartCoroutine(LoadURIData());
     }
+
+	private IEnumerator LoadChainTemp(ChainData chain)
+	{
+		if (chain == null)
+		{
+			Debug.LogError("LoadNFT:LoadChain - chain is null");
+			yield break;
+		}
+
+		string apiCall = string.Format(chain.Explorer721EventsCall, Wallet, chain.ExplorerAPIKey);
+
+		Debug.Log(apiCall);
+		using (var www = UnityWebRequest.Get(apiCall))
+		{
+			yield return www.SendWebRequest();
+			var json = www.downloadHandler.text;
+			Debug.Log(json);
+
+			PolygonExplorer721Events events = JsonUtility.FromJson<PolygonExplorer721Events>(json);
+			events.chain = chain.Chain;
+			events.network = chain.Network;
+			events.blacklistContracts = chain.BlacklistContracts;
+			EventsList.Add(events);
+		}
+	}
+
+	private async Task LoadNFTURI()
+	{
+		loadNFTURIDone = false;
+
+		foreach (var events in EventsList)
+		{
+			foreach (var r in events.result)
+			{
+				if (events.blacklistContracts.IndexOf(r.contractAddress) >= 0)
+					continue;
+
+				string owner = await ERC721.OwnerOf(events.chain, events.network, r.contractAddress, r.tokenID);
+				if (owner != Wallet)
+					continue;
+
+				string uri = "";
+				if (r.contractAddress != contractCK)
+				{
+					uri = await ERC721.URI(events.chain, events.network, r.contractAddress, r.tokenID);
+					Debug.Log(uri);
+				}
+
+				NFTItemData item = new NFTItemData();
+				//item.Info = info;
+				item.TokenId = r.tokenID;
+				item.URI = uri;
+				item.Contract = r.contractAddress;
+
+				LoadedNFTs.Add(item);
+			}
+		}
+
+		loadNFTURIDone = true;
+	}
 
 	private async Task LoadChain(ChainData chain)
 	{
@@ -80,30 +151,6 @@ public class LoadNFT : MonoBehaviour
 			if (events == null)
 				return;
 
-			foreach (var r in events.result)
-			{
-				if (chain.BlacklistContracts.IndexOf(r.contractAddress) >= 0)
-					continue;
-
-				string owner = await ERC721.OwnerOf(chain.Chain, chain.Network, r.contractAddress, r.tokenID);
-				if (owner != Wallet)
-					continue;
-
-				string uri = "";
-				if (r.contractAddress != contractCK)
-				{
-					uri = await ERC721.URI(chain.Chain, chain.Network, r.contractAddress, r.tokenID);
-					Debug.Log(uri);
-				}
-
-				NFTItemData item = new NFTItemData();
-				//item.Info = info;
-				item.TokenId = r.tokenID;
-				item.URI = uri;
-				item.Contract = r.contractAddress;
-
-				LoadedNFTs.Add(item);
-			}
 		}
 	}
 
