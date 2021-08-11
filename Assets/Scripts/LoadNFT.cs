@@ -11,8 +11,10 @@ using Newtonsoft.Json;
 public class URIData
 {
 	public string name;
+	public string bio;
 	public string description;
 	public string image;
+	public string image_url_png;
 }
 
 
@@ -23,11 +25,14 @@ public class NFTItemData
 	public string TokenId;
 	public string URI;
 	public string ImageURI;
+	public string Contract;
 	public URIData Metadata;
 }
 
 public class LoadNFT : MonoBehaviour
 {
+	const string contractCK = "0x06012c8cf97bead5deae237070f9587f8e7a266d";
+
 	public RectTransform Content;
 	public GameObject NFTPrefab;
     public Image img;
@@ -48,34 +53,7 @@ public class LoadNFT : MonoBehaviour
 			await LoadChain(c);
 		}
 
-//        string chain = "ethereum";
-//        string network = "rinkeby";
-//        string contract1155 = "0x0ECb00e4f1A671AB36fDe83EA5bEF66928993FD3";
-//        string contract721 = "0x98e2A72A4d222E748550F3526530B0C2c535A2E5";
-//        string tokenId = "1";
-//
-//        BigInteger balanceOf = await ERC721.BalanceOf(chain, network, contract721, Wallet);
-//        print(balanceOf);
-//
-//        if (balanceOf > 0)
-//        {
-//            string uri = await ERC721.URI(chain, network, contract721, tokenId);
-//            print(uri);
-//
-//            StartCoroutine(GetImage(uri));
-//
-//        }
-
-//        BigInteger balanceOf = await ERC1155.BalanceOf(chain, network, contract1155, Wallet, tokenId);
-//        print(balanceOf);
-//
-//        if (balanceOf > 0)
-//        {
-//            sprite.GetComponent<SpriteRenderer>().color = Color.red;
-//
-//            string uri = await ERC1155.URI(chain, network, contract, tokenId);
-//            print(uri);
-//        }
+		StartCoroutine(LoadURIData());
     }
 
 	private async Task LoadChain(ChainData chain)
@@ -86,60 +64,47 @@ public class LoadNFT : MonoBehaviour
 			return;
 		}
 
-		foreach (var info in chain.NFTList)
+		string apiCall = string.Format(chain.Explorer721EventsCall, Wallet, chain.ExplorerAPIKey);
+
+		Debug.Log(apiCall);
+		using (var www = UnityWebRequest.Get(apiCall))
 		{
-			if (info.Enabled == false)
-				continue;
+			var operation = www.SendWebRequest();
+			while (!operation.isDone)
+				await Task.Delay(100);
 
-			string apiCall = string.Format(chain.Explorer721EventsCall, Wallet, chain.ExplorerAPIKey);
+			var json = www.downloadHandler.text;
+			Debug.Log(json);
 
-			using (var www = UnityWebRequest.Get(apiCall))
+			PolygonExplorer721Events events = JsonUtility.FromJson<PolygonExplorer721Events>(json);
+			if (events == null)
+				return;
+
+			foreach (var r in events.result)
 			{
-				var operation = www.SendWebRequest();
-				while (!operation.isDone)
-					await Task.Delay(100);
+				if (chain.BlacklistContracts.IndexOf(r.contractAddress) >= 0)
+					continue;
 
-				var json = www.downloadHandler.text;
-				Debug.Log(json);
+				string owner = await ERC721.OwnerOf(chain.Chain, chain.Network, r.contractAddress, r.tokenID);
+				if (owner != Wallet)
+					continue;
 
-				PolygonExplorer721Events events = JsonUtility.FromJson<PolygonExplorer721Events>(json);
-				if (events == null)
-					return;
-
-				foreach (var r in events.result)
+				string uri = "";
+				if (r.contractAddress != contractCK)
 				{
-					string owner = await ERC721.OwnerOf(chain.Chain, chain.Network, r.contractAddress, r.tokenID);
-					if (owner != Wallet)
-						continue;
-
-					string uri = await ERC721.URI(chain.Chain, chain.Network, r.contractAddress, r.tokenID);
+					uri = await ERC721.URI(chain.Chain, chain.Network, r.contractAddress, r.tokenID);
 					Debug.Log(uri);
-
-					NFTItemData item = new NFTItemData();
-					//item.Info = info;
-					item.TokenId = r.tokenID;
-					item.URI = uri;
-
-					LoadedNFTs.Add(item);
 				}
+
+				NFTItemData item = new NFTItemData();
+				//item.Info = info;
+				item.TokenId = r.tokenID;
+				item.URI = uri;
+				item.Contract = r.contractAddress;
+
+				LoadedNFTs.Add(item);
 			}
-
-			StartCoroutine(LoadURIData());
-
-			//if (info.Type == NFTType.ERC721)
-			//{
-			//	await LoadNFT721(chain.Chain, chain.Network, info);
-			//}
-			//else if (info.Type == NFTType.ERC1155)
-			//{
-			//	await LoadNFT1155(chain.Chain, chain.Network, info);
-			//}
-			//else
-			//{
-			//	Debug.LogErrorFormat("LoadNFT:LoadChain - nft type not supported: {0}-{1}", info.Name, info.Type);
-			//}
 		}
-
 	}
 
 	private async Task LoadNFT721(string chain, string network, NFTInfo info)
@@ -204,15 +169,57 @@ public class LoadNFT : MonoBehaviour
 		Debug.Log("LoadURIData");
 		foreach (var n in LoadedNFTs)
 		{
-			using (UnityWebRequest request = UnityWebRequest.Get(n.URI))
+			if (n.Contract == contractCK)
 			{
-				yield return request.SendWebRequest();
-				string json = request.downloadHandler.text;
-				Debug.LogFormat("Received: {0}", json);
+				yield return StartCoroutine(LoadNFTDataCK(n));
+			}
+			else
+			{
+				yield return StartCoroutine(LoadNFTDataCommon(n));
+			}
+		}
+	}
 
-				URIData data = JsonUtility.FromJson<URIData>(json);
-				n.Metadata = data;
+	private IEnumerator LoadNFTDataCK(NFTItemData n)
+	{
+		string apiUrl = "https://api.cryptokitties.co/kitties/" + n.TokenId;
+		using (UnityWebRequest request = UnityWebRequest.Get(apiUrl))
+		{
+			yield return request.SendWebRequest();
+			string json = request.downloadHandler.text;
+			Debug.LogFormat("Received: {0}", json);
 
+			URIData data = JsonUtility.FromJson<URIData>(json);
+			n.Metadata = data;
+
+			if (data != null)
+			{
+				GameObject clone = Instantiate(NFTPrefab);
+				clone.transform.SetParent(Content);
+				clone.transform.localScale = UnityEngine.Vector3.one;
+
+				NFTItem item = clone.GetComponent<NFTItem>();
+				if (item != null)
+				{
+					item.Fill(data.name, data.bio, data.image_url_png);
+				}
+			}
+		}
+	}
+
+	private IEnumerator LoadNFTDataCommon(NFTItemData n)
+	{
+		using (UnityWebRequest request = UnityWebRequest.Get(n.URI))
+		{
+			yield return request.SendWebRequest();
+			string json = request.downloadHandler.text;
+			Debug.LogFormat("Received: {0}", json);
+
+			URIData data = JsonUtility.FromJson<URIData>(json);
+			n.Metadata = data;
+
+			if (data != null)
+			{
 				Debug.LogFormat("Image URL: {0}", data.image);
 
 				GameObject clone = Instantiate(NFTPrefab);
