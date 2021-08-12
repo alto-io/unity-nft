@@ -1,20 +1,8 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-public enum NFTType
+namespace OPGames.NFT
 {
-	ERC721,
-	ERC1155
-}
-
-[System.Serializable]
-public class NFTInfo
-{
-	public string Name;
-	public string Contract;
-	public NFTType Type;
-	public bool Enabled = true;
-}
 
 [CreateAssetMenu(fileName = "ChainData", menuName = "UnityNFT/ChainData", order = 1)]
 public class ChainData : ScriptableObject
@@ -30,20 +18,4 @@ public class ChainData : ScriptableObject
 	public List<string> BlacklistContracts;
 }
 
-
-[System.Serializable]
-public class Explorer721Events
-{
-	[System.Serializable]
-	public class Result
-	{
-		public string contractAddress;
-		public string tokenID;
-	}
-	public string message;
-	public Result[] result;
-
-	public string chain;
-	public string network;
-	public List<string> blacklistContracts;
 }

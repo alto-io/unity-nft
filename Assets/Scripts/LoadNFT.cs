@@ -7,27 +7,8 @@ using UnityEngine.UI;
 using UnityEngine.Networking;
 using Newtonsoft.Json;
 
-[System.Serializable]
-public class URIData
+namespace OPGames.NFT
 {
-	public string name;
-	public string bio;
-	public string description;
-	public string image;
-	public string image_url_png;
-}
-
-
-[System.Serializable]
-public class NFTItemData
-{
-	public NFTInfo Info;
-	public string TokenId;
-	public string URI;
-	public string ImageURI;
-	public string Contract;
-	public URIData Metadata;
-}
 
 public class LoadNFT : MonoBehaviour
 {
@@ -35,7 +16,6 @@ public class LoadNFT : MonoBehaviour
 
 	public RectTransform Content;
 	public GameObject NFTPrefab;
-    public Image img;
 	public string Wallet = "0x3233f67E541444DDbbf9391630D92D7F7Aaf508D";
 
 	public List<NFTItemData> LoadedNFTs = new List<NFTItemData>();
@@ -159,7 +139,7 @@ public class LoadNFT : MonoBehaviour
 				clone.transform.SetParent(Content);
 				clone.transform.localScale = UnityEngine.Vector3.one;
 
-				NFTItem item = clone.GetComponent<NFTItem>();
+				UINFTItem item = clone.GetComponent<UINFTItem>();
 				if (item != null)
 				{
 					item.Fill(data.name, data.bio, data.image_url_png);
@@ -187,7 +167,7 @@ public class LoadNFT : MonoBehaviour
 				clone.transform.SetParent(Content);
 				clone.transform.localScale = UnityEngine.Vector3.one;
 
-				NFTItem item = clone.GetComponent<NFTItem>();
+				UINFTItem item = clone.GetComponent<UINFTItem>();
 				if (item != null)
 				{
 					item.Fill(data.name, data.description, data.image);
@@ -195,4 +175,6 @@ public class LoadNFT : MonoBehaviour
 			}
 		}
 	}
+}
+
 }

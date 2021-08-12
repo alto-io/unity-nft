@@ -3,7 +3,10 @@ using UnityEngine.UI;
 using UnityEngine.Networking;
 using System.Collections;
 
-public class NFTItem : MonoBehaviour
+namespace OPGames.NFT
+{
+
+public class UINFTItem : MonoBehaviour
 {
 	[SerializeField] private Image image;
 	[SerializeField] private Text textName;
@@ -38,4 +41,6 @@ public class NFTItem : MonoBehaviour
 
         image.sprite = spr;
 	}
+}
+
 }
