@@ -40,7 +40,7 @@ public class LoadNFT : MonoBehaviour
 
 	public List<NFTItemData> LoadedNFTs = new List<NFTItemData>();
 
-	public List<PolygonExplorer721Events> EventsList = new List<PolygonExplorer721Events>();
+	public List<Explorer721Events> EventsList = new List<Explorer721Events>();
 
 	private bool loadNFTURIDone = false;
 
@@ -56,7 +56,7 @@ public class LoadNFT : MonoBehaviour
 				continue;
 			
 			Debug.LogFormat("Found ChainData: {0}", c.Chain);
-			yield return StartCoroutine(LoadChainTemp(c));
+			yield return StartCoroutine(LoadChain(c));
 		}
 
 		LoadNFTURI();
@@ -67,7 +67,7 @@ public class LoadNFT : MonoBehaviour
 		yield return StartCoroutine(LoadURIData());
     }
 
-	private IEnumerator LoadChainTemp(ChainData chain)
+	private IEnumerator LoadChain(ChainData chain)
 	{
 		if (chain == null)
 		{
@@ -84,7 +84,7 @@ public class LoadNFT : MonoBehaviour
 			var json = www.downloadHandler.text;
 			Debug.Log(json);
 
-			PolygonExplorer721Events events = JsonUtility.FromJson<PolygonExplorer721Events>(json);
+			Explorer721Events events = JsonUtility.FromJson<Explorer721Events>(json);
 			events.chain = chain.Chain;
 			events.network = chain.Network;
 			events.blacklistContracts = chain.BlacklistContracts;
@@ -115,7 +115,6 @@ public class LoadNFT : MonoBehaviour
 				}
 
 				NFTItemData item = new NFTItemData();
-				//item.Info = info;
 				item.TokenId = r.tokenID;
 				item.URI = uri;
 				item.Contract = r.contractAddress;
@@ -123,93 +122,8 @@ public class LoadNFT : MonoBehaviour
 				LoadedNFTs.Add(item);
 			}
 		}
-
 		loadNFTURIDone = true;
 	}
-
-	private async Task LoadChain(ChainData chain)
-	{
-		if (chain == null)
-		{
-			Debug.LogError("LoadNFT:LoadChain - chain is null");
-			return;
-		}
-
-		string apiCall = string.Format(chain.Explorer721EventsCall, Wallet, chain.ExplorerAPIKey);
-
-		Debug.Log(apiCall);
-		using (var www = UnityWebRequest.Get(apiCall))
-		{
-			var operation = www.SendWebRequest();
-			while (!operation.isDone)
-				await Task.Delay(100);
-
-			var json = www.downloadHandler.text;
-			Debug.Log(json);
-
-			PolygonExplorer721Events events = JsonUtility.FromJson<PolygonExplorer721Events>(json);
-			if (events == null)
-				return;
-
-		}
-	}
-
-	private async Task LoadNFT721(string chain, string network, NFTInfo info)
-	{
-		Debug.LogFormat("LoadNFT:LoadNFT721 - {0} Loading", info.Name);
-        BigInteger balance = await ERC721.BalanceOf(chain, network, info.Contract, Wallet);
-		if (balance <= 0)
-		{
-			Debug.LogFormat("LoadNFT:LoadNFT721 - {0} 0 balance", info.Name);
-			return;
-		}
-
-		for (int i=0; i<balance; i++)
-		{
-			string tokenId = await ERC721.TokenOfOwnerByIndex(chain, network, info.Contract, Wallet, i);
-			tokenId = "45042175272649864";
-			Debug.LogFormat("LoadNFT:LoadNFT721 - {0} loading index {1} - result {2}", info.Name, i, tokenId);
-
-            string uri = await ERC721.URI(chain, network, info.Contract, tokenId);
-            Debug.Log(uri);
-
-			NFTItemData item = new NFTItemData();
-			item.Info = info;
-			item.TokenId = tokenId;
-			item.URI = uri;
-
-			LoadedNFTs.Add(item);
-		}
-	}
-
-	private async Task LoadNFT1155(string chain, string network, NFTInfo info)
-	{
-		Debug.LogFormat("LoadNFT:LoadNFT1155 - {0} Loading", info.Name);
-        BigInteger balance = await ERC1155.BalanceOf(chain, network, info.Contract, Wallet, "57");
-		if (balance <= 0)
-		{
-			Debug.LogFormat("LoadNFT:LoadNFT1155 - {0} 0 balance", info.Name);
-			return;
-		}
-
-//		for (int i=0; i<balance; i++)
-//		{
-//			string tokenId = await ERC721.TokenOfOwnerByIndex(chain, network, info.Contract, Wallet, i);
-//			Debug.LogFormat("LoadNFT:LoadNFT1155 - {0} loading index {1} - result {2}", info.Name, i, tokenId);
-//
-//            string uri = await ERC721.URI(chain, network, info.Contract, tokenId);
-//            Debug.Log(uri);
-//
-//			NFTItemData item = new NFTItemData();
-//			item.Info = info;
-//			item.TokenId = tokenId;
-//			item.URI = uri;
-//
-//			LoadedNFTs.Add(item);
-//		}
-
-	}
-
 
 	private IEnumerator LoadURIData()
 	{
@@ -260,14 +174,14 @@ public class LoadNFT : MonoBehaviour
 		{
 			yield return request.SendWebRequest();
 			string json = request.downloadHandler.text;
-			Debug.LogFormat("Received: {0}", json);
+			Debug.LogFormat("LoadNFT:LoadNFTDataCommon - Received: {0}", json);
 
 			URIData data = JsonUtility.FromJson<URIData>(json);
 			n.Metadata = data;
 
 			if (data != null)
 			{
-				Debug.LogFormat("Image URL: {0}", data.image);
+				Debug.LogFormat("LoadNFT:LoadNFTDataCommon - Image URL: {0}", data.image);
 
 				GameObject clone = Instantiate(NFTPrefab);
 				clone.transform.SetParent(Content);

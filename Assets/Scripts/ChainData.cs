@@ -27,14 +27,12 @@ public class ChainData : ScriptableObject
 	public string Explorer721EventsCall = "";
 	public bool Enabled = true;
 
-	public List<NFTInfo> NFTList;
-
 	public List<string> BlacklistContracts;
 }
 
 
 [System.Serializable]
-public class PolygonExplorer721Events
+public class Explorer721Events
 {
 	[System.Serializable]
 	public class Result
