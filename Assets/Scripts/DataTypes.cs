@@ -27,6 +27,7 @@ public class Explorer721Events
 	{
 		public string contractAddress;
 		public string tokenID;
+		public bool isDoneProcessing = false; // not from JSON
 	}
 	public string message;
 	public Result[] result;
@@ -34,6 +35,15 @@ public class Explorer721Events
 	public string chain;
 	public string network;
 	public List<string> blacklistContracts;
+
+	public bool IsDoneProcessing()
+	{
+		foreach (Result r in result)
+			if (r.isDoneProcessing == false)
+				return false;
+
+		return true;
+	}
 }
 
 [System.Serializable]

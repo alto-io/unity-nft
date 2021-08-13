@@ -23,6 +23,7 @@ public class LoadNFT : MonoBehaviour
 	public List<Explorer721Events> EventsList = new List<Explorer721Events>();
 
 	private bool loadNFTURIDone = false;
+	private int loadingNFTURICount = 0;
 
     private IEnumerator Start()
     {
@@ -41,10 +42,23 @@ public class LoadNFT : MonoBehaviour
 
 		LoadNFTURI();
 
-		while (loadNFTURIDone == false)
-			yield return null;
+		bool isDoneProcessing = false;
+		while (isDoneProcessing == false)
+		{
+			yield return new WaitForSeconds(0.5f);
 
-		yield return StartCoroutine(LoadURIData());
+			isDoneProcessing = true;
+			foreach (var e in EventsList)
+			{
+				if (e.IsDoneProcessing() == false)
+				{
+					isDoneProcessing = false;
+					break;
+				}
+			}
+		}
+
+		LoadURIData();
     }
 
 	private IEnumerator LoadChain(ChainData chain)
@@ -72,51 +86,59 @@ public class LoadNFT : MonoBehaviour
 		}
 	}
 
-	private async Task LoadNFTURI()
+	private void LoadNFTURI()
 	{
-		loadNFTURIDone = false;
-
 		foreach (var events in EventsList)
 		{
 			foreach (var r in events.result)
 			{
 				if (events.blacklistContracts.IndexOf(r.contractAddress) >= 0)
-					continue;
-
-				string owner = await ERC721.OwnerOf(events.chain, events.network, r.contractAddress, r.tokenID);
-				if (owner != Wallet)
-					continue;
-
-				string uri = "";
-				if (r.contractAddress != contractCK)
 				{
-					uri = await ERC721.URI(events.chain, events.network, r.contractAddress, r.tokenID);
-					Debug.Log(uri);
+					r.isDoneProcessing = true;
+					continue;
 				}
-
-				NFTItemData item = new NFTItemData();
-				item.TokenId = r.tokenID;
-				item.URI = uri;
-				item.Contract = r.contractAddress;
-
-				LoadedNFTs.Add(item);
+				LoadNFTURIItem(events.chain, events.network, r);
 			}
 		}
-		loadNFTURIDone = true;
 	}
 
-	private IEnumerator LoadURIData()
+	private async Task LoadNFTURIItem(string chain, string network, Explorer721Events.Result r)
+	{
+		string owner = await ERC721.OwnerOf(chain, network, r.contractAddress, r.tokenID);
+		if (owner != Wallet)
+		{
+			r.isDoneProcessing = true;
+			return;
+		}
+
+		string uri = "";
+		if (r.contractAddress != contractCK)
+		{
+			uri = await ERC721.URI(chain, network, r.contractAddress, r.tokenID);
+			Debug.Log(uri);
+		}
+
+		NFTItemData item = new NFTItemData();
+		item.TokenId = r.tokenID;
+		item.URI = uri;
+		item.Contract = r.contractAddress;
+
+		LoadedNFTs.Add(item);
+		r.isDoneProcessing = true;
+	}
+
+	private void LoadURIData()
 	{
 		Debug.Log("LoadURIData");
 		foreach (var n in LoadedNFTs)
 		{
 			if (n.Contract == contractCK)
 			{
-				yield return StartCoroutine(LoadNFTDataCK(n));
+				StartCoroutine(LoadNFTDataCK(n));
 			}
 			else
 			{
-				yield return StartCoroutine(LoadNFTDataCommon(n));
+				StartCoroutine(LoadNFTDataCommon(n));
 			}
 		}
 	}
