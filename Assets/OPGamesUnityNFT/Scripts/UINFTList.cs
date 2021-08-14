@@ -15,7 +15,7 @@ public class UINFTList : MonoBehaviour
 
 	private void Start()
 	{
-		NFTLoader nft = NFTLoader.Instance;
+		NFTManager nft = NFTManager.Instance;
 		if (nft != null)
 		{
 			nft.OnQueryChainBegin += OnQueryChainBegin;

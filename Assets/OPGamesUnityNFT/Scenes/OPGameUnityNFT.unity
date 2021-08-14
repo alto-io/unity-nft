@@ -398,7 +398,7 @@ GameObject:
   - component: {fileID: 696283022}
   - component: {fileID: 696283021}
   m_Layer: 0
-  m_Name: NFTLoader
+  m_Name: NFTManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -416,8 +416,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5e3f666269847d5429e23c19d36e52be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Content: {fileID: 1866722025}
-  NFTPrefab: {fileID: 1901152470773523150, guid: 8379e8115ee16c14c8770a7518981f2c, type: 3}
   Wallet: 0x3233f67E541444DDbbf9391630D92D7F7Aaf508D
 --- !u!4 &696283022
 Transform:

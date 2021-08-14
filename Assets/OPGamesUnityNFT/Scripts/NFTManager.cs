@@ -10,29 +10,43 @@ using Newtonsoft.Json;
 namespace OPGames.NFT
 {
 
-public class NFTLoader : MonoBehaviour
+// Main class you have to interact with, to load and get NFT info
+public class NFTManager : MonoBehaviour
 {
-	static private NFTLoader instance = null;
-	static public NFTLoader Instance { get { return instance; } }
+	// Implemented as a singleton for easy access
+	static private NFTManager instance = null;
+	static public NFTManager Instance { get { return instance; } }
 
-	const string contractCK = "0x06012c8cf97bead5deae237070f9587f8e7a266d";
-
-	public RectTransform Content;
-	public GameObject NFTPrefab;
+	// Temp wallet for testing. To be replaced with the metamask wallet address
 	public string Wallet = "0x3233f67E541444DDbbf9391630D92D7F7Aaf508D";
 
+	// List of custom loaders for NFT metadata
+	private List<INFTLoader> loaders = new List<INFTLoader>();
+
+	// Holds the loaded NFT data
 	private List<NFTItemData> loadedNFTs = new List<NFTItemData>();
 
+	// Holds the NFT transactions from Etherscan and Polygon Explorer
 	private List<Explorer721Events> eventsList = new List<Explorer721Events>();
 
-	private bool loadNFTURIDone = false;
-	private int loadingNFTURICount = 0;
-
+	// Events: subscribe to these events to get progress of loading the data
+	
+	// Called when an NFT is found to belong to the Wallet
 	public System.Action<int> OnNFTItemFound;
+
+	// Called when we have filled up the metadata of the NFT (i.e. Name, Description, Image URL, etc)
 	public System.Action<NFTItemData> OnNFTItemLoaded;
+	
+	// Called when we start querying Etherscan or Polygon Explorer
 	public System.Action<string> OnQueryChainBegin;
+
+	// Called when we are done querying Etherscan or Polygon Explorer
 	public System.Action<string> OnQueryChainEnd;
 
+	// Events: end
+
+	// Make sure to have only one instance of this class.
+	// Add the common NFT loaders
 	private void Awake()
 	{
 		if (instance != null)
@@ -43,8 +57,24 @@ public class NFTLoader : MonoBehaviour
 		{
 			instance = this;
 		}
+
+		// Add more loaders as needed. Client code can also add by calling AddLoader
+		AddLoader(new NFTLoaderCommon()); // first should be common
+		AddLoader(new NFTLoaderCK());
 	}
 
+	// Call this to add a custom loader
+	public void AddLoader(INFTLoader loader)
+	{
+		if (loader == null)
+		{
+			return;
+		}
+
+		loaders.Add(loader);
+	}
+
+	// Maybe we can use a public function for this
     private IEnumerator Start()
     {
 		if (_Config.Account != "0x0000000000000000000000000000000000000001")
@@ -81,6 +111,7 @@ public class NFTLoader : MonoBehaviour
 		LoadURIData();
     }
 
+	// Query the blockchain explorer for 721 events
 	private IEnumerator QueryChain(ChainData chain)
 	{
 		if (chain == null)
@@ -116,6 +147,7 @@ public class NFTLoader : MonoBehaviour
 		}
 	}
 
+	// Go through the loaded events and find NFTs that the Wallet still owns
 	private void LoadNFTURI()
 	{
 		foreach (var events in eventsList)
@@ -132,6 +164,7 @@ public class NFTLoader : MonoBehaviour
 		}
 	}
 
+	// Check if a specific NFT is still owned by the Wallet
 	private async Task LoadNFTURIItem(string chain, string network, Explorer721Events.Result r)
 	{
 		string owner = await ERC721.OwnerOf(chain, network, r.contractAddress, r.tokenID);
@@ -142,7 +175,8 @@ public class NFTLoader : MonoBehaviour
 		}
 
 		string uri = "";
-		if (r.contractAddress != contractCK)
+		var loader = GetLoader(r.contractAddress);
+		if (loader.NeedToCallURI)
 		{
 			uri = await ERC721.URI(chain, network, r.contractAddress, r.tokenID);
 			Debug.Log(uri);
@@ -162,58 +196,26 @@ public class NFTLoader : MonoBehaviour
 		}
 	}
 
+	// Returns a INFTLoader that matches the contract address
+	private INFTLoader GetLoader(string contract)
+	{
+		foreach (var l in loaders)
+			if (l.Contract == contract)
+				return l;
+
+		// default to common
+		return loaders[0];
+	}
+
+	// Loads the metadata for the NFT
 	private void LoadURIData()
 	{
-		Debug.Log("LoadURIData");
 		foreach (var n in loadedNFTs)
 		{
-			if (n.Contract == contractCK)
+			var loader = GetLoader(n.Contract);
+			if (loader != null)
 			{
-				StartCoroutine(LoadNFTDataCK(n));
-			}
-			else
-			{
-				StartCoroutine(LoadNFTDataCommon(n));
-			}
-		}
-	}
-
-	private IEnumerator LoadNFTDataCK(NFTItemData n)
-	{
-		string apiUrl = "https://api.cryptokitties.co/kitties/" + n.TokenId;
-		using (UnityWebRequest request = UnityWebRequest.Get(apiUrl))
-		{
-			yield return request.SendWebRequest();
-			string json = request.downloadHandler.text;
-			Debug.LogFormat("LoadNFT:LoadNFTDataCK - Received: {0}", json);
-
-			URIData data = JsonUtility.FromJson<URIData>(json);
-			n.Name = data.name;
-			n.Description = data.bio;
-			n.ImageURL = data.image_url_png;
-
-			if (OnNFTItemLoaded != null)
-				OnNFTItemLoaded(n);
-		}
-	}
-
-	private IEnumerator LoadNFTDataCommon(NFTItemData n)
-	{
-		using (UnityWebRequest request = UnityWebRequest.Get(n.URI))
-		{
-			yield return request.SendWebRequest();
-			string json = request.downloadHandler.text;
-			Debug.LogFormat("LoadNFT:LoadNFTDataCommon - Received: {0}", json);
-
-			URIData data = JsonUtility.FromJson<URIData>(json);
-			if (data != null)
-			{
-				n.Name = data.name;
-				n.Description = data.description;
-				n.ImageURL = data.image;
-
-				if (OnNFTItemLoaded != null)
-					OnNFTItemLoaded(n);
+				StartCoroutine(loader.LoadNFTData(n, (nOut) => { if (OnNFTItemLoaded != null) OnNFTItemLoaded(nOut); }));
 			}
 		}
 	}

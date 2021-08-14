@@ -40,6 +40,7 @@ public class UINFTItem : MonoBehaviour
         }
 
         image.sprite = spr;
+		image.preserveAspect = true;
 	}
 }
 
