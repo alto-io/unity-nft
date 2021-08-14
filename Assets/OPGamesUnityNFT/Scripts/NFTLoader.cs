@@ -10,20 +10,40 @@ using Newtonsoft.Json;
 namespace OPGames.NFT
 {
 
-public class LoadNFT : MonoBehaviour
+public class NFTLoader : MonoBehaviour
 {
+	static private NFTLoader instance = null;
+	static public NFTLoader Instance { get { return instance; } }
+
 	const string contractCK = "0x06012c8cf97bead5deae237070f9587f8e7a266d";
 
 	public RectTransform Content;
 	public GameObject NFTPrefab;
 	public string Wallet = "0x3233f67E541444DDbbf9391630D92D7F7Aaf508D";
 
-	public List<NFTItemData> LoadedNFTs = new List<NFTItemData>();
+	private List<NFTItemData> loadedNFTs = new List<NFTItemData>();
 
-	public List<Explorer721Events> EventsList = new List<Explorer721Events>();
+	private List<Explorer721Events> eventsList = new List<Explorer721Events>();
 
 	private bool loadNFTURIDone = false;
 	private int loadingNFTURICount = 0;
+
+	public System.Action<int> OnNFTItemFound;
+	public System.Action<NFTItemData> OnNFTItemLoaded;
+	public System.Action<string> OnQueryChainBegin;
+	public System.Action<string> OnQueryChainEnd;
+
+	private void Awake()
+	{
+		if (instance != null)
+		{
+			Destroy(this);
+		}
+		else
+		{
+			instance = this;
+		}
+	}
 
     private IEnumerator Start()
     {
@@ -37,7 +57,7 @@ public class LoadNFT : MonoBehaviour
 				continue;
 			
 			Debug.LogFormat("Found ChainData: {0}", c.Chain);
-			yield return StartCoroutine(LoadChain(c));
+			yield return StartCoroutine(QueryChain(c));
 		}
 
 		LoadNFTURI();
@@ -48,7 +68,7 @@ public class LoadNFT : MonoBehaviour
 			yield return new WaitForSeconds(0.5f);
 
 			isDoneProcessing = true;
-			foreach (var e in EventsList)
+			foreach (var e in eventsList)
 			{
 				if (e.IsDoneProcessing() == false)
 				{
@@ -61,12 +81,17 @@ public class LoadNFT : MonoBehaviour
 		LoadURIData();
     }
 
-	private IEnumerator LoadChain(ChainData chain)
+	private IEnumerator QueryChain(ChainData chain)
 	{
 		if (chain == null)
 		{
-			Debug.LogError("LoadNFT:LoadChain - chain is null");
+			Debug.LogError("LoadNFT:QueryChain - chain is null");
 			yield break;
+		}
+
+		if (OnQueryChainBegin != null)
+		{
+			OnQueryChainBegin(chain.Chain);
 		}
 
 		string apiCall = string.Format(chain.Explorer721EventsCall, Wallet, chain.ExplorerAPIKey);
@@ -82,13 +107,18 @@ public class LoadNFT : MonoBehaviour
 			events.chain = chain.Chain;
 			events.network = chain.Network;
 			events.blacklistContracts = chain.BlacklistContracts;
-			EventsList.Add(events);
+			eventsList.Add(events);
+		}
+
+		if (OnQueryChainEnd != null)
+		{
+			OnQueryChainEnd(chain.Chain);
 		}
 	}
 
 	private void LoadNFTURI()
 	{
-		foreach (var events in EventsList)
+		foreach (var events in eventsList)
 		{
 			foreach (var r in events.result)
 			{
@@ -123,14 +153,19 @@ public class LoadNFT : MonoBehaviour
 		item.URI = uri;
 		item.Contract = r.contractAddress;
 
-		LoadedNFTs.Add(item);
+		loadedNFTs.Add(item);
 		r.isDoneProcessing = true;
+
+		if (OnNFTItemFound != null)
+		{
+			OnNFTItemFound(loadedNFTs.Count);
+		}
 	}
 
 	private void LoadURIData()
 	{
 		Debug.Log("LoadURIData");
-		foreach (var n in LoadedNFTs)
+		foreach (var n in loadedNFTs)
 		{
 			if (n.Contract == contractCK)
 			{
@@ -150,23 +185,15 @@ public class LoadNFT : MonoBehaviour
 		{
 			yield return request.SendWebRequest();
 			string json = request.downloadHandler.text;
-			Debug.LogFormat("Received: {0}", json);
+			Debug.LogFormat("LoadNFT:LoadNFTDataCK - Received: {0}", json);
 
 			URIData data = JsonUtility.FromJson<URIData>(json);
-			n.Metadata = data;
+			n.Name = data.name;
+			n.Description = data.bio;
+			n.ImageURL = data.image_url_png;
 
-			if (data != null)
-			{
-				GameObject clone = Instantiate(NFTPrefab);
-				clone.transform.SetParent(Content);
-				clone.transform.localScale = UnityEngine.Vector3.one;
-
-				UINFTItem item = clone.GetComponent<UINFTItem>();
-				if (item != null)
-				{
-					item.Fill(data.name, data.bio, data.image_url_png);
-				}
-			}
+			if (OnNFTItemLoaded != null)
+				OnNFTItemLoaded(n);
 		}
 	}
 
@@ -179,21 +206,14 @@ public class LoadNFT : MonoBehaviour
 			Debug.LogFormat("LoadNFT:LoadNFTDataCommon - Received: {0}", json);
 
 			URIData data = JsonUtility.FromJson<URIData>(json);
-			n.Metadata = data;
-
 			if (data != null)
 			{
-				Debug.LogFormat("LoadNFT:LoadNFTDataCommon - Image URL: {0}", data.image);
+				n.Name = data.name;
+				n.Description = data.description;
+				n.ImageURL = data.image;
 
-				GameObject clone = Instantiate(NFTPrefab);
-				clone.transform.SetParent(Content);
-				clone.transform.localScale = UnityEngine.Vector3.one;
-
-				UINFTItem item = clone.GetComponent<UINFTItem>();
-				if (item != null)
-				{
-					item.Fill(data.name, data.description, data.image);
-				}
+				if (OnNFTItemLoaded != null)
+					OnNFTItemLoaded(n);
 			}
 		}
 	}

@@ -60,12 +60,13 @@ public class URIData
 [System.Serializable]
 public class NFTItemData
 {
-	public NFTInfo Info;
 	public string TokenId;
-	public string URI;
-	public string ImageURI;
 	public string Contract;
-	public URIData Metadata;
+	public string URI;
+
+	public string Name;
+	public string Description;
+	public string ImageURL;
 }
 
 

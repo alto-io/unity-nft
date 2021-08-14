@@ -167,7 +167,7 @@ GameObject:
   - component: {fileID: 1901152470773523144}
   - component: {fileID: 8911648903842331570}
   m_Layer: 5
-  m_Name: NFTItem
+  m_Name: NFTListItem
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
