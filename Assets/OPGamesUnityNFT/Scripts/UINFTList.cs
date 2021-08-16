@@ -13,15 +13,18 @@ public class UINFTList : MonoBehaviour
 	[SerializeField] private RectTransform contentParent;
 	[SerializeField] private GameObject prefabNFT;
 
+	private Dictionary<string, GameObject> listItems = new Dictionary<string, GameObject>();
+
 	private void Start()
 	{
 		NFTManager nft = NFTManager.Instance;
 		if (nft != null)
 		{
 			nft.OnQueryChainBegin += OnQueryChainBegin;
-			nft.OnQueryChainEnd += OnQueryChainEnd;
-			nft.OnNFTItemFound += OnNFTItemFound;
-			nft.OnNFTItemLoaded += OnNFTItemLoaded;
+			nft.OnQueryChainEnd   += OnQueryChainEnd;
+			nft.OnNFTItemFound    += OnNFTItemFound;
+			nft.OnNFTItemLoaded   += OnNFTItemLoaded;
+			nft.OnNFTListComplete += OnNFTListComplete;
 		}
 	}
 
@@ -49,21 +52,52 @@ public class UINFTList : MonoBehaviour
 		}
 	}
 
+	private void OnNFTListComplete(List<NFTItemData> list)
+	{
+		Debug.Log("OnNFTListComplete");
+		foreach (var n in list)
+		{
+			GameObject clone = Instantiate(prefabNFT);
+			clone.transform.SetParent(contentParent);
+			clone.transform.localScale = UnityEngine.Vector3.one;
+
+			listItems.Add(n.UniqueId, clone);
+		}
+	}
+
 	private void OnNFTItemLoaded(NFTItemData n)
 	{
+		if (n == null)
+			return;
+
 		if (loadingParent != null)
-		{
 			loadingParent.SetActive(false);
+
+		if (listItems.ContainsKey(n.UniqueId) == false)
+		{
+			Debug.LogErrorFormat("UI list items does not have this key {0}", n.UniqueId);
+			return;
 		}
 
-		GameObject clone = Instantiate(prefabNFT);
-		clone.transform.SetParent(contentParent);
-		clone.transform.localScale = UnityEngine.Vector3.one;
+		GameObject clone = listItems[n.UniqueId];
+		if (clone == null)
+		{
+			Debug.LogErrorFormat("UI list items gameobject is null {0}", n.UniqueId);
+			return;
+		}
 
 		UINFTItem item = clone.GetComponent<UINFTItem>();
 		if (item != null)
 		{
-			item.Fill(n.Name, n.Description, n.ImageURL);
+			if (string.IsNullOrEmpty(n.Name) == false)
+			{
+				item.Fill(n.Name, n.Description, n.ImageURL);
+			}
+			else
+			{
+				// can't load metadata, just show token id and contract address
+				item.Fill(n.TokenId, n.Contract, "");
+			}
 		}
 	}
 }

@@ -60,6 +60,7 @@ public class URIData
 [System.Serializable]
 public class NFTItemData
 {
+	public string Chain;
 	public string TokenId;
 	public string Contract;
 	public string URI;
@@ -67,6 +68,11 @@ public class NFTItemData
 	public string Name;
 	public string Description;
 	public string ImageURL;
+
+	public string UniqueId
+	{
+		get { return Contract + "-" + TokenId; }
+	}
 }
 
 

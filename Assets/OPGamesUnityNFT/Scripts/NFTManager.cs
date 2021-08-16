@@ -43,6 +43,8 @@ public class NFTManager : MonoBehaviour
 	// Called when we are done querying Etherscan or Polygon Explorer
 	public System.Action<string> OnQueryChainEnd;
 
+	public System.Action<List<NFTItemData>> OnNFTListComplete;
+
 	// Events: end
 
 	// Make sure to have only one instance of this class.
@@ -90,6 +92,16 @@ public class NFTManager : MonoBehaviour
 			yield return StartCoroutine(QueryChain(c));
 		}
 
+		loadedNFTs.Sort((a,b) => 
+		{ 
+			int result = string.Compare(a.Chain, b.Chain);
+			if (result != 0)
+				return result;
+
+			return string.Compare(a.Contract, b.Contract); 
+		});
+
+
 		LoadNFTURI();
 
 		bool isDoneProcessing = false;
@@ -107,6 +119,9 @@ public class NFTManager : MonoBehaviour
 				}
 			}
 		}
+
+		if (OnNFTListComplete != null)
+			OnNFTListComplete(loadedNFTs);
 
 		LoadURIData();
     }
@@ -183,6 +198,7 @@ public class NFTManager : MonoBehaviour
 		}
 
 		NFTItemData item = new NFTItemData();
+		item.Chain = chain;
 		item.TokenId = r.tokenID;
 		item.URI = uri;
 		item.Contract = r.contractAddress;

@@ -23,11 +23,10 @@ public class NFTLoaderCommon : INFTLoader
 				n.Name = data.name;
 				n.Description = data.description;
 				n.ImageURL = data.image;
-
-				if (onDone != null)
-					onDone(n);
 			}
 		}
+		if (onDone != null)
+			onDone(n);
 	}
 }
 

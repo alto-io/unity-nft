@@ -22,6 +22,9 @@ public class UINFTItem : MonoBehaviour
 
 	private IEnumerator GetTextureAndSetImage(string url)
 	{
+		if (string.IsNullOrEmpty(url))
+			yield break;
+
 		UnityWebRequest www = UnityWebRequestTexture.GetTexture(url);
 		yield return www.SendWebRequest();
 
