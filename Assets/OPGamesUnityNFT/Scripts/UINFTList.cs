@@ -54,7 +54,6 @@ public class UINFTList : MonoBehaviour
 
 	private void OnNFTListComplete(List<NFTItemData> list)
 	{
-		Debug.Log("OnNFTListComplete");
 		foreach (var n in list)
 		{
 			GameObject clone = Instantiate(prefabNFT);
@@ -62,6 +61,7 @@ public class UINFTList : MonoBehaviour
 			clone.transform.localScale = UnityEngine.Vector3.one;
 
 			listItems.Add(n.UniqueId, clone);
+			Debug.LogFormat("OnNFTListComplete - add to list {0}", n.UniqueId);
 		}
 	}
 

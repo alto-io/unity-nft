@@ -179,9 +179,18 @@ public class NFTManager : MonoBehaviour
 		}
 	}
 
+	private bool IsNFTInList(string contract, string tokenId)
+	{
+		var result = loadedNFTs.Find((n) => { return (n.Contract == contract && n.TokenId == tokenId); });
+		return result != null;
+	}
+
 	// Check if a specific NFT is still owned by the Wallet
 	private async Task LoadNFTURIItem(string chain, string network, Explorer721Events.Result r)
 	{
+		if (IsNFTInList(r.contractAddress, r.tokenID))
+			return;
+
 		string owner = await ERC721.OwnerOf(chain, network, r.contractAddress, r.tokenID);
 		if (owner != Wallet)
 		{
