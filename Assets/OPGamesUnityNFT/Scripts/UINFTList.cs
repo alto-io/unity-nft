@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 using System.Collections.Generic;
 
 namespace OPGames.NFT
@@ -14,6 +15,11 @@ public class UINFTList : MonoBehaviour
 	[SerializeField] private GameObject prefabNFT;
 
 	private Dictionary<string, GameObject> listItems = new Dictionary<string, GameObject>();
+
+	public void OnBtnNext()
+	{
+		SceneManager.LoadScene(2);
+	}
 
 	private void Start()
 	{
