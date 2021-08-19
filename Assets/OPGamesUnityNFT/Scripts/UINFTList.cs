@@ -14,7 +14,11 @@ public class UINFTList : MonoBehaviour
 	[SerializeField] private RectTransform contentParent;
 	[SerializeField] private GameObject prefabNFT;
 
+	[SerializeField] private Button btnNext;
+	[SerializeField] private int numNFTs = 3;
+
 	private Dictionary<string, GameObject> listItems = new Dictionary<string, GameObject>();
+	private Dictionary<string, Toggle> listToggles = new Dictionary<string, Toggle>();
 
 	public void OnBtnNext()
 	{
@@ -85,6 +89,14 @@ public class UINFTList : MonoBehaviour
 			clone.transform.localScale = UnityEngine.Vector3.one;
 
 			listItems.Add(n.UniqueId, clone);
+
+			var toggle = clone.GetComponentInChildren<Toggle>();
+			if (toggle != null)
+			{
+				listToggles.Add(n.UniqueId, toggle);
+				toggle.onValueChanged.AddListener(RefreshTogglesAndNext);
+			}
+
 			Debug.LogFormat("OnNFTListComplete - add to list {0}", n.UniqueId);
 		}
 	}
@@ -113,6 +125,44 @@ public class UINFTList : MonoBehaviour
 		UINFTItem item = clone.GetComponent<UINFTItem>();
 		if (item != null)
 			item.Fill(n);
+
+		RefreshTogglesAndNext();
+	}
+
+	private void RefreshTogglesAndNext(bool dontCare = false)
+	{
+		int count = 0;
+		GameGlobals.Selected.Clear();
+		foreach (var kvp in listToggles)
+		{
+			if (kvp.Value.isOn) 
+			{
+				count++;
+				GameGlobals.Selected.Add(kvp.Key);
+			}
+		}
+
+		if (count >= numNFTs)
+		{
+			foreach (var t in listToggles.Values)
+			{
+				if (t.isOn == false) 
+				{
+					t.interactable = false;
+				}
+			}
+			btnNext.interactable = true;
+		}
+		else
+		{
+			foreach (var t in listToggles.Values)
+			{
+				t.interactable = true;
+			}
+
+			btnNext.interactable = false;
+		}
+
 	}
 }
 

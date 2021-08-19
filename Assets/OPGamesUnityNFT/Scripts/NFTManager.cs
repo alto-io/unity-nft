@@ -50,6 +50,11 @@ public class NFTManager : MonoBehaviour
 	public System.Action<List<NFTItemData>> OnNFTListComplete;
 
 	// Events: end
+	
+	public NFTItemData GetNFTItemDataById(string uniqueId)
+	{
+		return loadedNFTs.Find((n) => (n.UniqueId == uniqueId));
+	}
 
 	// Make sure to have only one instance of this class.
 	// Add the common NFT loaders

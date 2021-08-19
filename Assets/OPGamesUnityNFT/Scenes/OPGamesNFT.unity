@@ -955,7 +955,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1316704668}
   m_HandleRect: {fileID: 1316704667}
   m_Direction: 2
-  m_Value: 1
+  m_Value: 0
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -1352,3 +1352,5 @@ MonoBehaviour:
   loadingStatus: {fileID: 1561440426}
   contentParent: {fileID: 1866722025}
   prefabNFT: {fileID: 1901152470773523150, guid: 8379e8115ee16c14c8770a7518981f2c, type: 3}
+  btnNext: {fileID: 816694340}
+  numNFTs: 3

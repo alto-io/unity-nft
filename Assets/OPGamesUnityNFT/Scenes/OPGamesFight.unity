@@ -1276,7 +1276,18 @@ MonoBehaviour:
   playerHP:
   - {fileID: 941513107}
   - {fileID: 1222018045}
+  nftsP1:
+  - {fileID: 1154830617}
+  - {fileID: 2022982887}
+  - {fileID: 131654986}
+  nftsP2:
+  - {fileID: 1721398735}
+  - {fileID: 947628476}
+  - {fileID: 385891192}
   textFight: {fileID: 1281897245}
+  hp:
+  - 0
+  - 0
 --- !u!4 &793944521
 Transform:
   m_ObjectHideFlags: 0

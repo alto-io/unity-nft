@@ -1,13 +1,19 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using DG.Tweening;
 using TMPro;
+
+namespace OPGames.NFT
+{
 
 public class FightManager : MonoBehaviour
 {
 	[SerializeField] private GameObject[] player;
 	[SerializeField] private HPBar[] playerHP;
+	[SerializeField] private Image[] nftsP1;
+	[SerializeField] private Image[] nftsP2;
 
 	[SerializeField] private TextMeshProUGUI textFight;
 
@@ -15,6 +21,8 @@ public class FightManager : MonoBehaviour
 
     private IEnumerator Start()
     {
+		SetNFTs();
+
 		var seqFight = DOTween.Sequence();
 		seqFight.Append(textFight.transform.DOScale(new Vector3(1.2f, 1.2f, 1.2f), 0.5f));
 		seqFight.Append(textFight.transform.DOScale(Vector3.zero, 0.5f));
@@ -86,4 +94,23 @@ public class FightManager : MonoBehaviour
 
 		textFight.transform.DOScale(Vector3.one, 1.0f);
     }
+
+	private void SetNFTs()
+	{
+		NFTManager nftMgr = NFTManager.Instance;
+		int index =0;
+		foreach (var id in GameGlobals.Selected)
+		{
+			var nft = nftMgr.GetNFTItemDataById(id);
+
+			if (index >= nftsP1.Length)
+				break;
+
+			Utils.SetImageTexture(nftsP1[index], nft.Texture);
+
+			index++;
+		}
+	}
+}
+
 }

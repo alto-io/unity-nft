@@ -44,7 +44,7 @@ public class UINFTItem : MonoBehaviour
 		}
 		else
 		{
-			SetImageTexture(nft.Texture);
+			Utils.SetImageTexture(image, nft.Texture);
 		}
 	}
 
@@ -59,26 +59,7 @@ public class UINFTItem : MonoBehaviour
 		Texture2D tex = (Texture2D)DownloadHandlerTexture.GetContent(www);
 		nft.Texture = tex;
 
-		SetImageTexture(tex);
-	}
-
-	private void SetImageTexture(Texture2D tex)
-	{
-        if (tex == null)
-        {
-            Debug.LogError("Invalid texture");
-			return;
-        }
-
-		Sprite spr = Sprite.Create(tex, new Rect(0.0f, 0.0f, tex.width, tex.height), new UnityEngine.Vector2(0.5f, 0.5f));
-        if (spr == null)
-        {
-            Debug.LogError("Cannot create sprite");
-			return;
-        }
-
-        image.sprite = spr;
-		image.preserveAspect = true;
+		Utils.SetImageTexture(image, tex);
 	}
 }
 
