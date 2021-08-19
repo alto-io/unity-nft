@@ -69,6 +69,8 @@ public class NFTItemData
 	public string Description;
 	public string ImageURL;
 
+	public Texture2D Texture;
+
 	public string UniqueId
 	{
 		get { return Contract + "-" + TokenId; }

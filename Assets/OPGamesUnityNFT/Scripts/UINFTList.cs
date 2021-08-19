@@ -32,6 +32,24 @@ public class UINFTList : MonoBehaviour
 			nft.OnNFTItemLoaded   += OnNFTItemLoaded;
 			nft.OnNFTListComplete += OnNFTListComplete;
 		}
+
+		LoadFromManager();
+	}
+
+	private void LoadFromManager()
+	{
+		NFTManager nft = NFTManager.Instance;
+		if (nft == null)
+			return;
+
+		if (nft.IsNFTListComplete == false)
+			return;
+
+		var list = nft.LoadedNFTs;
+		OnNFTListComplete(list);
+
+		foreach (var n in list)
+			OnNFTItemLoaded(n);
 	}
 
 	private void OnQueryChainBegin(string chain)
@@ -94,17 +112,7 @@ public class UINFTList : MonoBehaviour
 
 		UINFTItem item = clone.GetComponent<UINFTItem>();
 		if (item != null)
-		{
-			if (string.IsNullOrEmpty(n.Name) == false)
-			{
-				item.Fill(n.Name, n.Description, n.ImageURL);
-			}
-			else
-			{
-				// can't load metadata, just show token id and contract address
-				item.Fill(n.TokenId, n.Contract, "");
-			}
-		}
+			item.Fill(n);
 	}
 }
 

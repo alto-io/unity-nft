@@ -20,6 +20,10 @@ public class NFTManager : MonoBehaviour
 	// Temp wallet for testing. To be replaced with the metamask wallet address
 	public string Wallet = "0x3233f67E541444DDbbf9391630D92D7F7Aaf508D";
 
+	public bool IsNFTListComplete { get; private set; }
+
+	public List<NFTItemData> LoadedNFTs { get { return loadedNFTs; } }
+
 	// List of custom loaders for NFT metadata
 	private List<INFTLoader> loaders = new List<INFTLoader>();
 
@@ -53,11 +57,12 @@ public class NFTManager : MonoBehaviour
 	{
 		if (instance != null)
 		{
-			Destroy(this);
+			Destroy(gameObject);
 		}
 		else
 		{
 			instance = this;
+			DontDestroyOnLoad(gameObject);
 		}
 
 		// Add more loaders as needed. Client code can also add by calling AddLoader
@@ -122,6 +127,8 @@ public class NFTManager : MonoBehaviour
 
 		if (OnNFTListComplete != null)
 			OnNFTListComplete(loadedNFTs);
+
+		IsNFTListComplete = true;
 
 		LoadURIData();
     }
