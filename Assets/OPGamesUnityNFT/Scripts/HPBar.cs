@@ -12,4 +12,13 @@ public class HPBar : MonoBehaviour
 	{
 		DOTween.To(() => fill.fillAmount, x=> fill.fillAmount = x, val, 0.5f);
 	}
+	
+	public void Subtract(float val)
+	{
+		float target = fill.fillAmount - val;
+		if (target < 0)
+			target = 0;
+
+		SetValue(target);
+	}
 }
