@@ -8,9 +8,16 @@ public class HPBar : MonoBehaviour
 {
 	[SerializeField] private Image fill;
 
-	public void SetValue(float val)
+	public void SetValue(float val, bool tween = true)
 	{
-		DOTween.To(() => fill.fillAmount, x=> fill.fillAmount = x, val, 0.5f);
+		if (tween)
+		{
+			DOTween.To(() => fill.fillAmount, x=> fill.fillAmount = x, val, 0.5f);
+		}
+		else
+		{
+			fill.fillAmount = val;
+		}
 	}
 	
 	public void Subtract(float val)
