@@ -13,75 +13,121 @@ public class FightChar : MonoBehaviour
 	[SerializeField] private Transform attackPos;
 	[SerializeField] private Transform hitPos;
 	[SerializeField] private SpriteRenderer sprite;
-	[SerializeField] private bool team;
 
-	private float cooldown = 0;
-	private float cooldownLeft = 0;
+	[SerializeField] [Range(100, 500)] private int hp;
+	[SerializeField] [Range(1, 10)] private int attackRange;
+	[SerializeField] [Range(1, 10)] private int attackSpeed;
+	[SerializeField] [Range(1, 10)] private int moveSpeed;
+	[SerializeField] [Range(1, 10)] private int damage;
+	[SerializeField] [Range(1, 10)] private int defense;
 
-	private float damage = 0;
-	private float hpMax = 0;
-	private float hp = 0;
+	[SerializeField] private bool team = true;
 
-	public bool Team    { get { return team; } }
-	public bool IsReady { get { return cooldownLeft <= 0.0f; } }
-	public bool IsAlive { get { return hp > 0.0f; } }
+	private int cooldownCurr = 0;
+	private int cooldown = 0;
+	private int hpCurr = 0;
+
+	public bool Team { get { return team; } }
+	public bool IsAlive { get { return hpCurr > 0; } }
+	public bool IsReady { get { return cooldownCurr <= 0; } }
+	public int HP { get { return hp; } }
+
+	private List<FightChar> targets;
+
+	public void SetTargets(List<FightChar> t)
+	{
+		targets = t;
+	}
+
+	public void Tick()
+	{
+		if (IsAlive == false)
+			return;
+
+		cooldownCurr--;
+		RefreshCooldownBar();
+
+		TickAttack();
+	}
 
 	private void Start()
 	{
-		damage = 20 + (Random.Range(0, 5) * 5);
-
-		cooldown = Random.Range(1.0f, 2.0f);
-		cooldownLeft = cooldown;
-
-		hpMax = 100.0f + (Random.Range(1, 5) * 10);
-		hp = hpMax;
+		hpCurr = hp;
+		cooldown = (10 - attackSpeed) + 1;
+		ResetCooldown();
 	}
 
-	public void UpdateCooldown()
+	private void ResetCooldown()
 	{
-		cooldownLeft -= Time.deltaTime;
-
-		float barValue = 1.0f - (cooldownLeft / cooldown);
-		cooldownBar.SetValue(barValue, false);
+		cooldownCurr += cooldown;
 	}
 
-	public IEnumerator Attack(FightChar target)
+	private void TickAttack()
 	{
+		if (IsReady == false) return;
+
+		FightChar target = null;
+
+		int r = Random.Range(0, targets.Count);
+		for (int i=0; i<targets.Count; i++)
+		{
+			int index = (r+i) % targets.Count;
+			if (targets[index].IsAlive)
+			{
+				target = targets[index];
+				break;
+			}
+		}
+
+		if (target == null) return;
+
+		ResetCooldown();
+		target.OnAttacked(damage);
+
+		StartCoroutine(AnimAttack(target));
+	}
+
+	private void OnAttacked(int damage)
+	{
+		hpCurr -= damage;
+		RefreshHPBar();
+
+		if (hpCurr <= 0)
+			sprite.color = Color.gray;
+	}
+
+	private void RefreshHPBar()
+	{
+		float v = (float)hpCurr / (float)hp;
+		hpBar.SetValue(v);
+	}
+
+	private void RefreshCooldownBar()
+	{
+		float v = (float)cooldownCurr / (float)cooldown;
+		cooldownBar.SetValue(1.0f - v);
+	}
+
+	public IEnumerator AnimAttack(FightChar target)
+	{
+		Vector3 startPos = transform.position;
 		Vector3[] waypoints = new Vector3[]
 		{
 			transform.position,
-			transform.position + (transform.up * 2.0f),
-			attackPos.position
+			transform.position + (transform.up * 1.0f),
+			transform.position + (transform.forward * 2.0f)
 		};
 
-		var seqAttack = DOTween.Sequence();
-		seqAttack.Append(
-				transform.DOPath(waypoints, 0.5f, PathType.CatmullRom)
-				.SetEase(Ease.InBack));
-		seqAttack.Append(transform.DOMove(transform.position, 0.25f));
+		var forward = transform.DOPath(waypoints, 0.2f, PathType.CatmullRom).SetEase(Ease.InBack);
+		yield return forward.WaitForCompletion();
 
-		yield return new WaitForSeconds(0.5f);
-		StartCoroutine(target.OnAttacked(damage));
+		// this object go back to position
+		transform.DOMove(startPos, 0.1f);
 
-		yield return seqAttack.WaitForCompletion();
-		yield return new WaitForSeconds(0.5f);
-
-		cooldownLeft = cooldown;
-	}
-
-	public IEnumerator OnAttacked(float d)
-	{
+		// target flashes red
 		var seqColor = DOTween.Sequence();
-		seqColor.Append(sprite.DOColor(Color.red, 0.1f));
-		seqColor.Append(sprite.DOColor(Color.white, 0.1f));
-		
-		var seqOnAttacked = DOTween.Sequence();
-		seqOnAttacked.Append(transform.DOMove(hitPos.position, 0.1f));
-		seqOnAttacked.Append(transform.DOMove(transform.position, 0.1f));
-		yield return seqOnAttacked.WaitForCompletion();
-
-		hp -= d;
-		hpBar.SetValue(hp/hpMax);
+		seqColor.Append(target.sprite.DOColor(Color.red, 0.1f));
+		seqColor.Append(target.sprite.DOColor(Color.white, 0.1f));
 	}
 }
 
