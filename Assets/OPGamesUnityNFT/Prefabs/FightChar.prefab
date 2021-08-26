@@ -129,6 +129,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 897e0b8646b89664d9562b634d635578, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  textName: {fileID: 6085344568399627338}
   hpBar: {fileID: 6085344568099537362}
   cooldownBar: {fileID: 9013931045266053281}
   attackPos: {fileID: 6085344568987156551}
@@ -208,6 +209,22 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 6085344567939595558}
     m_Modifications:
+    - target: {fileID: 5964315258337249289, guid: a6df8bbca40682a4f9062749c24c9e06, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6562462381910374951, guid: a6df8bbca40682a4f9062749c24c9e06, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6562462381910374951, guid: a6df8bbca40682a4f9062749c24c9e06, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 6562462381910374951, guid: a6df8bbca40682a4f9062749c24c9e06, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -9.99999
+      objectReference: {fileID: 0}
     - target: {fileID: 6562462382332773600, guid: a6df8bbca40682a4f9062749c24c9e06, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -307,6 +324,17 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 6562462382332773600, guid: a6df8bbca40682a4f9062749c24c9e06, type: 3}
   m_PrefabInstance: {fileID: 1108431282457328628}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &6085344568399627338 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6562462381675167678, guid: a6df8bbca40682a4f9062749c24c9e06, type: 3}
+  m_PrefabInstance: {fileID: 1108431282457328628}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &6085344568099537362 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 6562462381910374950, guid: a6df8bbca40682a4f9062749c24c9e06, type: 3}

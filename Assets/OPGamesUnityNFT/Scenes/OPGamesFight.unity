@@ -135,6 +135,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 518130003511541820, guid: aca71c811034ca64f9893d700ab64f34, type: 3}
+      propertyPath: damage
+      value: 14
+      objectReference: {fileID: 0}
+    - target: {fileID: 518130003511541820, guid: aca71c811034ca64f9893d700ab64f34, type: 3}
       propertyPath: attackSpeed
       value: 8
       objectReference: {fileID: 0}
@@ -482,6 +486,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 294342894}
     m_Modifications:
+    - target: {fileID: 518130003511541820, guid: aca71c811034ca64f9893d700ab64f34, type: 3}
+      propertyPath: damage
+      value: 14
+      objectReference: {fileID: 0}
     - target: {fileID: 6085344567939595558, guid: aca71c811034ca64f9893d700ab64f34, type: 3}
       propertyPath: m_RootOrder
       value: 4
@@ -1084,6 +1092,7 @@ MonoBehaviour:
   - {fileID: 847808654}
   - {fileID: 1371103709}
   - {fileID: 48123720}
+  textFight: {fileID: 1281897245}
 --- !u!4 &793944521
 Transform:
   m_ObjectHideFlags: 0
@@ -1108,6 +1117,10 @@ PrefabInstance:
     - target: {fileID: 518130003511541820, guid: aca71c811034ca64f9893d700ab64f34, type: 3}
       propertyPath: team
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 518130003511541820, guid: aca71c811034ca64f9893d700ab64f34, type: 3}
+      propertyPath: damage
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 518130003511541820, guid: aca71c811034ca64f9893d700ab64f34, type: 3}
       propertyPath: attackSpeed
@@ -1920,6 +1933,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 294342894}
     m_Modifications:
     - target: {fileID: 518130003511541820, guid: aca71c811034ca64f9893d700ab64f34, type: 3}
+      propertyPath: damage
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 518130003511541820, guid: aca71c811034ca64f9893d700ab64f34, type: 3}
       propertyPath: attackSpeed
       value: 7
       objectReference: {fileID: 0}
@@ -2019,6 +2036,10 @@ PrefabInstance:
     - target: {fileID: 518130003511541820, guid: aca71c811034ca64f9893d700ab64f34, type: 3}
       propertyPath: team
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 518130003511541820, guid: aca71c811034ca64f9893d700ab64f34, type: 3}
+      propertyPath: damage
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 518130003511541820, guid: aca71c811034ca64f9893d700ab64f34, type: 3}
       propertyPath: attackSpeed
@@ -2830,6 +2851,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 294342894}
     m_Modifications:
+    - target: {fileID: 518130003511541820, guid: aca71c811034ca64f9893d700ab64f34, type: 3}
+      propertyPath: damage
+      value: 23
+      objectReference: {fileID: 0}
     - target: {fileID: 518130003511541820, guid: aca71c811034ca64f9893d700ab64f34, type: 3}
       propertyPath: attackSpeed
       value: 4

@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
@@ -8,6 +9,7 @@ namespace OPGames.NFT
 
 public class FightChar : MonoBehaviour
 {
+	[SerializeField] private Text textName;
 	[SerializeField] private HPBar hpBar;
 	[SerializeField] private HPBar cooldownBar;
 	[SerializeField] private Transform attackPos;
@@ -18,7 +20,7 @@ public class FightChar : MonoBehaviour
 	[SerializeField] [Range(1, 10)] private int attackRange;
 	[SerializeField] [Range(1, 10)] private int attackSpeed;
 	[SerializeField] [Range(1, 10)] private int moveSpeed;
-	[SerializeField] [Range(1, 10)] private int damage;
+	[SerializeField] [Range(1, 50)] private int damage;
 	[SerializeField] [Range(1, 10)] private int defense;
 
 	[SerializeField] private bool team = true;
@@ -32,11 +34,19 @@ public class FightChar : MonoBehaviour
 	public bool IsReady { get { return cooldownCurr <= 0; } }
 	public int HP { get { return hp; } }
 
+	public System.Action<FightEvent> OnEventTriggered;
+
 	private List<FightChar> targets;
 
 	public void SetTargets(List<FightChar> t)
 	{
 		targets = t;
+	}
+
+	public void Reset()
+	{
+		hpCurr = hp;
+		cooldownCurr = cooldown;
 	}
 
 	public void Tick()
@@ -45,9 +55,35 @@ public class FightChar : MonoBehaviour
 			return;
 
 		cooldownCurr--;
-		RefreshCooldownBar();
-
 		TickAttack();
+	}
+
+	public void SetNFT(string key)
+	{
+		var mgr = NFTManager.Instance;
+		if (mgr == null)
+			return;
+
+		var nft = mgr.GetNFTItemDataById(key);
+		if (nft == null)
+			return;
+
+		textName.text = nft.Name;
+
+		var tex = nft.Texture;
+		if (tex == null)
+			return;
+
+		int max = Mathf.Max(tex.width, tex.height);
+		float scale = (float)max / 256.0f;
+
+		Sprite spr = Sprite.Create(tex, 
+				new Rect(0.0f, 0.0f, tex.width, tex.height), 
+				new UnityEngine.Vector2(0.5f, 0.5f),
+				100 * scale);
+
+		sprite.sprite = spr;
+
 	}
 
 	private void Start()
@@ -84,16 +120,20 @@ public class FightChar : MonoBehaviour
 		ResetCooldown();
 		target.OnAttacked(damage);
 
-		StartCoroutine(AnimAttack(target));
+		if (OnEventTriggered != null)
+		{
+			FightEvent e = new FightEvent();
+			e.source = this;
+			e.target = target;
+			e.damage = damage;
+
+			OnEventTriggered(e);
+		}
 	}
 
 	private void OnAttacked(int damage)
 	{
 		hpCurr -= damage;
-		RefreshHPBar();
-
-		if (hpCurr <= 0)
-			sprite.color = Color.gray;
 	}
 
 	private void RefreshHPBar()
@@ -108,7 +148,7 @@ public class FightChar : MonoBehaviour
 		cooldownBar.SetValue(1.0f - v);
 	}
 
-	public IEnumerator AnimAttack(FightChar target)
+	public IEnumerator AnimAttack(FightChar target, int damage)
 	{
 		Vector3 startPos = transform.position;
 		Vector3[] waypoints = new Vector3[]
@@ -121,13 +161,22 @@ public class FightChar : MonoBehaviour
 		var forward = transform.DOPath(waypoints, 0.2f, PathType.CatmullRom).SetEase(Ease.InBack);
 		yield return forward.WaitForCompletion();
 
+		target.hpCurr -= damage;
+		target.RefreshHPBar();
+
 		// this object go back to position
-		transform.DOMove(startPos, 0.1f);
+		var back = transform.DOMove(startPos, 0.1f);
+		//yield return back.WaitForCompletion();
 
 		// target flashes red
 		var seqColor = DOTween.Sequence();
 		seqColor.Append(target.sprite.DOColor(Color.red, 0.1f));
 		seqColor.Append(target.sprite.DOColor(Color.white, 0.1f));
+
+		if (target.hpCurr <= 0)
+		{
+			seqColor.Append(target.sprite.DOColor(Color.gray, 0.1f));
+		}
 	}
 }
 
