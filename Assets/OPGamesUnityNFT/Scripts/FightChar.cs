@@ -3,13 +3,16 @@ using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
+using TMPro;
 
 namespace OPGames.NFT
 {
 
 public class FightChar : MonoBehaviour
 {
-	[SerializeField] private Text textName;
+	[SerializeField] private DamageText damageText;
+	[SerializeField] private Animator spriteAndUIAnimator;
+	[SerializeField] private TextMeshProUGUI textName;
 	[SerializeField] private HPBar hpBar;
 	[SerializeField] private HPBar cooldownBar;
 	[SerializeField] private Transform attackPos;
@@ -88,6 +91,10 @@ public class FightChar : MonoBehaviour
 
 	private void Start()
 	{
+		if (spriteAndUIAnimator != null)
+		{
+			spriteAndUIAnimator.Play(0, -1, Random.Range(0.0f, 1.0f));
+		}
 		hpCurr = hp;
 		cooldown = (10 - attackSpeed) + 1;
 		ResetCooldown();
@@ -150,6 +157,9 @@ public class FightChar : MonoBehaviour
 
 	public IEnumerator AnimAttack(FightChar target, int damage)
 	{
+		Vector3 forwardVector = transform.forward;
+		transform.LookAt(target.transform.position);
+
 		Vector3 startPos = transform.position;
 		Vector3[] waypoints = new Vector3[]
 		{
@@ -158,25 +168,48 @@ public class FightChar : MonoBehaviour
 			transform.position + (transform.forward * 2.0f)
 		};
 
-		var forward = transform.DOPath(waypoints, 0.2f, PathType.CatmullRom).SetEase(Ease.InBack);
-		yield return forward.WaitForCompletion();
+		var forwardTween = transform.DOPath(waypoints, 0.2f, PathType.CatmullRom).SetEase(Ease.InBack);
+		yield return forwardTween.WaitForCompletion();
 
-		target.hpCurr -= damage;
-		target.RefreshHPBar();
+		var targetHit = StartCoroutine(target.AnimHit(damage));
 
 		// this object go back to position
+		transform.forward = forwardVector;
 		var back = transform.DOMove(startPos, 0.1f);
-		//yield return back.WaitForCompletion();
+		yield return back.WaitForCompletion();
+
+		yield return targetHit;
+	}
+
+	private IEnumerator AnimHit(int damage)
+	{
+		hpCurr -= damage;
+		RefreshHPBar();
+
+		bool isCrit = damage > 20 ? true : false;
+
+		if (damageText != null)
+			damageText.ShowDamage(damage, isCrit);
+	
+		if (isCrit)
+			Camera.main.DOShakePosition(0.5f, 0.2f, 30, 45, true);
 
 		// target flashes red
 		var seqColor = DOTween.Sequence();
-		seqColor.Append(target.sprite.DOColor(Color.red, 0.1f));
-		seqColor.Append(target.sprite.DOColor(Color.white, 0.1f));
+		seqColor.Append(sprite.DOColor(Color.red, 0.1f));
+		seqColor.Append(sprite.DOColor(Color.white, 0.1f));
 
-		if (target.hpCurr <= 0)
-		{
-			seqColor.Append(target.sprite.DOColor(Color.gray, 0.1f));
-		}
+		if (hpCurr <= 0)
+			seqColor.Append(sprite.DOColor(Color.gray, 0.1f));
+
+		var seqBack = DOTween.Sequence();
+
+		Vector3 pos = transform.position;
+		Vector3 forward = transform.forward;
+		seqBack.Append(transform.DOMove(pos - forward, 0.1f));
+		seqBack.Append(transform.DOMove(pos, 0.1f));
+
+		yield return seqBack.WaitForCompletion();
 	}
 }
 
