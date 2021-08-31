@@ -18,15 +18,22 @@ public class FightChar : MonoBehaviour
 	[SerializeField] private Transform attackPos;
 	[SerializeField] private Transform hitPos;
 	[SerializeField] private SpriteRenderer sprite;
-
-	[SerializeField] [Range(100, 500)] private int hp;
-	[SerializeField] [Range(1, 10)] private int attackRange;
-	[SerializeField] [Range(1, 10)] private int attackSpeed;
-	[SerializeField] [Range(1, 10)] private int moveSpeed;
-	[SerializeField] [Range(1, 50)] private int damage;
-	[SerializeField] [Range(1, 10)] private int defense;
-
 	[SerializeField] private bool team = true;
+
+	private int hp;
+	private int attackRange;
+	private int attackSpeed;
+	private int moveSpeed;
+	private int damage;
+	private int defense;
+	private int agility;
+	private int statMax;
+
+	private float critMaxChance;
+	private float critMult;
+
+	private string className = "";
+	private string charName = "";
 
 	private int cooldownCurr = 0;
 	private int cooldown = 0;
@@ -71,7 +78,8 @@ public class FightChar : MonoBehaviour
 		if (nft == null)
 			return;
 
-		textName.text = nft.Name;
+		charName = nft.Name;
+		textName.text = string.Format("{0}\n({1})", charName, className);
 
 		var tex = nft.Texture;
 		if (tex == null)
@@ -86,18 +94,34 @@ public class FightChar : MonoBehaviour
 				100 * scale);
 
 		sprite.sprite = spr;
-
 	}
 
 	private void Start()
 	{
+		var data = DataClasses.Instance;
+		DataClasses.Info classInfo = data.GetRandom();
+		
+		className     = classInfo.Name;
+		hp            = classInfo.HP * data.HPMult;
+		attackRange   = classInfo.AttackRange;
+		attackSpeed   = classInfo.AttackSpeed;
+		moveSpeed     = classInfo.MoveSpeed;
+		damage        = classInfo.Damage;
+		defense       = classInfo.Defense;
+		agility       = classInfo.Agility;
+		statMax       = data.StatMax;
+		critMaxChance = data.CritMaxChance;
+		critMult      = data.CritMult;
+
 		if (spriteAndUIAnimator != null)
 		{
 			spriteAndUIAnimator.Play(0, -1, Random.Range(0.0f, 1.0f));
 		}
 		hpCurr = hp;
-		cooldown = (10 - attackSpeed) + 1;
+		cooldown = (statMax - attackSpeed) + 1;
 		ResetCooldown();
+
+		textName.text = string.Format("{0}\n({1})", charName, className);
 	}
 
 	private void ResetCooldown()
@@ -125,22 +149,31 @@ public class FightChar : MonoBehaviour
 		if (target == null) return;
 
 		ResetCooldown();
-		target.OnAttacked(damage);
+
+		FightEvent e = new FightEvent();
+		e.source = this;
+		e.target = target;
+		e.isCrit = CalcIfCrit();
+
+		int damageFinal = damage;
+
+		if (e.isCrit)
+			damageFinal = (int)Mathf.Floor((float)damage * critMult);
+
+		e.damage = damageFinal;
+
+		target.hpCurr -= e.damage;
 
 		if (OnEventTriggered != null)
 		{
-			FightEvent e = new FightEvent();
-			e.source = this;
-			e.target = target;
-			e.damage = damage;
-
 			OnEventTriggered(e);
 		}
 	}
 
-	private void OnAttacked(int damage)
+	private bool CalcIfCrit()
 	{
-		hpCurr -= damage;
+		float critChance = ((float)agility / (float)statMax) * critMaxChance;
+		return Random.Range(0.0f, 1.0f) <= critChance;
 	}
 
 	private void RefreshHPBar()
@@ -155,8 +188,10 @@ public class FightChar : MonoBehaviour
 		cooldownBar.SetValue(1.0f - v);
 	}
 
-	public IEnumerator AnimAttack(FightChar target, int damage)
+	public IEnumerator AnimAttack(FightEvent evt)
 	{
+		FightChar target = evt.target;
+
 		Vector3 forwardVector = transform.forward;
 		transform.LookAt(target.transform.position);
 
@@ -171,7 +206,7 @@ public class FightChar : MonoBehaviour
 		var forwardTween = transform.DOPath(waypoints, 0.2f, PathType.CatmullRom).SetEase(Ease.InBack);
 		yield return forwardTween.WaitForCompletion();
 
-		var targetHit = StartCoroutine(target.AnimHit(damage));
+		var targetHit = StartCoroutine(target.AnimHit(evt.damage, evt.isCrit));
 
 		// this object go back to position
 		transform.forward = forwardVector;
@@ -181,12 +216,10 @@ public class FightChar : MonoBehaviour
 		yield return targetHit;
 	}
 
-	private IEnumerator AnimHit(int damage)
+	private IEnumerator AnimHit(int damage, bool isCrit)
 	{
 		hpCurr -= damage;
 		RefreshHPBar();
-
-		bool isCrit = damage > 20 ? true : false;
 
 		if (damageText != null)
 			damageText.ShowDamage(damage, isCrit);

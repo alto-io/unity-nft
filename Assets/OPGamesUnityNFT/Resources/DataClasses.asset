@@ -20,6 +20,7 @@ MonoBehaviour:
     MoveSpeed: 3
     Damage: 9
     Defense: 3
+    Agility: 3
     IsMelee: 1
   - Name: Wizard
     HP: 3
@@ -28,6 +29,7 @@ MonoBehaviour:
     MoveSpeed: 3
     Damage: 9
     Defense: 3
+    Agility: 6
     IsMelee: 0
   - Name: Assassin
     HP: 3
@@ -36,6 +38,7 @@ MonoBehaviour:
     MoveSpeed: 9
     Damage: 9
     Defense: 3
+    Agility: 9
     IsMelee: 1
   - Name: Tech
     HP: 6
@@ -44,6 +47,7 @@ MonoBehaviour:
     MoveSpeed: 6
     Damage: 6
     Defense: 3
+    Agility: 6
     IsMelee: 0
   - Name: Gunner
     HP: 3
@@ -52,4 +56,6 @@ MonoBehaviour:
     MoveSpeed: 6
     Damage: 3
     Defense: 3
+    Agility: 3
     IsMelee: 0
+  HPMult: 15

@@ -12,7 +12,8 @@ public class FightEvent
 {
 	public FightChar source;
 	public FightChar target;
-	public int damage;
+	public int damage = 0;
+	public bool isCrit = false;
 
 	public override string ToString()
 	{
@@ -98,23 +99,7 @@ public class FightManager : MonoBehaviour
 		for (int i=0; i<len; i++)
 		{
 			FightEvent e = events[i];
-
-			FightEvent f = null;
-			if (i+1 < len)
-				f = events[i+1];
-
-			//if (f != null && e.target != f.source && e.source != f.target)
-			//{
-			//	StartCoroutine(e.source.AnimAttack(e.target, e.damage));
-			//	yield return new WaitForSeconds(0.2f);
-			//	yield return StartCoroutine(f.source.AnimAttack(f.target, f.damage));
-			//	i++;
-			//}
-			//else
-			{
-				yield return StartCoroutine(e.source.AnimAttack(e.target, e.damage));
-			}
-
+			yield return StartCoroutine(e.source.AnimAttack(e));
 		}
 
 		if (IsTeamAlive(teamA))

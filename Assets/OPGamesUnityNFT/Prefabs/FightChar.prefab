@@ -271,12 +271,6 @@ MonoBehaviour:
   attackPos: {fileID: 6085344568987156551}
   hitPos: {fileID: 6085344568666161630}
   sprite: {fileID: 6085344567570470289}
-  hp: 100
-  attackRange: 10
-  attackSpeed: 5
-  moveSpeed: 5
-  damage: 5
-  defense: 5
   team: 1
 --- !u!1 &6085344568666161631
 GameObject:
@@ -345,6 +339,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 4053597189098800769}
     m_Modifications:
+    - target: {fileID: 3558029338387816034, guid: a6df8bbca40682a4f9062749c24c9e06, type: 3}
+      propertyPath: m_fontSize
+      value: 53.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 5071939690373580930, guid: a6df8bbca40682a4f9062749c24c9e06, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 60
+      objectReference: {fileID: 0}
     - target: {fileID: 6562462382332773600, guid: a6df8bbca40682a4f9062749c24c9e06, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
