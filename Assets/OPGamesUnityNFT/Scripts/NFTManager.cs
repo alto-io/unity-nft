@@ -92,13 +92,13 @@ public class NFTManager : MonoBehaviour
 		if (_Config.Account != "0x0000000000000000000000000000000000000001")
 			Wallet = _Config.Account;
 
-		ChainData[] chains = Resources.LoadAll<ChainData>("");
+		DataChain[] chains = Resources.LoadAll<DataChain>("");
 		foreach (var c in chains)
 		{
 			if (c.Enabled == false)
 				continue;
 			
-			Debug.LogFormat("Found ChainData: {0}", c.Chain);
+			Debug.LogFormat("Found DataChain: {0}", c.Chain);
 			yield return StartCoroutine(QueryChain(c));
 		}
 
@@ -139,7 +139,7 @@ public class NFTManager : MonoBehaviour
     }
 
 	// Query the blockchain explorer for 721 events
-	private IEnumerator QueryChain(ChainData chain)
+	private IEnumerator QueryChain(DataChain chain)
 	{
 		if (chain == null)
 		{

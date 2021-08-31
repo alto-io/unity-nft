@@ -4,8 +4,8 @@ using System.Collections.Generic;
 namespace OPGames.NFT
 {
 
-[CreateAssetMenu(fileName = "ChainData", menuName = "UnityNFT/ChainData", order = 1)]
-public class ChainData : ScriptableObject
+[CreateAssetMenu(fileName = "DataChain", menuName = "UnityNFT/DataChain", order = 1)]
+public class DataChain : ScriptableObject
 {
 	public string Chain = "ethereum";
 	public string Network = "rinkeby";
