@@ -29,6 +29,8 @@ public class FightChar : MonoBehaviour
 	private int agility;
 	private int statMax;
 
+	private bool isMelee;
+
 	private float critMaxChance;
 	private float critMult;
 
@@ -134,6 +136,7 @@ public class FightChar : MonoBehaviour
 		damage        = classInfo.Damage;
 		defense       = classInfo.Defense;
 		agility       = classInfo.Agility;
+		isMelee       = classInfo.IsMelee;
 		statMax       = data.StatMax;
 		critMaxChance = data.CritMaxChance;
 		critMult      = data.CritMult;
@@ -216,16 +219,32 @@ public class FightChar : MonoBehaviour
 	{
 		FightChar target = evt.target;
 
-		Vector3 forwardVector = transform.forward;
-		transform.LookAt(target.transform.position);
-
+		Vector3 forward  = transform.forward;
 		Vector3 startPos = transform.position;
+		Vector3 endPos   = startPos;
+		Vector3 dir      = target.transform.position - startPos;
+
+		float forwardDuration = 0.2f;
+
+		if (isMelee)
+		{
+			float travelMagnitude = dir.magnitude - 1.0f;
+			endPos = startPos + (dir.normalized * travelMagnitude);
+			forwardDuration = 0.4f;
+		}
+		else
+		{
+			endPos = startPos + (dir.normalized * 1.0f);
+		}
+
 		Vector3[] waypoints = new Vector3[]
 		{
-			transform.position,
-			transform.position + (transform.up * 1.0f),
-			transform.position + (transform.forward * 2.0f)
+			startPos,
+			startPos + (transform.up * 1.0f),
+			endPos
 		};
+
+		transform.LookAt(target.transform.position);
 
 		var forwardTween = transform.DOPath(waypoints, 0.2f, PathType.CatmullRom).SetEase(Ease.InBack);
 		yield return forwardTween.WaitForCompletion();
@@ -233,10 +252,9 @@ public class FightChar : MonoBehaviour
 		var targetHit = StartCoroutine(target.AnimHit(evt.damage, evt.isCrit));
 
 		// this object go back to position
-		transform.forward = forwardVector;
+		transform.forward = forward;
 		var back = transform.DOMove(startPos, 0.1f);
 		yield return back.WaitForCompletion();
-
 		yield return targetHit;
 	}
 

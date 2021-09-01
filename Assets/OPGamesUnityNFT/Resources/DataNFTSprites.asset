@@ -12,4 +12,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8a092ed841d24b944ba22a9d997f0d99, type: 3}
   m_Name: DataNFTSprites
   m_EditorClassIdentifier: 
-  SpriteTextures: []
+  InfoList:
+  - Name: Gunner 1
+    Texture: {fileID: 2800000, guid: d873c90af5692eb46b0890716f26e263, type: 3}
+  - Name: Gunner 2
+    Texture: {fileID: 2800000, guid: a21b9d65365c36e43bb7f13215fc3133, type: 3}
+  - Name: Gunner 3
+    Texture: {fileID: 2800000, guid: 52b0a197813384349ad2601c0c846668, type: 3}
+  - Name: Knight Drone
+    Texture: {fileID: 2800000, guid: 289c9057ac414344fbe3a434957239b3, type: 3}
+  - Name: Knight Medieval
+    Texture: {fileID: 2800000, guid: 5a3684c456962ae4c885e2dcd7debe75, type: 3}
+  - Name: Tech 1
+    Texture: {fileID: 2800000, guid: e202061709359a543aac2a38526ec811, type: 3}
+  - Name: Tech 2
+    Texture: {fileID: 2800000, guid: 78fb4c540553dd0438573ffe62b0e41a, type: 3}
