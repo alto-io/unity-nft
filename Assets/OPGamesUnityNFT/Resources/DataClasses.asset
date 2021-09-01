@@ -59,3 +59,6 @@ MonoBehaviour:
     Agility: 3
     IsMelee: 0
   HPMult: 15
+  StatMax: 9
+  CritMaxChance: 0.3
+  CritMult: 2

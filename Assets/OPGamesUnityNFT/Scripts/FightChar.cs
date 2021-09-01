@@ -68,6 +68,20 @@ public class FightChar : MonoBehaviour
 		TickAttack();
 	}
 
+	public void SetRandomTempNFT()
+	{
+		var data = DataNFTSprites.Instance;
+		if (data == null)
+			return;
+
+		var info = data.GetRandom();
+		if (info == null)
+			return;
+
+		SetName(info.Name, className);
+		SetNFTTexture(info.Texture);
+	}
+
 	public void SetNFT(string key)
 	{
 		var mgr = NFTManager.Instance;
@@ -81,7 +95,18 @@ public class FightChar : MonoBehaviour
 		charName = nft.Name;
 		textName.text = string.Format("{0}\n({1})", charName, className);
 
-		var tex = nft.Texture;
+		SetNFTTexture(nft.Texture);
+	}
+
+	private void SetName(string _charName, string _className)
+	{
+		charName = _charName;
+		className = _className;
+		textName.text = string.Format("{0}\n({1})", charName, className);
+	}
+
+	private void SetNFTTexture(Texture2D tex)
+	{
 		if (tex == null)
 			return;
 
@@ -120,8 +145,7 @@ public class FightChar : MonoBehaviour
 		hpCurr = hp;
 		cooldown = (statMax - attackSpeed) + 1;
 		ResetCooldown();
-
-		textName.text = string.Format("{0}\n({1})", charName, className);
+		SetName(charName, className);
 	}
 
 	private void ResetCooldown()

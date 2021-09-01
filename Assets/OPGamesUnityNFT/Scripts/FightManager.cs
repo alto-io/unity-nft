@@ -42,6 +42,8 @@ public class FightManager : MonoBehaviour
 			f.OnEventTriggered += OnEventTriggered;
 		}
 
+		yield return null;
+
 		// set nft
 		for (int i=0; i<teamA.Count; i++)
 		{
@@ -55,6 +57,7 @@ public class FightManager : MonoBehaviour
 		foreach (var f in teamB)
 		{
 			f.SetTargets(teamA);
+			f.SetRandomTempNFT();
 		}
 
 		yield return null;
