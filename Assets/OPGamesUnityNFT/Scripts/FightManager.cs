@@ -52,6 +52,8 @@ public class FightManager : MonoBehaviour
 
 			if (GameGlobals.Selected.Count > i)
 				f.SetNFT(GameGlobals.Selected[i]);
+			else
+				f.SetRandomTempNFT();
 		}
 
 		foreach (var f in teamB)

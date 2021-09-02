@@ -235,6 +235,14 @@ public class FightChar : MonoBehaviour
 		else
 		{
 			endPos = startPos + (dir.normalized * 1.0f);
+			var info = DataVFX.Instance.GetByName("VFXFireball");
+			if (info != null && info.Prefab != null)
+			{
+				GameObject clone = Instantiate(info.Prefab);
+				clone.transform.position = startPos;
+				clone.transform.DOMove(target.transform.position, 0.5f)
+					.OnComplete(()=> Destroy(clone));
+			}
 		}
 
 		Vector3[] waypoints = new Vector3[]

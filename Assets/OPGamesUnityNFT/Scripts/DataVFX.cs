@@ -1,4 +1,5 @@
 using UnityEngine;
+using System;
 using System.Collections.Generic;
 
 namespace OPGames.NFT
@@ -31,8 +32,21 @@ public class DataVFX : ScriptableObject
 
 	public Info GetRandom()
 	{
-		int index = Random.Range(0, InfoList.Length);
+		int index = UnityEngine.Random.Range(0, InfoList.Length);
 		return InfoList[index];
+	}
+
+	public Info GetByName(string name)
+	{
+		for (int i=0; i<InfoList.Length; i++)
+		{
+			var info = InfoList[i];
+			int comparison = string.Compare(info.Name, name, comparisonType: StringComparison.OrdinalIgnoreCase);
+			if (comparison == 0)
+				return info;
+		}
+
+		return null;
 	}
 }
 
