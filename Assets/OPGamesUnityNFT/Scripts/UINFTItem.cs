@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Networking;
 using System.Collections;
+using TMPro;
 
 namespace OPGames.NFT
 {
@@ -9,8 +10,8 @@ namespace OPGames.NFT
 public class UINFTItem : MonoBehaviour
 {
 	[SerializeField] private Image image;
-	[SerializeField] private Text textName;
-	[SerializeField] private Text textDesc;
+	[SerializeField] private TextMeshProUGUI textName;
+	[SerializeField] private TextMeshProUGUI textDesc;
 
 	public void Fill(NFTItemData nft)
 	{
