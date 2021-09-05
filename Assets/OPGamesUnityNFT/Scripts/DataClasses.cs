@@ -47,6 +47,11 @@ public class DataClasses : ScriptableObject
 		int index = Random.Range(0, Classes.Count);
 		return Classes[index];
 	}
+
+	public Info GetByName(string name)
+	{
+		return Classes.Find((i) => (i.Name == name));
+	}
 }
 
 }

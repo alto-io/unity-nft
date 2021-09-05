@@ -68,6 +68,7 @@ public class NFTItemData
 	public string Name;
 	public string Description;
 	public string ImageURL;
+	public string CharClass;
 
 	public Texture2D Texture;
 

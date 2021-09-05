@@ -1,0 +1,58 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a092ed841d24b944ba22a9d997f0d99, type: 3}
+  m_Name: DataNFTTemp
+  m_EditorClassIdentifier: 
+  InfoList:
+  - Name: Gunner 1
+    Description: Leverage agile frameworks to provide a robust synopsis for high
+      level overviews. Iterative approaches to corporate strategy foster collaborative
+      thinking to further the overall value proposition.
+    CharClass: Gunner
+    Texture: {fileID: 2800000, guid: d873c90af5692eb46b0890716f26e263, type: 3}
+  - Name: Gunner 2
+    Description: Leverage agile frameworks to provide a robust synopsis for high
+      level overviews. Iterative approaches to corporate strategy foster collaborative
+      thinking to further the overall value proposition.
+    CharClass: Gunner
+    Texture: {fileID: 2800000, guid: a21b9d65365c36e43bb7f13215fc3133, type: 3}
+  - Name: Gunner 3
+    Description: Leverage agile frameworks to provide a robust synopsis for high
+      level overviews. Iterative approaches to corporate strategy foster collaborative
+      thinking to further the overall value proposition.
+    CharClass: Gunner
+    Texture: {fileID: 2800000, guid: 52b0a197813384349ad2601c0c846668, type: 3}
+  - Name: Knight Drone
+    Description: Leverage agile frameworks to provide a robust synopsis for high
+      level overviews. Iterative approaches to corporate strategy foster collaborative
+      thinking to further the overall value proposition.
+    CharClass: Knight
+    Texture: {fileID: 2800000, guid: 289c9057ac414344fbe3a434957239b3, type: 3}
+  - Name: Knight Medieval
+    Description: Leverage agile frameworks to provide a robust synopsis for high
+      level overviews. Iterative approaches to corporate strategy foster collaborative
+      thinking to further the overall value proposition.
+    CharClass: Knight
+    Texture: {fileID: 2800000, guid: 5a3684c456962ae4c885e2dcd7debe75, type: 3}
+  - Name: Tech 1
+    Description: Leverage agile frameworks to provide a robust synopsis for high
+      level overviews. Iterative approaches to corporate strategy foster collaborative
+      thinking to further the overall value proposition.
+    CharClass: Tech
+    Texture: {fileID: 2800000, guid: e202061709359a543aac2a38526ec811, type: 3}
+  - Name: Tech 2
+    Description: Leverage agile frameworks to provide a robust synopsis for high
+      level overviews. Iterative approaches to corporate strategy foster collaborative
+      thinking to further the overall value proposition.
+    CharClass: Tech
+    Texture: {fileID: 2800000, guid: 78fb4c540553dd0438573ffe62b0e41a, type: 3}
+  enabled: 1

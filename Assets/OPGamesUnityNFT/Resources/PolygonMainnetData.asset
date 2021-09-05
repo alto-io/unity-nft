@@ -16,11 +16,6 @@ MonoBehaviour:
   Network: mainnet
   ExplorerAPIKey: 1U9SBUW1QVDCGUPTMIRGJH9BNV55GR81HB
   Explorer721EventsCall: https://api.polygonscan.com/api?module=account&action=tokennfttx&address={0}&startblock=0&endblock=999999999&sort=asc&apikey={1}
-  Enabled: 1
-  NFTList:
-  - Name: Kernel Gratitude
-    Contract: 0x1C39d4c8AD7Ce5206355D43e343F5136bA5cA50F
-    Type: 0
-    Enabled: 1
+  Enabled: 0
   BlacklistContracts:
   - 0x330b06c695cfbb51d0cf9d5ed3deba2bd7efffb4

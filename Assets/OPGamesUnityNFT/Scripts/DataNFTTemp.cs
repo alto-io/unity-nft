@@ -4,30 +4,33 @@ using System.Collections.Generic;
 namespace OPGames.NFT
 {
 
-[CreateAssetMenu(fileName = "DataNFTSprites", menuName = "UnityNFT/DataNFTSprites", order = 1)]
-public class DataNFTSprites : ScriptableObject
+[CreateAssetMenu(fileName = "DataNFTTemp", menuName = "UnityNFT/DataNFTTemp", order = 1)]
+public class DataNFTTemp : ScriptableObject
 {
 	[System.Serializable]
 	public class Info
 	{
 		public string Name;
+		public string Description;
+		public string CharClass;
 		public Texture2D Texture;
 	}
 
-	static private DataNFTSprites instance;
-	static public DataNFTSprites Instance
+	static private DataNFTTemp instance;
+	static public DataNFTTemp Instance
 	{
 		get 
 		{
 			if (instance == null)
 			{
-				instance = Resources.Load<DataNFTSprites>("DataNFTSprites");
+				instance = Resources.Load<DataNFTTemp>("DataNFTTemp");
 			}
 			return instance;
 		}
 	}
 
 	public Info[] InfoList;
+	public bool enabled = true;
 
 	public Info GetRandom()
 	{

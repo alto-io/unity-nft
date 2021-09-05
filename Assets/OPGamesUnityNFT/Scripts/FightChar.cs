@@ -72,7 +72,7 @@ public class FightChar : MonoBehaviour
 
 	public void SetRandomTempNFT()
 	{
-		var data = DataNFTSprites.Instance;
+		var data = DataNFTTemp.Instance;
 		if (data == null)
 			return;
 
@@ -80,6 +80,7 @@ public class FightChar : MonoBehaviour
 		if (info == null)
 			return;
 
+		SetClass(info.CharClass);
 		SetName(info.Name, className);
 		SetNFTTexture(info.Texture);
 	}
@@ -94,6 +95,7 @@ public class FightChar : MonoBehaviour
 		if (nft == null)
 			return;
 
+		SetClass(nft.CharClass);
 		charName = nft.Name;
 		textName.text = string.Format("{0}\n({1})", charName, className);
 
@@ -126,8 +128,47 @@ public class FightChar : MonoBehaviour
 	private void Start()
 	{
 		var data = DataClasses.Instance;
-		DataClasses.Info classInfo = data.GetRandom();
-		
+		SetClassRandom();
+
+		if (spriteAndUIAnimator != null)
+		{
+			spriteAndUIAnimator.Play(0, -1, Random.Range(0.0f, 1.0f));
+		}
+		ResetCooldown();
+		SetName(charName, className);
+	}
+
+	private void SetClassRandom()
+	{
+		var dataClass = DataClasses.Instance;
+		if (dataClass == null)
+			return;
+
+		SetClassStats(dataClass.GetRandom());
+	}
+
+	private void SetClass(string className)
+	{
+		if (string.IsNullOrEmpty(className))
+			return;
+
+		var dataClass = DataClasses.Instance;
+		if (dataClass == null)
+			return;
+
+		var classInfo = dataClass.GetByName(className);
+		SetClassStats(classInfo);
+	}
+
+	private void SetClassStats(DataClasses.Info classInfo)
+	{
+		var data = DataClasses.Instance;
+		if (data == null)
+			return;
+
+		if (classInfo == null)
+			return;
+
 		className     = classInfo.Name;
 		hp            = classInfo.HP * data.HPMult;
 		attackRange   = classInfo.AttackRange;
@@ -141,14 +182,8 @@ public class FightChar : MonoBehaviour
 		critMaxChance = data.CritMaxChance;
 		critMult      = data.CritMult;
 
-		if (spriteAndUIAnimator != null)
-		{
-			spriteAndUIAnimator.Play(0, -1, Random.Range(0.0f, 1.0f));
-		}
-		hpCurr = hp;
-		cooldown = (statMax - attackSpeed) + 1;
-		ResetCooldown();
-		SetName(charName, className);
+		hpCurr        = hp;
+		cooldown      = (statMax - attackSpeed) + 1;
 	}
 
 	private void ResetCooldown()
@@ -254,7 +289,7 @@ public class FightChar : MonoBehaviour
 
 		transform.LookAt(target.transform.position);
 
-		var forwardTween = transform.DOPath(waypoints, 0.2f, PathType.CatmullRom).SetEase(Ease.InBack);
+		var forwardTween = transform.DOPath(waypoints, forwardDuration, PathType.CatmullRom).SetEase(Ease.InBack);
 		yield return forwardTween.WaitForCompletion();
 
 		var targetHit = StartCoroutine(target.AnimHit(evt.damage, evt.isCrit));

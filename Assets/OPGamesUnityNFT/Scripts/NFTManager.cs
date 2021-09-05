@@ -129,6 +129,8 @@ public class NFTManager : MonoBehaviour
 				}
 			}
 		}
+		
+		LoadTempNFT1();
 
 		if (OnNFTListComplete != null)
 			OnNFTListComplete(loadedNFTs);
@@ -136,6 +138,7 @@ public class NFTManager : MonoBehaviour
 		IsNFTListComplete = true;
 
 		LoadURIData();
+		LoadTempNFT2();
     }
 
 	// Query the blockchain explorer for 721 events
@@ -253,6 +256,56 @@ public class NFTManager : MonoBehaviour
 			if (loader != null)
 			{
 				StartCoroutine(loader.LoadNFTData(n, (nOut) => { if (OnNFTItemLoaded != null) OnNFTItemLoaded(nOut); }));
+			}
+		}
+	}
+
+	private void LoadTempNFT1()
+	{
+		DataNFTTemp nft = DataNFTTemp.Instance;
+		if (nft == null)
+			return;
+
+		if (nft.enabled == false)
+			return;
+
+		int len = nft.InfoList.Length;
+		for (int i=0; i<len; i++)
+		{
+			var n = nft.InfoList[i];
+
+			NFTItemData item = new NFTItemData();
+			item.Chain = "localhost";
+			item.TokenId = i.ToString();
+			item.URI = "temp";
+			item.Contract = "0x0000";
+			item.Name = n.Name;
+			item.Description = n.Description;
+			item.Texture = n.Texture;
+			item.CharClass = n.CharClass;
+
+			loadedNFTs.Add(item);
+		}
+	}
+
+	private void LoadTempNFT2()
+	{
+		DataNFTTemp nft = DataNFTTemp.Instance;
+		if (nft == null)
+			return;
+
+		if (nft.enabled == false)
+			return;
+
+		int len = nft.InfoList.Length;
+		for (int i=0; i<len; i++)
+		{
+			var tokenId = i.ToString();
+			var n = loadedNFTs.Find((n) => (n.Chain == "localhost" && n.TokenId == tokenId));
+
+			if (n != null && OnNFTItemLoaded != null)
+			{
+				OnNFTItemLoaded(n);
 			}
 		}
 	}

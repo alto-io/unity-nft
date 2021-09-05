@@ -34,6 +34,7 @@ public class FightManager : MonoBehaviour
 
 	private IEnumerator Start()
 	{
+		// Set teams
 		foreach (var f in fighters)
 		{
 			if (f.Team == true) teamA.Add(f);
@@ -44,7 +45,7 @@ public class FightManager : MonoBehaviour
 
 		yield return null;
 
-		// set nft
+		// set nft and targets
 		for (int i=0; i<teamA.Count; i++)
 		{
 			var f = teamA[i];
@@ -65,6 +66,7 @@ public class FightManager : MonoBehaviour
 		yield return null;
 		yield return null;
 
+		// Run the battle simulaton
 		bool teamAAlive = true;
 		bool teamBAlive = true;
 
@@ -79,6 +81,7 @@ public class FightManager : MonoBehaviour
 			teamBAlive = IsTeamAlive(teamB);
 		}
 		
+		// Reset everything
 		foreach (var f in fighters)
 		{
 			f.Reset();
