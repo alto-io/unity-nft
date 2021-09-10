@@ -272,22 +272,13 @@ public class FightChar : MonoBehaviour
 
 		if (isMelee)
 		{
-			float travelMagnitude = dir.magnitude - 1.0f;
+			float travelMagnitude = dir.magnitude - 0.25f;
 			endPos = startPos + (dir.normalized * travelMagnitude);
 			forwardDuration = TIME * 0.4f;
 		}
 		else
 		{
 			endPos = startPos + (dir.normalized * 0.2f);
-			var info = DataVFX.Instance.GetByName("VFXFireball");
-			if (info != null && info.Prefab != null)
-			{
-				GameObject clone = Instantiate(info.Prefab);
-				clone.transform.position = endPos;
-				clone.transform.DOMove(target.transform.position, TIME * 0.2f)
-					.SetDelay(TIME * forwardDuration)
-					.OnComplete(()=> Destroy(clone));
-			}
 		}
 
 		Vector3[] waypoints = new Vector3[]
@@ -298,6 +289,20 @@ public class FightChar : MonoBehaviour
 
 		var forwardTween = transform.DOPath(waypoints, forwardDuration, PathType.CatmullRom).SetEase(Ease.InBack);
 		yield return forwardTween.WaitForCompletion();
+
+		if (isMelee == false)
+		{
+			var info = DataVFX.Instance.GetByName("VFXFireball");
+			if (info != null && info.Prefab != null)
+			{
+				GameObject clone = Instantiate(info.Prefab);
+				clone.transform.position = endPos;
+				var projectile = clone.transform.DOMove(target.transform.position, TIME * 0.2f)
+					.OnComplete(()=> Destroy(clone));
+
+				yield return projectile.WaitForCompletion();
+			}
+		}
 
 		var targetHit = StartCoroutine(target.AnimHit(evt.damage, evt.isCrit));
 
