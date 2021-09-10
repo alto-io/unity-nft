@@ -52,25 +52,20 @@ public class DamageText : MonoBehaviour
 
 		float multCrit = isCrit ? 2.0f : 1.0f;
 		seqScale = DOTween.Sequence();
-		seqScale.Append(text.transform.DOScale(1.2f * multCrit, 0.2f));
-		if (isCrit) 
-			seqScale.AppendInterval(0.2f);
+		seqScale.Append(text.transform.DOScale(1.0f * multCrit, 0.2f));
+		if (isCrit) seqScale.AppendInterval(0.2f);
 		seqScale.Append(text.transform.DOScale(0.5f * multCrit, 0.5f));
 
 		seqMove = DOTween.Sequence();
 		seqMove.AppendInterval(0.2f);
-		if (isCrit) 
-			seqMove.AppendInterval(0.2f);
-		seqMove.Append(text.transform.DOLocalMoveY(150.0f, 0.5f));
+		if (isCrit) seqMove.AppendInterval(0.2f);
+		seqMove.Append(text.transform.DOLocalMoveY(30.0f, 0.5f));
 
 		seqAlpha = DOTween.Sequence();
-		seqAlpha.Append(
-			DOTween.To(() => text.alpha, (x) => text.alpha = x, 1.0f, 0.2f));
+		seqAlpha.Append(DOTween.To(() => text.alpha, (x) => text.alpha = x, 1.0f, 0.2f));
 		seqAlpha.AppendInterval(0.3f);
-		if (isCrit) 
-			seqAlpha.AppendInterval(0.2f);
-		seqAlpha.Append(
-			DOTween.To(() => text.alpha, (x) => text.alpha = x, 0.0f, 0.2f));
+		if (isCrit) seqAlpha.AppendInterval(0.2f);
+		seqAlpha.Append( DOTween.To(() => text.alpha, (x) => text.alpha = x, 0.0f, 0.2f));
 
 		yield return seqScale.WaitForCompletion();
 

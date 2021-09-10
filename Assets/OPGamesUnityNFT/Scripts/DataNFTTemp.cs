@@ -14,6 +14,7 @@ public class DataNFTTemp : ScriptableObject
 		public string Description;
 		public string CharClass;
 		public Texture2D Texture;
+		public Sprite Spr;
 	}
 
 	static private DataNFTTemp instance;

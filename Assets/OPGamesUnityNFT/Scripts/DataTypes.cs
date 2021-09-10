@@ -71,6 +71,7 @@ public class NFTItemData
 	public string CharClass;
 
 	public Texture2D Texture;
+	public Sprite Spr;
 
 	public string UniqueId
 	{

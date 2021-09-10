@@ -82,7 +82,9 @@ public class FightChar : MonoBehaviour
 
 		SetClass(info.CharClass);
 		SetName(info.Name, className);
-		SetNFTTexture(info.Texture);
+
+		if (info.Spr != null) SetNFTSprite(info.Spr);
+		else                  SetNFTTexture(info.Texture);
 	}
 
 	public void SetNFT(string key)
@@ -99,7 +101,8 @@ public class FightChar : MonoBehaviour
 		charName = nft.Name;
 		textName.text = string.Format("{0}\n({1})", charName, className);
 
-		SetNFTTexture(nft.Texture);
+		if (nft.Spr != null) SetNFTSprite(nft.Spr);
+		else                 SetNFTTexture(nft.Texture);
 	}
 
 	private void SetName(string _charName, string _className)
@@ -109,20 +112,25 @@ public class FightChar : MonoBehaviour
 		textName.text = string.Format("{0}\n({1})", charName, className);
 	}
 
+	private void SetNFTSprite(Sprite spr)
+	{
+		sprite.sprite = spr;
+	}
+
 	private void SetNFTTexture(Texture2D tex)
 	{
-		if (tex == null)
-			return;
+		if (tex != null)
+		{
+			int max = Mathf.Max(tex.width, tex.height);
+			float scale = (float)max / 256.0f;
 
-		int max = Mathf.Max(tex.width, tex.height);
-		float scale = (float)max / 256.0f;
+			Sprite spr = Sprite.Create(tex, 
+					new Rect(0.0f, 0.0f, tex.width, tex.height), 
+					new UnityEngine.Vector2(0.5f, 0.5f),
+					100 * scale);
 
-		Sprite spr = Sprite.Create(tex, 
-				new Rect(0.0f, 0.0f, tex.width, tex.height), 
-				new UnityEngine.Vector2(0.5f, 0.5f),
-				100 * scale);
-
-		sprite.sprite = spr;
+			sprite.sprite = spr;
+		}
 	}
 
 	private void Start()
@@ -252,30 +260,32 @@ public class FightChar : MonoBehaviour
 
 	public IEnumerator AnimAttack(FightEvent evt)
 	{
+		const float TIME = 1.5f;
+
 		FightChar target = evt.target;
 
-		Vector3 forward  = transform.forward;
 		Vector3 startPos = transform.position;
 		Vector3 endPos   = startPos;
 		Vector3 dir      = target.transform.position - startPos;
 
-		float forwardDuration = 0.2f;
+		float forwardDuration = TIME * 0.2f;
 
 		if (isMelee)
 		{
 			float travelMagnitude = dir.magnitude - 1.0f;
 			endPos = startPos + (dir.normalized * travelMagnitude);
-			forwardDuration = 0.4f;
+			forwardDuration = TIME * 0.4f;
 		}
 		else
 		{
-			endPos = startPos + (dir.normalized * 1.0f);
+			endPos = startPos + (dir.normalized * 0.2f);
 			var info = DataVFX.Instance.GetByName("VFXFireball");
 			if (info != null && info.Prefab != null)
 			{
 				GameObject clone = Instantiate(info.Prefab);
-				clone.transform.position = startPos;
-				clone.transform.DOMove(target.transform.position, 0.5f)
+				clone.transform.position = endPos;
+				clone.transform.DOMove(target.transform.position, TIME * 0.2f)
+					.SetDelay(TIME * forwardDuration)
 					.OnComplete(()=> Destroy(clone));
 			}
 		}
@@ -283,11 +293,8 @@ public class FightChar : MonoBehaviour
 		Vector3[] waypoints = new Vector3[]
 		{
 			startPos,
-			startPos + (transform.up * 1.0f),
 			endPos
 		};
-
-		transform.LookAt(target.transform.position);
 
 		var forwardTween = transform.DOPath(waypoints, forwardDuration, PathType.CatmullRom).SetEase(Ease.InBack);
 		yield return forwardTween.WaitForCompletion();
@@ -295,14 +302,15 @@ public class FightChar : MonoBehaviour
 		var targetHit = StartCoroutine(target.AnimHit(evt.damage, evt.isCrit));
 
 		// this object go back to position
-		transform.forward = forward;
-		var back = transform.DOMove(startPos, 0.1f);
+		var back = transform.DOMove(startPos, TIME * 0.1f);
 		yield return back.WaitForCompletion();
 		yield return targetHit;
 	}
 
 	private IEnumerator AnimHit(int damage, bool isCrit)
 	{
+		const float TIME = 0.5f;
+
 		hpCurr -= damage;
 		RefreshHPBar();
 
@@ -314,18 +322,22 @@ public class FightChar : MonoBehaviour
 
 		// target flashes red
 		var seqColor = DOTween.Sequence();
-		seqColor.Append(sprite.DOColor(Color.red, 0.1f));
-		seqColor.Append(sprite.DOColor(Color.white, 0.1f));
+		seqColor.Append(sprite.DOColor(Color.red, TIME * 0.3f));
+		seqColor.Append(sprite.DOColor(Color.white, TIME * 0.1f));
 
 		if (hpCurr <= 0)
-			seqColor.Append(sprite.DOColor(Color.gray, 0.1f));
+			seqColor.Append(sprite.DOColor(Color.gray, TIME * 0.1f));
 
 		var seqBack = DOTween.Sequence();
 
 		Vector3 pos = transform.position;
 		Vector3 forward = transform.forward;
-		seqBack.Append(transform.DOMove(pos - forward, 0.1f));
-		seqBack.Append(transform.DOMove(pos, 0.1f));
+		seqBack.Append(transform.DOMove(pos - (forward * 0.5f), TIME * 0.3f).SetEase(Ease.OutBounce));
+		seqBack.Append(transform.DOMove(pos, TIME * 0.1f));
+
+		var seqScale = DOTween.Sequence();
+		seqScale.Append(transform.DOScale(0.8f, TIME * 0.3f));
+		seqScale.Append(transform.DOScale(1.0f, TIME * 0.1f));
 
 		yield return seqBack.WaitForCompletion();
 	}
