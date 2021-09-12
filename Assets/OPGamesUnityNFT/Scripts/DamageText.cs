@@ -31,6 +31,8 @@ public class DamageText : MonoBehaviour
 		if (text == null)
 			return;
 
+		StopCoroutine("DamageCR");
+
 		if (seqScale != null) seqScale.Complete();
 		if (seqMove != null) seqMove.Complete();
 		if (seqAlpha != null) seqAlpha.Complete();

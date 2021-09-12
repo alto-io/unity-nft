@@ -12,6 +12,6 @@ EditorBuildSettings:
     path: Assets/OPGamesUnityNFT/Scenes/OPGamesNFT.unity
     guid: 2cda990e2423bbf4892e6590ba056729
   - enabled: 1
-    path: Assets/OPGamesUnityNFT/Scenes/OPGamesFight.unity
-    guid: 656d285fc6133384db9550d35f98ee13
+    path: Assets/OPGamesUnityNFT/Scenes/OPGamesFightPixel.unity
+    guid: c5997b11902d96443be7aebce92fa38e
   m_configObjects: {}

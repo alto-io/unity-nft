@@ -131,9 +131,9 @@ public class FightManager : MonoBehaviour
 		yield return new WaitForSeconds(1.0f);
 
 		var seq = DOTween.Sequence();
-		seq.Append(textFight.transform.DOScale(Vector3.one * 1.2f, 0.5f));
+		seq.Append(textFight.transform.DOScale(Vector3.one * 1.2f, 0.1f));
 		seq.AppendInterval(0.25f);
-		seq.Append(textFight.transform.DOScale(Vector3.zero, 0.5f));
+		seq.Append(textFight.transform.DOScale(Vector3.zero, 0.2f));
 
 		textFight.gameObject.SetActive(true);
 		yield return seq.WaitForCompletion();
@@ -145,9 +145,9 @@ public class FightManager : MonoBehaviour
 		textFight.text = team == true ? "You Win!" : "You Lose!";
 
 		var seq = DOTween.Sequence();
-		seq.Append(textFight.transform.DOScale(Vector3.one * 1.2f, 0.5f));
+		seq.Append(textFight.transform.DOScale(Vector3.one * 1.2f, 0.1f));
 		seq.AppendInterval(0.25f);
-		seq.Append(textFight.transform.DOScale(Vector3.zero, 0.5f));
+		seq.Append(textFight.transform.DOScale(Vector3.zero, 0.2f));
 
 		textFight.gameObject.SetActive(true);
 		yield return seq.WaitForCompletion();

@@ -282,6 +282,7 @@ public class NFTManager : MonoBehaviour
 			item.Name = n.Name;
 			item.Description = n.Description;
 			item.Texture = n.Texture;
+			item.Spr = n.Spr;
 			item.CharClass = n.CharClass;
 
 			loadedNFTs.Add(item);

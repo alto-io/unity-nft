@@ -260,7 +260,7 @@ public class FightChar : MonoBehaviour
 
 	public IEnumerator AnimAttack(FightEvent evt)
 	{
-		const float TIME = 1.5f;
+		const float TIME = 1.0f;
 
 		FightChar target = evt.target;
 
@@ -284,6 +284,7 @@ public class FightChar : MonoBehaviour
 		Vector3[] waypoints = new Vector3[]
 		{
 			startPos,
+			startPos - (dir.normalized * 0.15f),
 			endPos
 		};
 
@@ -297,14 +298,14 @@ public class FightChar : MonoBehaviour
 			{
 				GameObject clone = Instantiate(info.Prefab);
 				clone.transform.position = endPos;
-				var projectile = clone.transform.DOMove(target.transform.position, TIME * 0.2f)
+				var projectile = clone.transform.DOMove(target.transform.position, TIME * 0.1f)
 					.OnComplete(()=> Destroy(clone));
 
-				yield return projectile.WaitForCompletion();
+				yield return new WaitForSeconds((TIME * 0.1f) - 0.05f);
 			}
 		}
 
-		var targetHit = StartCoroutine(target.AnimHit(evt.damage, evt.isCrit));
+		var targetHit = StartCoroutine(target.AnimHit(evt.damage, evt.isCrit, this));
 
 		// this object go back to position
 		var back = transform.DOMove(startPos, TIME * 0.1f);
@@ -312,7 +313,7 @@ public class FightChar : MonoBehaviour
 		yield return targetHit;
 	}
 
-	private IEnumerator AnimHit(int damage, bool isCrit)
+	private IEnumerator AnimHit(int damage, bool isCrit, FightChar attacker)
 	{
 		const float TIME = 0.5f;
 
@@ -336,13 +337,22 @@ public class FightChar : MonoBehaviour
 		var seqBack = DOTween.Sequence();
 
 		Vector3 pos = transform.position;
-		Vector3 forward = transform.forward;
-		seqBack.Append(transform.DOMove(pos - (forward * 0.5f), TIME * 0.3f).SetEase(Ease.OutBounce));
+		Vector3 back = pos;
+
+		if (attacker.transform.position.y < pos.y)
+		{
+			back.y += 0.1f;
+		}
+		else
+		{
+			back.y -= 0.1f;
+		}
+		seqBack.Append(transform.DOMove(back, TIME * 0.3f).SetEase(Ease.OutBounce));
 		seqBack.Append(transform.DOMove(pos, TIME * 0.1f));
 
-		var seqScale = DOTween.Sequence();
-		seqScale.Append(transform.DOScale(0.8f, TIME * 0.3f));
-		seqScale.Append(transform.DOScale(1.0f, TIME * 0.1f));
+//		var seqScale = DOTween.Sequence();
+//		seqScale.Append(transform.DOScale(0.8f, TIME * 0.3f));
+//		seqScale.Append(transform.DOScale(1.0f, TIME * 0.1f));
 
 		yield return seqBack.WaitForCompletion();
 	}
