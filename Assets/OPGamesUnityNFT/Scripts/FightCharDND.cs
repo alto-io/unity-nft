@@ -8,7 +8,7 @@ using TMPro;
 namespace OPGames.NFT
 {
 
-public class FightChar : MonoBehaviour
+public class FightCharDND : MonoBehaviour
 {
 	[SerializeField] private DamageText damageText;
 	[SerializeField] private Animator spriteAndUIAnimator;
@@ -43,16 +43,14 @@ public class FightChar : MonoBehaviour
 
 	public bool Team { get { return team; } }
 	public bool IsAlive { get { return hpCurr > 0; } }
-	public bool IsReady { get { return cooldownCurr <= 0; } }
 	public int HP { get { return hp; } }
 
 	public int Initiative;
 
-	public System.Action<FightEvent> OnEventTriggered;
+	private List<FightCharDND> targets;
+	public System.Action<FightEventDND> OnEventTriggered;
 
-	private List<FightChar> targets;
-
-	public void SetTargets(List<FightChar> t)
+	public void SetTargets(List<FightCharDND> t)
 	{
 		targets = t;
 	}
@@ -61,15 +59,6 @@ public class FightChar : MonoBehaviour
 	{
 		hpCurr = hp;
 		cooldownCurr = cooldown;
-	}
-
-	public void Tick()
-	{
-		if (IsAlive == false)
-			return;
-
-		cooldownCurr--;
-		TickAttack();
 	}
 
 	public void SetRandomTempNFT()
@@ -178,11 +167,11 @@ public class FightChar : MonoBehaviour
 			return;
 
 		className     = classInfo.Name;
-		hp            = classInfo.HP * data.HPMult;
+		hp            = 20;
 		attackRange   = classInfo.AttackRange;
 		attackSpeed   = classInfo.AttackSpeed;
 		moveSpeed     = classInfo.MoveSpeed;
-		damage        = classInfo.Damage;
+		damage        = 1;
 		defense       = classInfo.Defense;
 		agility       = classInfo.Agility;
 		isMelee       = classInfo.IsMelee;
@@ -199,12 +188,11 @@ public class FightChar : MonoBehaviour
 		cooldownCurr += cooldown;
 	}
 
-	private void TickAttack()
+	public void TickAttack()
 	{
-		if (IsReady == false) return;
+		FightCharDND target = null;
 
-		FightChar target = null;
-
+		// Pick a target
 		int r = Random.Range(0, targets.Count);
 		for (int i=0; i<targets.Count; i++)
 		{
@@ -218,19 +206,23 @@ public class FightChar : MonoBehaviour
 
 		if (target == null) return;
 
-		ResetCooldown();
+		int rollAttack = Random.Range(1,21);
+		int rollDefend = Random.Range(1,21);
 
-		FightEvent e = new FightEvent();
+		FightEventDND e = new FightEventDND();
 		e.source = this;
 		e.target = target;
-		e.isCrit = CalcIfCrit();
+		e.damage = damage;
 
-		int damageFinal = damage;
-
-		if (e.isCrit)
-			damageFinal = (int)Mathf.Floor((float)damage * critMult);
-
-		e.damage = damageFinal;
+		if (rollAttack == 20)
+		{
+			e.isCrit = true;
+			e.damage = damage * 2;
+		}
+		else if (rollAttack+damage < rollDefend+target.defense)
+		{
+			e.damage = 0;
+		}
 
 		target.hpCurr -= e.damage;
 
@@ -238,12 +230,6 @@ public class FightChar : MonoBehaviour
 		{
 			OnEventTriggered(e);
 		}
-	}
-
-	private bool CalcIfCrit()
-	{
-		float critChance = ((float)agility / (float)statMax) * critMaxChance;
-		return Random.Range(0.0f, 1.0f) <= critChance;
 	}
 
 	private void RefreshHPBar()
@@ -258,11 +244,11 @@ public class FightChar : MonoBehaviour
 		cooldownBar.SetValue(1.0f - v);
 	}
 
-	public IEnumerator AnimAttack(FightEvent evt)
+	public IEnumerator AnimAttack(FightEventDND evt)
 	{
 		const float TIME = 1.0f;
 
-		FightChar target = evt.target;
+		FightCharDND target = evt.target;
 
 		Vector3 startPos = transform.position;
 		Vector3 endPos   = startPos;
@@ -313,7 +299,7 @@ public class FightChar : MonoBehaviour
 		yield return targetHit;
 	}
 
-	private IEnumerator AnimHit(int damage, bool isCrit, FightChar attacker)
+	private IEnumerator AnimHit(int damage, bool isCrit, FightCharDND attacker)
 	{
 		const float TIME = 0.5f;
 

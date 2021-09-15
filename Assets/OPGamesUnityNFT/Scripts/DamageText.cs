@@ -37,7 +37,7 @@ public class DamageText : MonoBehaviour
 		if (seqMove != null) seqMove.Complete();
 		if (seqAlpha != null) seqAlpha.Complete();
 
-		text.text = damage.ToString();
+		text.text = damage == 0 ? "MISS" : damage.ToString();
 		text.transform.localScale = Vector3.one;
 		text.alpha = 0.0f;
 		text.color = isCrit ? Color.red : Color.yellow;
