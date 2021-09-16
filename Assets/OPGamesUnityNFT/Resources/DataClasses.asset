@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Classes:
   - Name: Knight
-    HP: 20
+    HP: 10
     AttackRange: 3
     AttackSpeed: 3
     MoveSpeed: 3
@@ -23,7 +23,7 @@ MonoBehaviour:
     Agility: 3
     IsMelee: 1
   - Name: Wizard
-    HP: 20
+    HP: 10
     AttackRange: 9
     AttackSpeed: 3
     MoveSpeed: 3
@@ -32,7 +32,7 @@ MonoBehaviour:
     Agility: 6
     IsMelee: 0
   - Name: Assassin
-    HP: 20
+    HP: 10
     AttackRange: 3
     AttackSpeed: 3
     MoveSpeed: 9
@@ -41,7 +41,7 @@ MonoBehaviour:
     Agility: 9
     IsMelee: 1
   - Name: Tech
-    HP: 20
+    HP: 10
     AttackRange: 6
     AttackSpeed: 3
     MoveSpeed: 6
@@ -50,7 +50,7 @@ MonoBehaviour:
     Agility: 6
     IsMelee: 0
   - Name: Gunner
-    HP: 20
+    HP: 10
     AttackRange: 6
     AttackSpeed: 9
     MoveSpeed: 6

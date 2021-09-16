@@ -167,7 +167,7 @@ public class FightCharDND : MonoBehaviour
 			return;
 
 		className     = classInfo.Name;
-		hp            = 20;
+		hp            = classInfo.HP;
 		attackRange   = classInfo.AttackRange;
 		attackSpeed   = classInfo.AttackSpeed;
 		moveSpeed     = classInfo.MoveSpeed;
@@ -219,10 +219,10 @@ public class FightCharDND : MonoBehaviour
 			e.isCrit = true;
 			e.damage = damage * 2;
 		}
-		else if (rollAttack+damage < rollDefend+target.defense)
-		{
-			e.damage = 0;
-		}
+		//else if (rollAttack+damage < rollDefend+target.defense)
+		//{
+		//	e.damage = 0;
+		//}
 
 		target.hpCurr -= e.damage;
 
