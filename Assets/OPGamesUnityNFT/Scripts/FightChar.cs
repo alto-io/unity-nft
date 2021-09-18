@@ -37,8 +37,8 @@ public class FightChar : MonoBehaviour
 	private string className = "";
 	private string charName = "";
 
-	private int cooldownCurr = 0;
-	private int cooldown = 0;
+	private float cooldownCurr = 0;
+	private float cooldown = 0;
 	private int hpCurr = 0;
 
 	public bool Team { get { return team; } }
@@ -61,15 +61,6 @@ public class FightChar : MonoBehaviour
 	{
 		hpCurr = hp;
 		cooldownCurr = cooldown;
-	}
-
-	public void Tick()
-	{
-		if (IsAlive == false)
-			return;
-
-		cooldownCurr--;
-		TickAttack();
 	}
 
 	public void SetRandomTempNFT()
@@ -191,53 +182,17 @@ public class FightChar : MonoBehaviour
 		critMult      = data.CritMult;
 
 		hpCurr        = hp;
-		cooldown      = (statMax - attackSpeed) + 1;
+
+		float ratio = (float)(attackSpeed-1)/(float)(statMax-1);
+		cooldown = Mathf.Lerp(1.0f, 0.1f, ratio);
+
+		Debug.LogFormat("Class {0}; Speed {1}; ratio {2}; cooldown {3}",
+				className, attackSpeed, ratio, cooldown);
 	}
 
 	private void ResetCooldown()
 	{
 		cooldownCurr += cooldown;
-	}
-
-	private void TickAttack()
-	{
-		if (IsReady == false) return;
-
-		FightChar target = null;
-
-		int r = Random.Range(0, targets.Count);
-		for (int i=0; i<targets.Count; i++)
-		{
-			int index = (r+i) % targets.Count;
-			if (targets[index].IsAlive)
-			{
-				target = targets[index];
-				break;
-			}
-		}
-
-		if (target == null) return;
-
-		ResetCooldown();
-
-		FightEvent e = new FightEvent();
-		e.source = this;
-		e.target = target;
-		e.isCrit = CalcIfCrit();
-
-		int damageFinal = damage;
-
-		if (e.isCrit)
-			damageFinal = (int)Mathf.Floor((float)damage * critMult);
-
-		e.damage = damageFinal;
-
-		target.hpCurr -= e.damage;
-
-		if (OnEventTriggered != null)
-		{
-			OnEventTriggered(e);
-		}
 	}
 
 	private bool CalcIfCrit()
@@ -258,104 +213,6 @@ public class FightChar : MonoBehaviour
 		cooldownBar.SetValue(1.0f - v);
 	}
 
-	public IEnumerator AnimAttack(FightEvent evt)
-	{
-		const float TIME = 1.0f;
-
-		FightChar target = evt.target;
-
-		Vector3 startPos = transform.position;
-		Vector3 endPos   = startPos;
-		Vector3 dir      = target.transform.position - startPos;
-
-		float forwardDuration = TIME * 0.2f;
-
-		if (isMelee)
-		{
-			float travelMagnitude = dir.magnitude - 0.25f;
-			endPos = startPos + (dir.normalized * travelMagnitude);
-			forwardDuration = TIME * 0.4f;
-		}
-		else
-		{
-			endPos = startPos + (dir.normalized * 0.2f);
-		}
-
-		Vector3[] waypoints = new Vector3[]
-		{
-			startPos,
-			startPos - (dir.normalized * 0.15f),
-			endPos
-		};
-
-		var forwardTween = transform.DOPath(waypoints, forwardDuration, PathType.CatmullRom).SetEase(Ease.InBack);
-		yield return forwardTween.WaitForCompletion();
-
-		if (isMelee == false)
-		{
-			var info = DataVFX.Instance.GetByName("VFXFireball");
-			if (info != null && info.Prefab != null)
-			{
-				GameObject clone = Instantiate(info.Prefab);
-				clone.transform.position = endPos;
-				var projectile = clone.transform.DOMove(target.transform.position, TIME * 0.1f)
-					.OnComplete(()=> Destroy(clone));
-
-				yield return new WaitForSeconds((TIME * 0.1f) - 0.05f);
-			}
-		}
-
-		var targetHit = StartCoroutine(target.AnimHit(evt.damage, evt.isCrit, this));
-
-		// this object go back to position
-		var back = transform.DOMove(startPos, TIME * 0.1f);
-		yield return back.WaitForCompletion();
-		yield return targetHit;
-	}
-
-	private IEnumerator AnimHit(int damage, bool isCrit, FightChar attacker)
-	{
-		const float TIME = 0.5f;
-
-		hpCurr -= damage;
-		RefreshHPBar();
-
-		if (damageText != null)
-			damageText.ShowDamage(damage, isCrit);
-	
-		if (isCrit)
-			Camera.main.DOShakePosition(0.5f, 0.2f, 30, 45, true);
-
-		// target flashes red
-		var seqColor = DOTween.Sequence();
-		seqColor.Append(sprite.DOColor(Color.red, TIME * 0.3f));
-		seqColor.Append(sprite.DOColor(Color.white, TIME * 0.1f));
-
-		if (hpCurr <= 0)
-			seqColor.Append(sprite.DOColor(Color.gray, TIME * 0.1f));
-
-		var seqBack = DOTween.Sequence();
-
-		Vector3 pos = transform.position;
-		Vector3 back = pos;
-
-		if (attacker.transform.position.y < pos.y)
-		{
-			back.y += 0.1f;
-		}
-		else
-		{
-			back.y -= 0.1f;
-		}
-		seqBack.Append(transform.DOMove(back, TIME * 0.3f).SetEase(Ease.OutBounce));
-		seqBack.Append(transform.DOMove(pos, TIME * 0.1f));
-
-//		var seqScale = DOTween.Sequence();
-//		seqScale.Append(transform.DOScale(0.8f, TIME * 0.3f));
-//		seqScale.Append(transform.DOScale(1.0f, TIME * 0.1f));
-
-		yield return seqBack.WaitForCompletion();
-	}
 }
 
 }

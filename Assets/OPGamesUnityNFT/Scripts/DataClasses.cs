@@ -24,21 +24,22 @@ public class DataClasses : ScriptableObject
 	public class Info
 	{
 		public string Name;
-		public int HP;
-		public int AttackRange;
-		public int AttackSpeed;
-		public int MoveSpeed;
-		public int Damage;
-		public int Defense;
-		public int Agility;
+		[Range(1,5)] public int HP;
+		[Range(1,3)] public int AttackRange;
+		[Range(1,5)] public int AttackSpeed;
+		[Range(1,5)] public int MoveSpeed;
+		[Range(1,5)] public int Damage;
+		[Range(1,5)] public int Defense;
+		[Range(1,5)] public int Agility;
 
 		public bool IsMelee;
 	}
 
 	public List<Info> Classes = new List<Info>();
 
+	public int HPMin = 100;
 	public int HPMult = 15;
-	public int StatMax = 9;
+	public int StatMax = 5;
 	public float CritMaxChance = 0.3f;
 	public float CritMult = 1.5f;
 

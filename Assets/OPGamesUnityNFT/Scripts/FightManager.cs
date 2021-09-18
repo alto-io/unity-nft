@@ -63,31 +63,30 @@ public class FightManager : MonoBehaviour
 			f.SetRandomTempNFT();
 		}
 
-		yield return null;
-		yield return null;
-
-		// Run the battle simulaton
-		bool teamAAlive = true;
-		bool teamBAlive = true;
-
-		while (teamAAlive && teamBAlive)
-		{
-			foreach (var f in fighters)
-			{
-				f.Tick();
-			}
-
-			teamAAlive = IsTeamAlive(teamA);
-			teamBAlive = IsTeamAlive(teamB);
-		}
-		
-		// Reset everything
-		foreach (var f in fighters)
-		{
-			f.Reset();
-		}
-
-		StartCoroutine(PlayFightCR());
+//		yield return null;
+//		yield return null;
+//
+//		// Run the battle simulaton
+//		bool teamAAlive = true;
+//		bool teamBAlive = true;
+//
+//		while (teamAAlive && teamBAlive)
+//		{
+//			foreach (var f in fighters)
+//			{
+//			}
+//
+//			teamAAlive = IsTeamAlive(teamA);
+//			teamBAlive = IsTeamAlive(teamB);
+//		}
+//		
+//		// Reset everything
+//		foreach (var f in fighters)
+//		{
+//			f.Reset();
+//		}
+//
+//		StartCoroutine(PlayFightCR());
 	}
 
 	private bool IsTeamAlive(List<FightChar> team)
@@ -102,13 +101,6 @@ public class FightManager : MonoBehaviour
 	private IEnumerator PlayFightCR()
 	{
 		yield return StartCoroutine(TextFightSequence());
-
-		int len = events.Count;
-		for (int i=0; i<len; i++)
-		{
-			FightEvent e = events[i];
-			yield return StartCoroutine(e.source.AnimAttack(e));
-		}
 
 		if (IsTeamAlive(teamA))
 		{

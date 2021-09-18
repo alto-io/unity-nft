@@ -14,51 +14,52 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Classes:
   - Name: Knight
-    HP: 10
-    AttackRange: 3
-    AttackSpeed: 3
-    MoveSpeed: 3
-    Damage: 1
-    Defense: 3
-    Agility: 3
+    HP: 5
+    AttackRange: 1
+    AttackSpeed: 2
+    MoveSpeed: 1
+    Damage: 2
+    Defense: 5
+    Agility: 2
     IsMelee: 1
   - Name: Wizard
-    HP: 10
-    AttackRange: 9
-    AttackSpeed: 3
-    MoveSpeed: 3
-    Damage: 3
-    Defense: -2
-    Agility: 6
-    IsMelee: 0
-  - Name: Assassin
-    HP: 10
+    HP: 2
     AttackRange: 3
-    AttackSpeed: 3
-    MoveSpeed: 9
-    Damage: 2
-    Defense: -1
-    Agility: 9
-    IsMelee: 1
-  - Name: Tech
-    HP: 10
-    AttackRange: 6
-    AttackSpeed: 3
-    MoveSpeed: 6
-    Damage: 1
+    AttackSpeed: 1
+    MoveSpeed: 1
+    Damage: 5
     Defense: 1
-    Agility: 6
-    IsMelee: 0
-  - Name: Gunner
-    HP: 10
-    AttackRange: 6
-    AttackSpeed: 9
-    MoveSpeed: 6
-    Damage: 2
-    Defense: -1
     Agility: 3
     IsMelee: 0
-  HPMult: 15
-  StatMax: 9
+  - Name: Assassin
+    HP: 3
+    AttackRange: 1
+    AttackSpeed: 5
+    MoveSpeed: 1
+    Damage: 4
+    Defense: 1
+    Agility: 5
+    IsMelee: 1
+  - Name: Tech
+    HP: 4
+    AttackRange: 2
+    AttackSpeed: 4
+    MoveSpeed: 1
+    Damage: 3
+    Defense: 3
+    Agility: 3
+    IsMelee: 0
+  - Name: Gunner
+    HP: 3
+    AttackRange: 3
+    AttackSpeed: 5
+    MoveSpeed: 1
+    Damage: 2
+    Defense: 2
+    Agility: 1
+    IsMelee: 0
+  HPMin: 100
+  HPMult: 10
+  StatMax: 5
   CritMaxChance: 0.3
   CritMult: 2
