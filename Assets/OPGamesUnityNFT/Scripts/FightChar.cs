@@ -10,6 +10,14 @@ namespace OPGames.NFT
 
 public class FightChar : MonoBehaviour
 {
+	private static int nextId = 1;
+	public enum State
+	{
+		Idle,
+		Move,
+		Attack,
+	};
+
 	[SerializeField] private DamageText damageText;
 	[SerializeField] private Animator spriteAndUIAnimator;
 	[SerializeField] private TextMeshProUGUI textName;
@@ -20,6 +28,7 @@ public class FightChar : MonoBehaviour
 	[SerializeField] private SpriteRenderer sprite;
 	[SerializeField] private bool team = true;
 
+	private int id = 0;
 	private int hp;
 	private int attackRange;
 	private int attackSpeed;
@@ -46,11 +55,117 @@ public class FightChar : MonoBehaviour
 	public bool IsReady { get { return cooldownCurr <= 0; } }
 	public int HP { get { return hp; } }
 
-	public int Initiative;
-
 	public System.Action<FightEvent> OnEventTriggered;
+	private Animator animator;
 
 	private List<FightChar> targets;
+	private FightChar targetCurr = null;
+	private State stateCurr = State.Idle;
+	private const float moveDuration = 0.5f;
+
+	private Vector3 moveStart;
+	private Vector3 moveEnd;
+
+	private void Update()
+	{
+		switch (stateCurr)
+		{
+			case State.Idle: UpdateStateIdle(); break;
+			case State.Move: UpdateStateMove(); break;
+			case State.Attack: UpdateStateAttack(); break;
+		}
+	}
+
+	private void DecideAction()
+	{
+		if (targetCurr == null)
+		{
+			targetCurr = FindTarget();
+		}
+
+		if (targetCurr == null)
+		{
+			return;
+		}
+
+		Vector3 delta = targetCurr.transform.position - transform.position;
+		float distance = delta.magnitude;
+		if (distance > (float)attackRange)
+		{
+			// move to target
+			stateCurr = State.Move;
+			cooldownCurr = moveDuration;
+
+			Vector3 moveOffset = Vector3.zero;
+
+			if (Mathf.Abs(delta.x) > Mathf.Abs(delta.y))
+			{
+				moveOffset.x = delta.x < 0 ? -1 : 1;
+			}
+			else
+			{
+				moveOffset.y = delta.y < 0 ? -1 : 1;
+			}
+
+			moveEnd = transform.position + moveOffset;
+			moveStart = transform.position;
+		}
+		else
+		{
+			// attack
+			stateCurr = State.Attack;
+			ResetCooldown();
+		}
+	}
+
+	private void UpdateStateIdle()
+	{
+		DecideAction();
+	}
+
+	private void UpdateStateMove()
+	{
+		transform.position = Vector3.Lerp(moveStart, moveEnd, 1.0f - (cooldownCurr / moveDuration));
+
+		cooldownCurr -= Time.deltaTime;
+		if (cooldownCurr <= 0)
+		{
+			transform.position = moveEnd;
+			cooldownCurr = 0;
+			DecideAction();
+		}
+	}
+
+	private void UpdateStateAttack()
+	{
+	}
+
+	private FightChar FindTarget()
+	{
+		if (targets == null)
+			return null;
+
+		float nearestDist = 1000000;
+		FightChar nearest = null;
+
+		for (int i=0; i<targets.Count; i++)
+		{
+			FightChar t = targets[i];
+			if (t.IsAlive == false)
+				continue;
+
+			Vector3 delta = t.transform.position - transform.position;
+			float magnitude = delta.magnitude;
+
+			if (nearestDist > magnitude)
+			{
+				nearest = t;
+				nearestDist = magnitude;
+			}
+		}
+
+		return nearest;
+	}
 
 	public void SetTargets(List<FightChar> t)
 	{
@@ -100,7 +215,7 @@ public class FightChar : MonoBehaviour
 
 	private void RefreshName()
 	{
-		textName.text = string.Format("{0}\n{1} {2}", charName, Initiative, className);
+		textName.text = string.Format("{0}\n{1}", charName, className);
 	}
 
 	private void SetNFTSprite(Sprite spr)
@@ -124,8 +239,12 @@ public class FightChar : MonoBehaviour
 		}
 	}
 
-	private void Start()
+	public void Init()
 	{
+		id = nextId;
+		nextId++;
+
+		animator = GetComponent<Animator>();
 		var data = DataClasses.Instance;
 		SetClassRandom();
 
@@ -186,8 +305,8 @@ public class FightChar : MonoBehaviour
 		float ratio = (float)(attackSpeed-1)/(float)(statMax-1);
 		cooldown = Mathf.Lerp(1.0f, 0.1f, ratio);
 
-		Debug.LogFormat("Class {0}; Speed {1}; ratio {2}; cooldown {3}",
-				className, attackSpeed, ratio, cooldown);
+		//Debug.LogFormat("Class {0}; Speed {1}; ratio {2}; cooldown {3}",
+		//		className, attackSpeed, ratio, cooldown);
 	}
 
 	private void ResetCooldown()
@@ -213,6 +332,9 @@ public class FightChar : MonoBehaviour
 		cooldownBar.SetValue(1.0f - v);
 	}
 
+	public void OnAttackEnd()
+	{
+	}
 }
 
 }

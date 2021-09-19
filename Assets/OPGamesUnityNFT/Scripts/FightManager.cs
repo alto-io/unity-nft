@@ -32,18 +32,14 @@ public class FightManager : MonoBehaviour
 
 	private List<FightEvent> events = new List<FightEvent>();
 
-	private IEnumerator Start()
+	private void Start()
 	{
 		// Set teams
 		foreach (var f in fighters)
 		{
 			if (f.Team == true) teamA.Add(f);
 			else                teamB.Add(f);
-
-			f.OnEventTriggered += OnEventTriggered;
 		}
-
-		yield return null;
 
 		// set nft and targets
 		for (int i=0; i<teamA.Count; i++)
@@ -61,6 +57,11 @@ public class FightManager : MonoBehaviour
 		{
 			f.SetTargets(teamA);
 			f.SetRandomTempNFT();
+		}
+
+		foreach (var f in fighters)
+		{
+			f.Init();
 		}
 
 //		yield return null;
