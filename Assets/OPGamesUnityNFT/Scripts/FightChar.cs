@@ -18,6 +18,12 @@ public class FightChar : MonoBehaviour
 		Attack,
 	};
 
+	private class PosDistance
+	{
+		public Vector3 pos;
+		public float distance;
+	}
+
 	[SerializeField] private DamageText damageText;
 	[SerializeField] private Animator spriteAndUIAnimator;
 	[SerializeField] private TextMeshProUGUI textName;
@@ -46,6 +52,7 @@ public class FightChar : MonoBehaviour
 	private string className = "";
 	private string charName = "";
 
+	private float initiative = 0;
 	private float cooldownCurr = 0;
 	private float cooldown = 0;
 	private int hpCurr = 0;
@@ -61,10 +68,17 @@ public class FightChar : MonoBehaviour
 	private List<FightChar> targets;
 	private FightChar targetCurr = null;
 	private State stateCurr = State.Idle;
-	private const float moveDuration = 0.5f;
+	private const float moveDuration = 0.2f;
 
 	private Vector3 moveStart;
 	private Vector3 moveEnd;
+	private Grid grid;
+
+	private void Start()
+	{
+		grid = GameObject.FindObjectOfType<Grid>();
+		grid.SetOccupied(transform.position, id);
+	}
 
 	private void Update()
 	{
@@ -76,19 +90,49 @@ public class FightChar : MonoBehaviour
 		}
 	}
 
+	private List<PosDistance> GetNeighbors(Vector3 start, Vector3 end)
+	{
+		List<PosDistance> list = new List<PosDistance>();
+		list.Add(new PosDistance() { pos = new Vector3(end.x-1, end.y-1, end.z), distance = Mathf.Infinity });
+		list.Add(new PosDistance() { pos = new Vector3(end.x-1, end.y-0, end.z), distance = Mathf.Infinity });
+		list.Add(new PosDistance() { pos = new Vector3(end.x-1, end.y+1, end.z), distance = Mathf.Infinity });
+		list.Add(new PosDistance() { pos = new Vector3(end.x-0, end.y-1, end.z), distance = Mathf.Infinity });
+		list.Add(new PosDistance() { pos = new Vector3(end.x-0, end.y+1, end.z), distance = Mathf.Infinity });
+		list.Add(new PosDistance() { pos = new Vector3(end.x+1, end.y-1, end.z), distance = Mathf.Infinity });
+		list.Add(new PosDistance() { pos = new Vector3(end.x+1, end.y-0, end.z), distance = Mathf.Infinity });
+		list.Add(new PosDistance() { pos = new Vector3(end.x+1, end.y+1, end.z), distance = Mathf.Infinity });
+
+		foreach (var p in list)
+		{
+			if (p.pos.x < 0 || p.pos.y < 0)
+				continue;
+
+			p.distance = (start-p.pos).sqrMagnitude;
+		}
+
+		list.Sort((a, b) => 
+				{ 
+					if (a.distance < b.distance) return -1;
+					else if (a.distance > b.distance) return 1;
+					else return 0;
+				});
+
+		return list;
+	}
+
 	private void DecideAction()
 	{
-		if (targetCurr == null)
-		{
-			targetCurr = FindTarget();
-		}
+		Debug.LogFormat("{0} Decide Action", name);
+		targetCurr = FindTarget();
 
 		if (targetCurr == null)
-		{
 			return;
-		}
 
-		Vector3 delta = targetCurr.transform.position - transform.position;
+		Vector3 targetPos = targetCurr.transform.position;
+		if (targetCurr.stateCurr == State.Move)
+			targetPos = targetCurr.moveEnd;
+
+		Vector3 delta = transform.position - targetPos;
 		float distance = delta.magnitude;
 		if (distance > (float)attackRange)
 		{
@@ -96,23 +140,40 @@ public class FightChar : MonoBehaviour
 			stateCurr = State.Move;
 			cooldownCurr = moveDuration;
 
-			Vector3 moveOffset = Vector3.zero;
-
-			if (Mathf.Abs(delta.x) > Mathf.Abs(delta.y))
+			Vector3 dest = targetPos;
+			List<PosDistance> list = GetNeighbors(transform.position, targetPos);
+			foreach (var l in list)
 			{
-				moveOffset.x = delta.x < 0 ? -1 : 1;
+				if (l.distance == Mathf.Infinity)
+					continue;
+
+				if (grid.GetOccupied(l.pos) != 0)
+					continue;
+
+				dest = l.pos;
+				break;
+			}
+
+			Debug.LogFormat("from={0} to={1}; distance={2}, attackrange={3}", transform.position, dest, (transform.position - dest).magnitude, attackRange);
+
+			List<Vector3> path = grid.FindPath(transform.position, dest);
+			if (path != null)
+			{
+				moveStart = transform.position;
+				moveEnd = path[0];
+				grid.ClearOccupied(moveStart);
+				grid.SetOccupied(moveEnd, id);
+				Debug.LogFormat("{0} move to {1}", id, moveEnd);
 			}
 			else
 			{
-				moveOffset.y = delta.y < 0 ? -1 : 1;
+				Debug.LogFormat("Path not found");
 			}
-
-			moveEnd = transform.position + moveOffset;
-			moveStart = transform.position;
 		}
 		else
 		{
 			// attack
+			Debug.LogFormat("{0} Pick Attack {1}", name, targetCurr.name);
 			stateCurr = State.Attack;
 			ResetCooldown();
 		}
@@ -120,24 +181,61 @@ public class FightChar : MonoBehaviour
 
 	private void UpdateStateIdle()
 	{
-		DecideAction();
+		cooldownCurr -= Time.deltaTime;
+		if (cooldownCurr <= 0)
+			DecideAction();
 	}
 
 	private void UpdateStateMove()
 	{
+		//grid.ClearOccupied(transform.position);
+
 		transform.position = Vector3.Lerp(moveStart, moveEnd, 1.0f - (cooldownCurr / moveDuration));
+
+		//grid.SetOccupied(transform.position, id);
 
 		cooldownCurr -= Time.deltaTime;
 		if (cooldownCurr <= 0)
 		{
 			transform.position = moveEnd;
-			cooldownCurr = 0;
-			DecideAction();
+			moveStart = moveEnd;
+			cooldownCurr = 0.1f;
+			stateCurr = State.Idle;
 		}
 	}
 
 	private void UpdateStateAttack()
 	{
+		if (targetCurr == null || targetCurr.IsAlive == false)
+		{
+			DecideAction();
+			return;
+		}
+
+		cooldownCurr -= Time.deltaTime;
+		if (cooldownCurr <= 0)
+		{
+			string trigger = "AttackNorth";
+			Vector3 targetPos = targetCurr.transform.position;
+			Vector3 currPos = transform.position;
+			if (targetPos.x < currPos.x)
+			{
+				trigger = "AttackWest";
+			}
+			else if (targetPos.x > currPos.x)
+			{
+				trigger = "AttackEast";
+			}
+			else if (targetPos.y < currPos.y)
+			{
+				trigger = "AttackSouth";
+			}
+
+			animator.SetTrigger(trigger);
+
+			ResetCooldown();
+		}
+
 	}
 
 	private FightChar FindTarget()
@@ -145,7 +243,9 @@ public class FightChar : MonoBehaviour
 		if (targets == null)
 			return null;
 
-		float nearestDist = 1000000;
+		Debug.LogFormat("{0} Find target", name);
+
+		float nearestDist = Mathf.Infinity;
 		FightChar nearest = null;
 
 		for (int i=0; i<targets.Count; i++)
@@ -163,7 +263,6 @@ public class FightChar : MonoBehaviour
 				nearestDist = magnitude;
 			}
 		}
-
 		return nearest;
 	}
 
@@ -216,6 +315,14 @@ public class FightChar : MonoBehaviour
 	private void RefreshName()
 	{
 		textName.text = string.Format("{0}\n{1}", charName, className);
+		if (team == true)
+		{
+			textName.color = Color.blue;
+		}
+		else
+		{
+			textName.color = Color.red;
+		}
 	}
 
 	private void SetNFTSprite(Sprite spr)
@@ -225,18 +332,18 @@ public class FightChar : MonoBehaviour
 
 	private void SetNFTTexture(Texture2D tex)
 	{
-		if (tex != null)
-		{
-			int max = Mathf.Max(tex.width, tex.height);
-			float scale = (float)max / 256.0f;
+		if (tex == null)
+			return;
 
-			Sprite spr = Sprite.Create(tex, 
-					new Rect(0.0f, 0.0f, tex.width, tex.height), 
-					new UnityEngine.Vector2(0.5f, 0.5f),
-					100 * scale);
+		int max = Mathf.Max(tex.width, tex.height);
+		float scale = (float)max / 256.0f;
 
-			sprite.sprite = spr;
-		}
+		Sprite spr = Sprite.Create(tex, 
+				new Rect(0.0f, 0.0f, tex.width, tex.height), 
+				new UnityEngine.Vector2(0.5f, 0.5f),
+				100 * scale);
+
+		sprite.sprite = spr;
 	}
 
 	public void Init()
@@ -252,8 +359,8 @@ public class FightChar : MonoBehaviour
 		{
 			spriteAndUIAnimator.Play(0, -1, Random.Range(0.0f, 1.0f));
 		}
-		ResetCooldown();
 		RefreshName();
+		enabled = false;
 	}
 
 	private void SetClassRandom()
@@ -299,11 +406,11 @@ public class FightChar : MonoBehaviour
 		statMax       = data.StatMax;
 		critMaxChance = data.CritMaxChance;
 		critMult      = data.CritMult;
-
 		hpCurr        = hp;
 
-		float ratio = (float)(attackSpeed-1)/(float)(statMax-1);
-		cooldown = Mathf.Lerp(1.0f, 0.1f, ratio);
+		float ratio   = (float)(attackSpeed-1)/(float)(statMax-1);
+		cooldown      = Mathf.Lerp(1.5f, 0.5f, ratio);
+		cooldownCurr  = cooldown + Random.Range(0.0f, 0.05f);
 
 		//Debug.LogFormat("Class {0}; Speed {1}; ratio {2}; cooldown {3}",
 		//		className, attackSpeed, ratio, cooldown);
@@ -311,7 +418,7 @@ public class FightChar : MonoBehaviour
 
 	private void ResetCooldown()
 	{
-		cooldownCurr += cooldown;
+		cooldownCurr = cooldown;
 	}
 
 	private bool CalcIfCrit()
@@ -334,6 +441,33 @@ public class FightChar : MonoBehaviour
 
 	public void OnAttackEnd()
 	{
+		//Debug.Log("OnAttackEnd");
+		ResetCooldown();
+
+		if (targetCurr != null)
+		{
+			targetCurr.damageText.ShowDamage(damage, false);
+			targetCurr.hpCurr -= damage;
+			targetCurr.RefreshHPBar();
+
+			if (targetCurr.IsAlive == false)
+			{
+				cooldownCurr = 0.1f;
+				stateCurr = State.Idle;
+				grid.ClearOccupied(targetCurr.transform.position);
+				Debug.LogFormat("{0} Go to Idle", name);
+				targetCurr.animator.SetTrigger("Dead");
+			}
+			else
+			{
+				targetCurr.animator.SetTrigger("Hurt");
+			}
+		}
+	}
+
+	public void OnDeadEnd()
+	{
+		gameObject.SetActive(false);
 	}
 }
 

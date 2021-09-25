@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 public class Grid : MonoBehaviour
 {
+	[System.Serializable]
 	public class Node
 	{
 		public Vector2Int parent = new Vector2Int(-1,-1);
@@ -28,6 +29,8 @@ public class Grid : MonoBehaviour
 	public int costDiagonal = 14;
 
 	private Node[,] search;
+	private List<Node> open = new List<Node>();
+	private List<Node> close = new List<Node>();
 
 	public void Awake()
 	{
@@ -41,32 +44,37 @@ public class Grid : MonoBehaviour
 			}
 		}
 
-		search[1,3].occupied = 0;
-		search[1,2].occupied = 1;
-		search[1,1].occupied = 1;
-		search[1,0].occupied = 1;
-
-		search[2,3].occupied = 0;
-		search[2,2].occupied = 0;
-		search[2,1].occupied = 0;
-		search[2,0].occupied = 0;
-
-		search[3,3].occupied = 0;
-		search[3,2].occupied = 1;
-		search[3,1].occupied = 1;
-		search[3,0].occupied = 0;
-
-		search[4,3].occupied = 1;
-		search[4,2].occupied = 1;
-		search[4,1].occupied = 1;
-		search[4,0].occupied = 0;
-
-		FindPath(new Vector2Int(0,0), new Vector2Int(5,3));
+//		search[1,3].occupied = 0;
+//		search[1,2].occupied = 1;
+//		search[1,1].occupied = 1;
+//		search[1,0].occupied = 1;
+//
+//		search[2,3].occupied = 0;
+//		search[2,2].occupied = 0;
+//		search[2,1].occupied = 0;
+//		search[2,0].occupied = 0;
+//
+//		search[3,3].occupied = 0;
+//		search[3,2].occupied = 1;
+//		search[3,1].occupied = 1;
+//		search[3,0].occupied = 0;
+//
+//		search[4,3].occupied = 1;
+//		search[4,2].occupied = 1;
+//		search[4,1].occupied = 1;
+//		search[4,0].occupied = 0;
+//
+//		FindPath(new Vector2Int(0,0), new Vector2Int(5,3));
 	}
 
 	public void SetOccupied(Vector3 world, int id)
 	{
 		Vector2Int g = WorldToGrid(world);
+		if (g.x < 0 || g.x >= width || g.y < 0 || g.y >= height)
+		{
+			Debug.LogErrorFormat("Index out of range {0}, world={1}", g, world);
+			return;
+		}
 		search[g.x, g.y].occupied = id;
 	}
 
@@ -78,6 +86,11 @@ public class Grid : MonoBehaviour
 	public int GetOccupied(Vector3 world)
 	{
 		Vector2Int g = WorldToGrid(world);
+		if (g.x < 0 || g.x >= width || g.y < 0 || g.y >= height)
+		{
+			Debug.LogErrorFormat("Index out of range {0}, world={1}", g, world);
+			return 0;
+		}
 		return search[g.x, g.y].occupied;
 	}
 
@@ -102,16 +115,31 @@ public class Grid : MonoBehaviour
 				(int)Mathf.Round(world.y / gridSize.y));
 	}
 
-	public void FindPath(Vector3 startWorld, Vector3 endWorld)
+	public Vector3 GridToWorld(Vector2Int grid)
 	{
-		FindPath(WorldToGrid(startWorld), WorldToGrid(endWorld));
+		return new Vector3( grid.x * gridSize.x, grid.y * gridSize.y, 0);
 	}
 
-	List<Node> open = new List<Node>();
-	List<Node> close = new List<Node>();
-
-	public void FindPath(Vector2Int start, Vector2Int end)
+	public List<Vector3> FindPath(Vector3 startWorld, Vector3 endWorld)
 	{
+		List<Node> path = FindPath(WorldToGrid(startWorld), WorldToGrid(endWorld));
+		if (path == null)
+			return null;
+
+		List<Vector3> pathWorld = new List<Vector3>();
+
+		foreach (Node n in path)
+		{
+			pathWorld.Add(GridToWorld(n.pos));
+		}
+
+		return pathWorld;
+	}
+
+	// A* pathfinding
+	public List<Node> FindPath(Vector2Int start, Vector2Int end)
+	{
+		//Debug.LogFormat("FindPath {0}, {1}", start, end);
 		foreach (Node n in search)
 		{
 			n.ResetForSearch();
@@ -146,19 +174,19 @@ public class Grid : MonoBehaviour
 			open.Remove(nCurrent);
 			close.Add(nCurrent);
 
-			Debug.LogFormat("Finding... current {0}", nCurrent.pos);
+			//Debug.LogFormat("Finding... current {0}, fCost {1}", nCurrent.pos, nCurrent.fCost);
 
 			if (nCurrent.pos == end)
 			{
 				int iterations2 = 0;
 
 				// found end goal. backtrack to get final path
-				Debug.Log("Found end, backtrack to start");
+				//Debug.Log("Found end, backtrack to start");
 				while (nCurrent.pos != start && iterations2 < 100)
 				{
 					path.Insert(0, nCurrent);
 					nCurrent = search[nCurrent.parent.x, nCurrent.parent.y];
-					Debug.LogFormat("Backtrack... current {0}", nCurrent.pos);
+					//Debug.LogFormat("Backtrack... current {0}", nCurrent.pos);
 					iterations++;
 				}
 
@@ -168,8 +196,8 @@ public class Grid : MonoBehaviour
 					text += n.pos.ToString() + ",";
 				}
 
-				Debug.Log("Final path: " + text);
-				return;
+				//Debug.Log("Final path: " + text);
+				return path;
 			}
 
 			// create a list of children from current node
@@ -184,6 +212,7 @@ public class Grid : MonoBehaviour
 
 			iterations++;
 		}
+		return null;
 	}
 
 	private int GetHCost(Vector2Int a, Vector2Int b)
@@ -208,7 +237,7 @@ public class Grid : MonoBehaviour
 			new Vector2Int(pPos.x+1, pPos.y  ),
 			new Vector2Int(pPos.x-1, pPos.y  ),
 
-			// northeast, northwest, southeast, southwest
+//			// northeast, northwest, southeast, southwest
 			new Vector2Int(pPos.x+1, pPos.y+1),
 			new Vector2Int(pPos.x-1, pPos.y+1),
 			new Vector2Int(pPos.x+1, pPos.y-1),

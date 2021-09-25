@@ -87,7 +87,7 @@ public class FightManager : MonoBehaviour
 //			f.Reset();
 //		}
 //
-//		StartCoroutine(PlayFightCR());
+		StartCoroutine(PlayFightCR());
 	}
 
 	private bool IsTeamAlive(List<FightChar> team)
@@ -103,6 +103,16 @@ public class FightManager : MonoBehaviour
 	{
 		yield return StartCoroutine(TextFightSequence());
 
+		foreach (var f in fighters)
+		{
+			f.enabled = true;
+		}
+
+		while (IsTeamAlive(teamA) && IsTeamAlive(teamB))
+		{
+			yield return new WaitForSeconds(1.0f);
+		}
+		
 		if (IsTeamAlive(teamA))
 		{
 			yield return StartCoroutine(TextWinSequence(true));

@@ -42,7 +42,7 @@ public class DamageText : MonoBehaviour
 		text.text = damage == 0 ? "MISS" : damage.ToString();
 		text.transform.localScale = Vector3.one;
 		text.alpha = 0.0f;
-		text.color = isCrit ? Color.red : Color.yellow;
+		text.color = isCrit ? Color.red : Color.black;
 		text.enabled = true;
 		transform.localPosition = startLocalPos;
 
