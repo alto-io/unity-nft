@@ -233,6 +233,18 @@ public class FightChar : MonoBehaviour
 
 			animator.SetTrigger(trigger);
 
+			if (isMelee == false)
+			{
+				var info = DataVFX.Instance.GetByName("VFXFireball");
+				if (info != null && info.Prefab != null)
+				{
+					GameObject clone = Instantiate(info.Prefab);
+					clone.transform.position = transform.position;
+					var projectile = clone.transform.DOMove(targetCurr.transform.position, 0.5f)
+						.OnComplete(()=> Destroy(clone));
+				}
+			}
+
 			ResetCooldown();
 		}
 
