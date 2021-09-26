@@ -24,7 +24,7 @@ public class FightChar : MonoBehaviour
 		public float distance;
 	}
 
-	[SerializeField] private DamageText damageText;
+	[SerializeField] private DamageTextGroup damageText;
 	[SerializeField] private Animator spriteAndUIAnimator;
 	[SerializeField] private TextMeshProUGUI textName;
 	[SerializeField] private HPBar hpBar;
@@ -451,14 +451,16 @@ public class FightChar : MonoBehaviour
 		cooldownBar.SetValue(1.0f - v);
 	}
 
-	public void OnAttackEnd()
+	public void OnAttackHit()
 	{
-		//Debug.Log("OnAttackEnd");
-		ResetCooldown();
-
 		if (targetCurr != null)
 		{
-			targetCurr.damageText.ShowDamage(damage, false);
+			bool isCrit = CalcIfCrit();
+			int damageFinal = damage;
+			if (isCrit)
+				damageFinal *= 2;
+			
+			targetCurr.damageText.ShowDamage(damage, isCrit);
 			targetCurr.hpCurr -= damage;
 			targetCurr.RefreshHPBar();
 
@@ -474,7 +476,15 @@ public class FightChar : MonoBehaviour
 			{
 				targetCurr.animator.SetTrigger("Hurt");
 			}
+
+			if (isCrit)
+				Camera.main.DOShakePosition(0.5f, 0.1f, 30, 45, true);
 		}
+	}
+
+	public void OnAttackEnd()
+	{
+		ResetCooldown();
 	}
 
 	public void OnDeadEnd()

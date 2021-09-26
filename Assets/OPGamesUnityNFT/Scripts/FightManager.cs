@@ -25,7 +25,7 @@ public class FightEvent
 public class FightManager : MonoBehaviour
 {
 	[SerializeField] private List<FightChar> fighters;
-	[SerializeField] private TextMeshProUGUI textFight;
+	[SerializeField] private UIFight ui;
 
 	private List<FightChar> teamA = new List<FightChar>();
 	private List<FightChar> teamB = new List<FightChar>();
@@ -101,7 +101,9 @@ public class FightManager : MonoBehaviour
 
 	private IEnumerator PlayFightCR()
 	{
-		yield return StartCoroutine(TextFightSequence());
+		yield return new WaitForSeconds(1.0f);
+		ui.SetTextAnimationTrigger("Fight", "FIGHT!");
+		yield return new WaitForSeconds(1.0f);
 
 		foreach (var f in fighters)
 		{
@@ -112,14 +114,19 @@ public class FightManager : MonoBehaviour
 		{
 			yield return new WaitForSeconds(1.0f);
 		}
+
+		foreach (var f in fighters)
+		{
+			f.enabled = false;
+		}
 		
 		if (IsTeamAlive(teamA))
 		{
-			yield return StartCoroutine(TextWinSequence(true));
+			ui.SetTextAnimationTrigger("End", "YOU WIN!");
 		}
 		else
 		{
-			yield return StartCoroutine(TextWinSequence(false));
+			ui.SetTextAnimationTrigger("End", "YOU LOSE! =(");
 		}
 	}
 
@@ -127,33 +134,6 @@ public class FightManager : MonoBehaviour
 	{
 		//Debug.LogFormat("Add event {0}", e);
 		events.Add(e);
-	}
-
-	private IEnumerator TextFightSequence()
-	{
-		yield return new WaitForSeconds(1.0f);
-
-		var seq = DOTween.Sequence();
-		seq.Append(textFight.transform.DOScale(Vector3.one * 1.2f, 0.1f));
-		seq.AppendInterval(0.25f);
-		seq.Append(textFight.transform.DOScale(Vector3.zero, 0.2f));
-
-		textFight.gameObject.SetActive(true);
-		yield return seq.WaitForCompletion();
-		textFight.gameObject.SetActive(false);
-	}
-
-	private IEnumerator TextWinSequence(bool team)
-	{
-		textFight.text = team == true ? "You Win!" : "You Lose!";
-
-		var seq = DOTween.Sequence();
-		seq.Append(textFight.transform.DOScale(Vector3.one * 1.2f, 0.1f));
-		seq.AppendInterval(0.25f);
-		seq.Append(textFight.transform.DOScale(Vector3.zero, 0.2f));
-
-		textFight.gameObject.SetActive(true);
-		yield return seq.WaitForCompletion();
 	}
 }
 
