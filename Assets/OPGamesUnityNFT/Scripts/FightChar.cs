@@ -52,7 +52,6 @@ public class FightChar : MonoBehaviour
 	private string className = "";
 	private string charName = "";
 
-	private float initiative = 0;
 	private float cooldownCurr = 0;
 	private float cooldown = 0;
 	private int hpCurr = 0;
@@ -68,7 +67,7 @@ public class FightChar : MonoBehaviour
 	private List<FightChar> targets;
 	private FightChar targetCurr = null;
 	private State stateCurr = State.Idle;
-	private const float moveDuration = 0.2f;
+	private const float moveDuration = 0.1f;
 
 	private Vector3 moveStart;
 	private Vector3 moveEnd;
@@ -122,7 +121,7 @@ public class FightChar : MonoBehaviour
 
 	private void DecideAction()
 	{
-		Debug.LogFormat("{0} Decide Action", name);
+		//Debug.LogFormat("{0} Decide Action", name);
 		targetCurr = FindTarget();
 
 		if (targetCurr == null)
@@ -154,26 +153,26 @@ public class FightChar : MonoBehaviour
 				break;
 			}
 
-			Debug.LogFormat("from={0} to={1}; distance={2}, attackrange={3}", transform.position, dest, (transform.position - dest).magnitude, attackRange);
+			//Debug.LogFormat("from={0} to={1}; distance={2}, attackrange={3}", transform.position, dest, (transform.position - dest).magnitude, attackRange);
 
 			List<Vector3> path = grid.FindPath(transform.position, dest);
-			if (path != null)
+			if (path != null && path.Count > 0)
 			{
 				moveStart = transform.position;
 				moveEnd = path[0];
 				grid.ClearOccupied(moveStart);
 				grid.SetOccupied(moveEnd, id);
-				Debug.LogFormat("{0} move to {1}", id, moveEnd);
+				//Debug.LogFormat("{0} move to {1}", id, moveEnd);
 			}
 			else
 			{
-				Debug.LogFormat("Path not found");
+				//Debug.LogFormat("Path not found");
 			}
 		}
 		else
 		{
 			// attack
-			Debug.LogFormat("{0} Pick Attack {1}", name, targetCurr.name);
+			// Debug.LogFormat("{0} Pick Attack {1}", name, targetCurr.name);
 			stateCurr = State.Attack;
 			ResetCooldown();
 		}
@@ -199,7 +198,7 @@ public class FightChar : MonoBehaviour
 		{
 			transform.position = moveEnd;
 			moveStart = moveEnd;
-			cooldownCurr = 0.1f;
+			cooldownCurr = 0.05f;
 			stateCurr = State.Idle;
 		}
 	}
@@ -255,7 +254,7 @@ public class FightChar : MonoBehaviour
 		if (targets == null)
 			return null;
 
-		Debug.LogFormat("{0} Find target", name);
+		//Debug.LogFormat("{0} Find target", name);
 
 		float nearestDist = Mathf.Infinity;
 		FightChar nearest = null;
@@ -469,7 +468,7 @@ public class FightChar : MonoBehaviour
 				cooldownCurr = 0.1f;
 				stateCurr = State.Idle;
 				grid.ClearOccupied(targetCurr.transform.position);
-				Debug.LogFormat("{0} Go to Idle", name);
+				//Debug.LogFormat("{0} Go to Idle", name);
 				targetCurr.animator.SetTrigger("Dead");
 			}
 			else

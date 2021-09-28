@@ -1275,7 +1275,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 7f78bdd4e2831e545bfc52d0ea0e6df2, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 675ba802bfb1fb4418a4b521e4490bf9, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -4735,7 +4735,7 @@ MonoBehaviour:
   width: 6
   height: 6
   costAdjacent: 10
-  costDiagonal: 14
+  costDiagonal: 15
 --- !u!4 &1660062115
 Transform:
   m_ObjectHideFlags: 0
