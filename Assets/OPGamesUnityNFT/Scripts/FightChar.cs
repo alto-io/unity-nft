@@ -292,6 +292,7 @@ public class FightChar : MonoBehaviour
 
 	public void SetRandomTempNFT()
 	{
+		Debug.LogFormat("SetRandomTempNFT");
 		var data = DataNFTTemp.Instance;
 		if (data == null)
 			return;
@@ -309,6 +310,7 @@ public class FightChar : MonoBehaviour
 
 	public void SetNFT(string key)
 	{
+		Debug.LogFormat("SetNFT {0}", key);
 		var mgr = NFTManager.Instance;
 		if (mgr == null)
 			return;
@@ -365,8 +367,6 @@ public class FightChar : MonoBehaviour
 		nextId++;
 
 		animator = GetComponent<Animator>();
-		var data = DataClasses.Instance;
-		SetClassRandom();
 
 		if (spriteAndUIAnimator != null)
 		{
