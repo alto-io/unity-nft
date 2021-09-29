@@ -51,6 +51,7 @@ public class FightChar : MonoBehaviour
 
 	private string className = "";
 	private string charName = "";
+	private string projectilePrefab = "";
 
 	private float cooldownCurr = 0;
 	private float cooldown = 0;
@@ -234,11 +235,12 @@ public class FightChar : MonoBehaviour
 
 			if (isMelee == false)
 			{
-				var info = DataVFX.Instance.GetByName("VFXFireball");
+				var info = DataVFX.Instance.GetByName(projectilePrefab);
 				if (info != null && info.Prefab != null)
 				{
 					GameObject clone = Instantiate(info.Prefab);
 					clone.transform.position = transform.position;
+					clone.transform.LookAt(targetCurr.transform.position);
 					var projectile = clone.transform.DOMove(targetCurr.transform.position, 0.5f)
 						.OnComplete(()=> { Destroy(clone); OnAttackHitRanged(); });
 				}
@@ -418,6 +420,8 @@ public class FightChar : MonoBehaviour
 		critMaxChance = data.CritMaxChance;
 		critMult      = data.CritMult;
 		hpCurr        = hp;
+
+		projectilePrefab = classInfo.ProjectilePrefab;
 
 		float ratio   = (float)(attackSpeed-1)/(float)(statMax-1);
 		cooldown      = Mathf.Lerp(1.5f, 0.5f, ratio);

@@ -33,6 +33,7 @@ public class DataClasses : ScriptableObject
 		[Range(1,5)] public int Agility;
 
 		public bool IsMelee;
+		public string ProjectilePrefab;
 	}
 
 	public List<Info> Classes = new List<Info>();
