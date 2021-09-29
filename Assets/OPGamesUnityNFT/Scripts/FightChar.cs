@@ -240,7 +240,7 @@ public class FightChar : MonoBehaviour
 					GameObject clone = Instantiate(info.Prefab);
 					clone.transform.position = transform.position;
 					var projectile = clone.transform.DOMove(targetCurr.transform.position, 0.5f)
-						.OnComplete(()=> Destroy(clone));
+						.OnComplete(()=> { Destroy(clone); OnAttackHitRanged(); });
 				}
 			}
 
@@ -450,35 +450,45 @@ public class FightChar : MonoBehaviour
 		cooldownBar.SetValue(1.0f - v);
 	}
 
+	public void OnAttackHitRanged()
+	{
+		if (!isMelee) OnAttackHit();
+	}
+
+	public void OnAttackHitMelee()
+	{
+		if (isMelee) OnAttackHit();
+	}
+
 	public void OnAttackHit()
 	{
-		if (targetCurr != null)
+		if (targetCurr == null)
+			return;
+
+		bool isCrit = CalcIfCrit();
+		int damageFinal = damage;
+		if (isCrit)
+			damageFinal *= 2;
+
+		targetCurr.damageText.ShowDamage(damage, isCrit);
+		targetCurr.hpCurr -= damage;
+		targetCurr.RefreshHPBar();
+
+		if (targetCurr.IsAlive == false)
 		{
-			bool isCrit = CalcIfCrit();
-			int damageFinal = damage;
-			if (isCrit)
-				damageFinal *= 2;
-			
-			targetCurr.damageText.ShowDamage(damage, isCrit);
-			targetCurr.hpCurr -= damage;
-			targetCurr.RefreshHPBar();
-
-			if (targetCurr.IsAlive == false)
-			{
-				cooldownCurr = 0.1f;
-				stateCurr = State.Idle;
-				grid.ClearOccupied(targetCurr.transform.position);
-				//Debug.LogFormat("{0} Go to Idle", name);
-				targetCurr.animator.SetTrigger("Dead");
-			}
-			else
-			{
-				targetCurr.animator.SetTrigger("Hurt");
-			}
-
-			if (isCrit)
-				Camera.main.DOShakePosition(0.5f, 0.1f, 30, 45, true);
+			cooldownCurr = 0.1f;
+			stateCurr = State.Idle;
+			grid.ClearOccupied(targetCurr.transform.position);
+			//Debug.LogFormat("{0} Go to Idle", name);
+			targetCurr.animator.SetTrigger("Dead");
 		}
+		else
+		{
+			targetCurr.animator.SetTrigger("Hurt");
+		}
+
+		if (isCrit)
+			Camera.main.DOShakePosition(0.5f, 0.1f, 30, 45, true);
 	}
 
 	public void OnAttackEnd()
