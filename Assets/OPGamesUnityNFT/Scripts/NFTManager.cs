@@ -102,15 +102,14 @@ public class NFTManager : MonoBehaviour
 			yield return StartCoroutine(QueryChain(c));
 		}
 
-		loadedNFTs.Sort((a,b) => 
-		{ 
-			int result = string.Compare(a.Chain, b.Chain);
-			if (result != 0)
-				return result;
-
-			return string.Compare(a.Contract, b.Contract); 
-		});
-
+		DataNFTFake[] fakes = Resources.LoadAll<DataNFTFake>("");
+		foreach (var f in fakes)
+		{
+			if (f.Enabled == false)
+				continue;
+			
+			yield return StartCoroutine(QueryChainFake(f));
+		}
 
 		LoadNFTURI();
 
@@ -129,7 +128,16 @@ public class NFTManager : MonoBehaviour
 				}
 			}
 		}
-		
+
+		loadedNFTs.Sort((a,b) => 
+		{ 
+			int result = string.Compare(a.Chain, b.Chain);
+			if (result != 0)
+				return result;
+
+			return string.Compare(a.Contract, b.Contract); 
+		});
+
 		LoadTempNFT1();
 
 		if (OnNFTListComplete != null)
@@ -140,6 +148,7 @@ public class NFTManager : MonoBehaviour
 		LoadURIData();
 		LoadTempNFT2();
     }
+
 
 	// Query the blockchain explorer for 721 events
 	private IEnumerator QueryChain(DataChain chain)
@@ -177,6 +186,31 @@ public class NFTManager : MonoBehaviour
 		}
 	}
 
+	private IEnumerator QueryChainFake(DataNFTFake fake)
+	{
+		if (fake == null)
+			yield break;
+
+		foreach (var events in eventsList)
+		{
+			if (events.chain != fake.Chain || events.network != fake.Network)
+				continue;
+
+			foreach (var token in fake.TokenIds)
+			{
+				events.result.Add(new Explorer721Events.Result() 
+					{
+						contractAddress = fake.ContractAddr,
+						tokenID = token,
+						isFake = true
+					});
+			}
+		}
+
+		yield return null;
+				
+	}
+
 	// Go through the loaded events and find NFTs that the Wallet still owns
 	private void LoadNFTURI()
 	{
@@ -206,11 +240,14 @@ public class NFTManager : MonoBehaviour
 		if (IsNFTInList(r.contractAddress, r.tokenID))
 			return;
 
-		string owner = await ERC721.OwnerOf(chain, network, r.contractAddress, r.tokenID);
-		if (owner != Wallet)
+		if (r.isFake == false)
 		{
-			r.isDoneProcessing = true;
-			return;
+			string owner = await ERC721.OwnerOf(chain, network, r.contractAddress, r.tokenID);
+			if (owner != Wallet)
+			{
+				r.isDoneProcessing = true;
+				return;
+			}
 		}
 
 		string uri = "";

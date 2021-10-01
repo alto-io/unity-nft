@@ -16,5 +16,5 @@ MonoBehaviour:
   Network: mainnet
   ExplorerAPIKey: HHM1FXMSHJ82YVI3WY5FHSQ5V815TFAWUV
   Explorer721EventsCall: https://api.etherscan.io/api?module=account&action=tokennfttx&address={0}&startblock=0&endblock=999999999&sort=asc&apikey={1}
-  Enabled: 0
+  Enabled: 1
   BlacklistContracts: []

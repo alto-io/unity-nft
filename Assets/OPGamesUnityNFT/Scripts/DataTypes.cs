@@ -28,9 +28,10 @@ public class Explorer721Events
 		public string contractAddress;
 		public string tokenID;
 		public bool isDoneProcessing = false; // not from JSON
+		public bool isFake = false; // not from JSON
 	}
 	public string message;
-	public Result[] result;
+	public List<Result> result;
 
 	public string chain;
 	public string network;
@@ -76,6 +77,11 @@ public class NFTItemData
 	public string UniqueId
 	{
 		get { return Contract + "-" + TokenId; }
+	}
+
+	public override string ToString()
+	{
+		return string.Format("{0} {1} {2}", Chain, Contract, TokenId);
 	}
 }
 

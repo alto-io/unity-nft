@@ -17,12 +17,19 @@ public class NFTLoaderCommon : INFTLoader
 			yield return request.SendWebRequest();
 			string json = request.downloadHandler.text;
 
-			URIData data = JsonUtility.FromJson<URIData>(json);
-			if (data != null)
+			try 
 			{
-				n.Name = data.name;
-				n.Description = data.description;
-				n.ImageURL = data.image;
+				URIData data = JsonUtility.FromJson<URIData>(json);
+				if (data != null)
+				{
+					n.Name = data.name;
+					n.Description = data.description;
+					n.ImageURL = data.image;
+				}
+			}
+			catch (System.Exception e)
+			{
+				Debug.LogWarningFormat("Error: {0}\nData: {1}", e.ToString(), n.ToString());
 			}
 		}
 		if (onDone != null)
