@@ -319,7 +319,14 @@ public class FightChar : MonoBehaviour
 		if (nft == null)
 			return;
 
-		SetClass(nft.CharClass);
+		if (string.IsNullOrEmpty(nft.CharClass))
+		{
+			SetClassRandom();
+		}
+		else
+		{
+			SetClass(nft.CharClass);
+		}
 		charName = nft.Name;
 		RefreshName();
 
@@ -350,12 +357,13 @@ public class FightChar : MonoBehaviour
 		if (tex == null)
 			return;
 
+		float targetSize = 70.0f;
 		int max = Mathf.Max(tex.width, tex.height);
-		float scale = (float)max / 256.0f;
+		float scale = (float)max / targetSize;
 
 		Sprite spr = Sprite.Create(tex, 
 				new Rect(0.0f, 0.0f, tex.width, tex.height), 
-				new UnityEngine.Vector2(0.5f, 0.5f),
+				new UnityEngine.Vector2(0.5f, 0.0f),
 				100 * scale);
 
 		sprite.sprite = spr;

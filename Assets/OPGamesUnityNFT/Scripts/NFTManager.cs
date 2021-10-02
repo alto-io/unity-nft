@@ -145,7 +145,7 @@ public class NFTManager : MonoBehaviour
 
 		IsNFTListComplete = true;
 
-		LoadURIData();
+		StartCoroutine(LoadURIData());
 		LoadTempNFT2();
     }
 
@@ -285,14 +285,14 @@ public class NFTManager : MonoBehaviour
 	}
 
 	// Loads the metadata for the NFT
-	private void LoadURIData()
+	private IEnumerator LoadURIData()
 	{
 		foreach (var n in loadedNFTs)
 		{
 			var loader = GetLoader(n.Contract);
 			if (loader != null)
 			{
-				StartCoroutine(loader.LoadNFTData(n, (nOut) => { if (OnNFTItemLoaded != null) OnNFTItemLoaded(nOut); }));
+				yield return StartCoroutine(loader.LoadNFTData(n, (nOut) => { if (OnNFTItemLoaded != null) OnNFTItemLoaded(nOut); }));
 			}
 		}
 	}
