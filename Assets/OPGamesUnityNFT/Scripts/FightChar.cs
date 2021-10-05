@@ -31,6 +31,7 @@ public class FightChar : MonoBehaviour
 	[SerializeField] private HPBar cooldownBar;
 	[SerializeField] private Transform attackPos;
 	[SerializeField] private Transform hitPos;
+	[SerializeField] private Transform view;
 	[SerializeField] private SpriteRenderer sprite;
 	[SerializeField] private bool team = true;
 
@@ -78,6 +79,18 @@ public class FightChar : MonoBehaviour
 	{
 		grid = GameObject.FindObjectOfType<Grid>();
 		grid.SetOccupied(transform.position, id);
+
+		FollowCameraAngle();
+	}
+
+	public void FollowCameraAngle()
+	{
+		var cam = Camera.main;
+		if (cam != null && view != null)
+		{
+			float rotX = cam.transform.rotation.eulerAngles.x;
+			view.rotation = Quaternion.Euler(rotX, 0, 0);
+		}
 	}
 
 	private void Update()

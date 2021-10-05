@@ -199,6 +199,7 @@ MonoBehaviour:
   cooldownBar: {fileID: 9013931045266053281}
   attackPos: {fileID: 6085344568987156551}
   hitPos: {fileID: 6085344568666161630}
+  view: {fileID: 444334553901794649}
   sprite: {fileID: 6085344567570470289}
   team: 1
 --- !u!95 &4041744733553048825
