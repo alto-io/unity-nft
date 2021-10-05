@@ -29,7 +29,6 @@ public class DamageText : MonoBehaviour
 		if (text == null)
 			return;
 
-		damage = damage * 10;
 		text.text = damage == 0 ? "MISS" : damage.ToString();
 		text.enabled = true;
 		animator.SetTrigger(isCrit ? "Crit" : "Normal");

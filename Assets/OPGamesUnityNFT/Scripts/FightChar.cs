@@ -416,11 +416,11 @@ public class FightChar : MonoBehaviour
 			return;
 
 		className     = classInfo.Name;
-		hp            = classInfo.HP * data.HPMult;
+		hp            = (classInfo.HP * data.HPMult) + data.HPMin;
 		attackRange   = classInfo.AttackRange;
 		attackSpeed   = classInfo.AttackSpeed;
 		moveSpeed     = classInfo.MoveSpeed;
-		damage        = classInfo.Damage;
+		damage        = classInfo.Damage * data.DamageMult;
 		defense       = classInfo.Defense;
 		agility       = classInfo.Agility;
 		isMelee       = classInfo.IsMelee;
@@ -433,7 +433,7 @@ public class FightChar : MonoBehaviour
 
 		float ratio   = (float)(attackSpeed-1)/(float)(statMax-1);
 		cooldown      = Mathf.Lerp(1.5f, 0.5f, ratio);
-		cooldownCurr  = cooldown + Random.Range(0.0f, 0.05f);
+		cooldownCurr  = cooldown + Random.Range(0.0f, 0.5f); // add some randomness at the very start
 
 		//Debug.LogFormat("Class {0}; Speed {1}; ratio {2}; cooldown {3}",
 		//		className, attackSpeed, ratio, cooldown);
@@ -482,8 +482,8 @@ public class FightChar : MonoBehaviour
 		if (isCrit)
 			damageFinal *= 2;
 
-		targetCurr.damageText.ShowDamage(damage, isCrit);
-		targetCurr.hpCurr -= damage;
+		targetCurr.damageText.ShowDamage(damageFinal, isCrit);
+		targetCurr.hpCurr -= damageFinal;
 		targetCurr.RefreshHPBar();
 
 		if (targetCurr.IsAlive == false)
@@ -491,7 +491,6 @@ public class FightChar : MonoBehaviour
 			cooldownCurr = 0.1f;
 			stateCurr = State.Idle;
 			grid.ClearOccupied(targetCurr.transform.position);
-			//Debug.LogFormat("{0} Go to Idle", name);
 			targetCurr.animator.SetTrigger("Dead");
 		}
 		else

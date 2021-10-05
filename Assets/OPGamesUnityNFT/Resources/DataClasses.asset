@@ -63,8 +63,9 @@ MonoBehaviour:
     Agility: 1
     IsMelee: 0
     ProjectilePrefab: VFXBullet
-  HPMin: 100
-  HPMult: 10
+  HPMin: 200
+  HPMult: 30
   StatMax: 5
+  DamageMult: 10
   CritMaxChance: 0.3
   CritMult: 2

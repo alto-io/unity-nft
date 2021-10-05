@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5c58189455f6ed64bb58b5da8a2fd5fb, type: 3}
   m_Name: DataNFTMoonshotBots
   m_EditorClassIdentifier: 
-  Enabled: 0
+  Enabled: 1
   Chain: ethereum
   Network: mainnet
   ContractAddr: 0x8b13e88EAd7EF8075b58c94a7EB18A89FD729B18
