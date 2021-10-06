@@ -31,6 +31,8 @@ public class DataClasses : ScriptableObject
 		[Range(1,5)] public int Damage;
 		[Range(1,5)] public int Defense;
 		[Range(1,5)] public int Agility;
+		[Range(1,5)] public int MP;
+		[Range(1,5)] public int SkillSpeed;
 
 		public bool IsMelee;
 		public string ProjectilePrefab;
@@ -40,8 +42,10 @@ public class DataClasses : ScriptableObject
 
 	public int HPMin = 100;
 	public int HPMult = 15;
+
 	public int StatMax = 5;
 	public int DamageMult = 10;
+
 	public float CritMaxChance = 0.3f;
 	public float CritMult = 1.5f;
 

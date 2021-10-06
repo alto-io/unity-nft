@@ -37,9 +37,11 @@ public class FightChar : MonoBehaviour
 
 	private int id = 0;
 	private int hp;
+	private int mp;
 	private int attackRange;
 	private int attackSpeed;
 	private int moveSpeed;
+	private int skillSpeed;
 	private int damage;
 	private int defense;
 	private int agility;
@@ -54,13 +56,19 @@ public class FightChar : MonoBehaviour
 	private string charName = "";
 	private string projectilePrefab = "";
 
-	private float cooldownCurr = 0;
-	private float cooldown = 0;
+	// cooldown attack
+	private float cooldownACurr = 0;
+	private float cooldownA = 0;
+
+	// cooldown skill
+	private float cooldownSCurr = 0;
+	private float cooldownS = 0;
+
 	private int hpCurr = 0;
 
 	public bool Team { get { return team; } }
 	public bool IsAlive { get { return hpCurr > 0; } }
-	public bool IsReady { get { return cooldownCurr <= 0; } }
+	public bool IsReady { get { return cooldownACurr <= 0; } }
 	public int HP { get { return hp; } }
 
 	public System.Action<FightEvent> OnEventTriggered;
@@ -151,7 +159,7 @@ public class FightChar : MonoBehaviour
 		{
 			// move to target
 			stateCurr = State.Move;
-			cooldownCurr = moveDuration;
+			cooldownACurr = moveDuration;
 
 			Vector3 dest = targetPos;
 			List<PosDistance> list = GetNeighbors(transform.position, targetPos);
@@ -194,8 +202,8 @@ public class FightChar : MonoBehaviour
 
 	private void UpdateStateIdle()
 	{
-		cooldownCurr -= Time.deltaTime;
-		if (cooldownCurr <= 0)
+		cooldownACurr -= Time.deltaTime;
+		if (cooldownACurr <= 0)
 			DecideAction();
 	}
 
@@ -203,16 +211,16 @@ public class FightChar : MonoBehaviour
 	{
 		//grid.ClearOccupied(transform.position);
 
-		transform.position = Vector3.Lerp(moveStart, moveEnd, 1.0f - (cooldownCurr / moveDuration));
+		transform.position = Vector3.Lerp(moveStart, moveEnd, 1.0f - (cooldownACurr / moveDuration));
 
 		//grid.SetOccupied(transform.position, id);
 
-		cooldownCurr -= Time.deltaTime;
-		if (cooldownCurr <= 0)
+		cooldownACurr -= Time.deltaTime;
+		if (cooldownACurr <= 0)
 		{
 			transform.position = moveEnd;
 			moveStart = moveEnd;
-			cooldownCurr = 0.05f;
+			cooldownACurr = 0.05f;
 			stateCurr = State.Idle;
 		}
 	}
@@ -225,8 +233,8 @@ public class FightChar : MonoBehaviour
 			return;
 		}
 
-		cooldownCurr -= Time.deltaTime;
-		if (cooldownCurr <= 0)
+		cooldownACurr -= Time.deltaTime;
+		if (cooldownACurr <= 0)
 		{
 			string trigger = "AttackNorth";
 			Vector3 targetPos = targetCurr.transform.position;
@@ -300,7 +308,7 @@ public class FightChar : MonoBehaviour
 	public void Reset()
 	{
 		hpCurr = hp;
-		cooldownCurr = cooldown;
+		cooldownACurr = cooldownA;
 	}
 
 	public void SetRandomTempNFT()
@@ -432,6 +440,7 @@ public class FightChar : MonoBehaviour
 		hp            = (classInfo.HP * data.HPMult) + data.HPMin;
 		attackRange   = classInfo.AttackRange;
 		attackSpeed   = classInfo.AttackSpeed;
+		skillSpeed    = classInfo.SkillSpeed;
 		moveSpeed     = classInfo.MoveSpeed;
 		damage        = classInfo.Damage * data.DamageMult;
 		defense       = classInfo.Defense;
@@ -445,8 +454,12 @@ public class FightChar : MonoBehaviour
 		projectilePrefab = classInfo.ProjectilePrefab;
 
 		float ratio   = (float)(attackSpeed-1)/(float)(statMax-1);
-		cooldown      = Mathf.Lerp(1.5f, 0.5f, ratio);
-		cooldownCurr  = cooldown + Random.Range(0.0f, 0.5f); // add some randomness at the very start
+		cooldownA     = Mathf.Lerp(1.5f, 0.5f, ratio);
+		cooldownACurr = cooldownA + Random.Range(0.0f, 0.5f); // add some randomness at the very start
+
+		ratio         = (float)(skillSpeed-1)/(float)(statMax-1);
+		cooldownS     = Mathf.Lerp(5.0f, 3.0f, ratio);
+		cooldownSCurr = cooldownS;
 
 		//Debug.LogFormat("Class {0}; Speed {1}; ratio {2}; cooldown {3}",
 		//		className, attackSpeed, ratio, cooldown);
@@ -454,7 +467,7 @@ public class FightChar : MonoBehaviour
 
 	private void ResetCooldown()
 	{
-		cooldownCurr = cooldown;
+		cooldownACurr = cooldownA;
 	}
 
 	private bool CalcIfCrit()
@@ -471,7 +484,7 @@ public class FightChar : MonoBehaviour
 
 	private void RefreshCooldownBar()
 	{
-		float v = (float)cooldownCurr / (float)cooldown;
+		float v = (float)cooldownACurr / (float)cooldownA;
 		cooldownBar.SetValue(1.0f - v);
 	}
 
@@ -501,7 +514,7 @@ public class FightChar : MonoBehaviour
 
 		if (targetCurr.IsAlive == false)
 		{
-			cooldownCurr = 0.1f;
+			cooldownACurr = 0.1f;
 			stateCurr = State.Idle;
 			grid.ClearOccupied(targetCurr.transform.position);
 			targetCurr.animator.SetTrigger("Dead");
