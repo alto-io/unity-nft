@@ -36,21 +36,19 @@ public class FightChar : MonoBehaviour
 	[SerializeField] private bool team = true;
 
 	private int id = 0;
-	private int hp;
-	private int mp;
+	private float hp;
+	private float mp;
 	private int attackRange;
-	private int attackSpeed;
-	private int moveSpeed;
-	private int skillSpeed;
-	private int damage;
-	private int defense;
+	private float attackSpeed;
+	private float moveSpeed;
+	private float skillSpeed;
+	private float damage;
+	private float defense;
 	private int agility;
-	private int statMax;
 
 	private bool isMelee;
 
-	private float critMaxChance;
-	private float critMult;
+	private float critChance;
 
 	private string className = "";
 	private string charName = "";
@@ -64,12 +62,12 @@ public class FightChar : MonoBehaviour
 	private float cooldownSCurr = 0;
 	private float cooldownS = 0;
 
-	private int hpCurr = 0;
+	private float hpCurr = 0;
 
 	public bool Team { get { return team; } }
 	public bool IsAlive { get { return hpCurr > 0; } }
 	public bool IsReady { get { return cooldownACurr <= 0; } }
-	public int HP { get { return hp; } }
+	public float HP { get { return hp; } }
 
 	public System.Action<FightEvent> OnEventTriggered;
 	private Animator animator;
@@ -427,7 +425,7 @@ public class FightChar : MonoBehaviour
 		SetClassStats(classInfo);
 	}
 
-	private void SetClassStats(DataClasses.Info classInfo)
+	private void SetClassStats(DataClasses.ClassStatsRow classInfo)
 	{
 		var data = DataClasses.Instance;
 		if (data == null)
@@ -437,28 +435,24 @@ public class FightChar : MonoBehaviour
 			return;
 
 		className     = classInfo.Name;
-		hp            = (classInfo.HP * data.HPMult) + data.HPMin;
+		hp            = classInfo.HpVal;
 		attackRange   = classInfo.AttackRange;
-		attackSpeed   = classInfo.AttackSpeed;
-		skillSpeed    = classInfo.SkillSpeed;
-		moveSpeed     = classInfo.MoveSpeed;
-		damage        = classInfo.Damage * data.DamageMult;
-		defense       = classInfo.Defense;
+		attackSpeed   = classInfo.AttackSpeedSecs;
+		skillSpeed    = classInfo.SkillSpeedSecs;
+		//moveSpeed     = classInfo.MoveSpeed;
+		damage        = classInfo.DamageVal;
+		defense       = classInfo.DefenseVal;
 		agility       = classInfo.Agility;
-		isMelee       = classInfo.IsMelee;
-		statMax       = data.StatMax;
-		critMaxChance = data.CritMaxChance;
-		critMult      = data.CritMult;
+		isMelee       = string.IsNullOrEmpty(classInfo.ProjectileName);
+		critChance    = classInfo.CritChance;
 		hpCurr        = hp;
 
-		projectilePrefab = classInfo.ProjectilePrefab;
+		projectilePrefab = classInfo.ProjectileName;
 
-		float ratio   = (float)(attackSpeed-1)/(float)(statMax-1);
-		cooldownA     = Mathf.Lerp(1.5f, 0.5f, ratio);
+		cooldownA     = attackSpeed;
 		cooldownACurr = cooldownA + Random.Range(0.0f, 0.5f); // add some randomness at the very start
 
-		ratio         = (float)(skillSpeed-1)/(float)(statMax-1);
-		cooldownS     = Mathf.Lerp(5.0f, 3.0f, ratio);
+		cooldownS     = skillSpeed;
 		cooldownSCurr = cooldownS;
 
 		//Debug.LogFormat("Class {0}; Speed {1}; ratio {2}; cooldown {3}",
@@ -472,13 +466,12 @@ public class FightChar : MonoBehaviour
 
 	private bool CalcIfCrit()
 	{
-		float critChance = ((float)agility / (float)statMax) * critMaxChance;
 		return Random.Range(0.0f, 1.0f) <= critChance;
 	}
 
 	private void RefreshHPBar()
 	{
-		float v = (float)hpCurr / (float)hp;
+		float v = hpCurr / hp;
 		hpBar.SetValue(v);
 	}
 
@@ -504,11 +497,11 @@ public class FightChar : MonoBehaviour
 			return;
 
 		bool isCrit = CalcIfCrit();
-		int damageFinal = damage;
+		float damageFinal = damage;
 		if (isCrit)
 			damageFinal *= 2;
 
-		targetCurr.damageText.ShowDamage(damageFinal, isCrit);
+		targetCurr.damageText.ShowDamage((int)Mathf.Round(damageFinal), isCrit);
 		targetCurr.hpCurr -= damageFinal;
 		targetCurr.RefreshHPBar();
 

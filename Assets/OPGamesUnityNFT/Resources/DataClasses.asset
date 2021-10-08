@@ -21,6 +21,8 @@ MonoBehaviour:
     Damage: 2
     Defense: 5
     Agility: 2
+    MP: 0
+    SkillSpeed: 0
     IsMelee: 1
     ProjectilePrefab: 
   - Name: Wizard
@@ -31,6 +33,8 @@ MonoBehaviour:
     Damage: 5
     Defense: 1
     Agility: 3
+    MP: 0
+    SkillSpeed: 0
     IsMelee: 0
     ProjectilePrefab: VFXFireball
   - Name: Assassin
@@ -41,6 +45,8 @@ MonoBehaviour:
     Damage: 4
     Defense: 1
     Agility: 5
+    MP: 0
+    SkillSpeed: 0
     IsMelee: 1
     ProjectilePrefab: 
   - Name: Tech
@@ -51,6 +57,8 @@ MonoBehaviour:
     Damage: 3
     Defense: 3
     Agility: 3
+    MP: 0
+    SkillSpeed: 0
     IsMelee: 0
     ProjectilePrefab: VFXLaser
   - Name: Gunner
@@ -61,6 +69,8 @@ MonoBehaviour:
     Damage: 2
     Defense: 2
     Agility: 1
+    MP: 0
+    SkillSpeed: 0
     IsMelee: 0
     ProjectilePrefab: VFXBullet
   HPMin: 200
@@ -69,3 +79,85 @@ MonoBehaviour:
   DamageMult: 10
   CritMaxChance: 0.3
   CritMult: 2
+  JsonClassStats: '{"Data":[{"Name":"Knight","Hp":10,"HpVal":300,"AttackRange":1,"AttackSpeed":2,"AttackSpeedSecs":0.86,"SkillSpeed":1,"SkillSpeedSecs":1.85,"Damage":3,"DamageVal":16,"Defense":10,"DefenseVal":10,"Agility":3,"CritChance":0.125,"ProjectileName":"","Skills":"Stun"},{"Name":"Wizard","Hp":2,"HpVal":140,"AttackRange":3,"AttackSpeed":1,"AttackSpeedSecs":0.93,"SkillSpeed":1,"SkillSpeedSecs":1.85,"Damage":9,"DamageVal":28,"Defense":2,"DefenseVal":6,"Agility":3,"CritChance":0.125,"ProjectileName":"VFXFireball","Skills":"Stun"},{"Name":"Assassin","Hp":3,"HpVal":160,"AttackRange":1,"AttackSpeed":7,"AttackSpeedSecs":0.51,"SkillSpeed":3,"SkillSpeedSecs":1.55,"Damage":7,"DamageVal":24,"Defense":3,"DefenseVal":6.5,"Agility":10,"CritChance":0.3,"ProjectileName":"","Skills":"Stun"},{"Name":"Tech","Hp":4,"HpVal":180,"AttackRange":2,"AttackSpeed":5,"AttackSpeedSecs":0.65,"SkillSpeed":2,"SkillSpeedSecs":1.7,"Damage":5,"DamageVal":20,"Defense":6,"DefenseVal":8,"Agility":7,"CritChance":0.22500000000000003,"ProjectileName":"VFXLaser","Skills":"Stun"},{"Name":"Gunner","Hp":6,"HpVal":220,"AttackRange":3,"AttackSpeed":8,"AttackSpeedSecs":0.44000000000000006,"SkillSpeed":2,"SkillSpeedSecs":1.7,"Damage":3,"DamageVal":16,"Defense":4,"DefenseVal":7,"Agility":3,"CritChance":0.125,"ProjectileName":"VFXBullet","Skills":"Stun"}]}'
+  ClassesNew:
+  - Name: Knight
+    Hp: 10
+    HpVal: 300
+    AttackRange: 1
+    AttackSpeed: 2
+    AttackSpeedSecs: 0.86
+    SkillSpeed: 1
+    SkillSpeedSecs: 1.85
+    Damage: 3
+    DamageVal: 16
+    Defense: 10
+    DefenseVal: 10
+    Agility: 3
+    CritChance: 0.125
+    ProjectileName: 
+    Skills: Stun
+  - Name: Wizard
+    Hp: 2
+    HpVal: 140
+    AttackRange: 3
+    AttackSpeed: 1
+    AttackSpeedSecs: 0.93
+    SkillSpeed: 1
+    SkillSpeedSecs: 1.85
+    Damage: 9
+    DamageVal: 28
+    Defense: 2
+    DefenseVal: 6
+    Agility: 3
+    CritChance: 0.125
+    ProjectileName: VFXFireball
+    Skills: Stun
+  - Name: Assassin
+    Hp: 3
+    HpVal: 160
+    AttackRange: 1
+    AttackSpeed: 7
+    AttackSpeedSecs: 0.51
+    SkillSpeed: 3
+    SkillSpeedSecs: 1.55
+    Damage: 7
+    DamageVal: 24
+    Defense: 3
+    DefenseVal: 6.5
+    Agility: 10
+    CritChance: 0.3
+    ProjectileName: 
+    Skills: Stun
+  - Name: Tech
+    Hp: 4
+    HpVal: 180
+    AttackRange: 2
+    AttackSpeed: 5
+    AttackSpeedSecs: 0.65
+    SkillSpeed: 2
+    SkillSpeedSecs: 1.7
+    Damage: 5
+    DamageVal: 20
+    Defense: 6
+    DefenseVal: 8
+    Agility: 7
+    CritChance: 0.225
+    ProjectileName: VFXLaser
+    Skills: Stun
+  - Name: Gunner
+    Hp: 6
+    HpVal: 220
+    AttackRange: 3
+    AttackSpeed: 8
+    AttackSpeedSecs: 0.44
+    SkillSpeed: 2
+    SkillSpeedSecs: 1.7
+    Damage: 3
+    DamageVal: 16
+    Defense: 4
+    DefenseVal: 7
+    Agility: 3
+    CritChance: 0.125
+    ProjectileName: VFXBullet
+    Skills: Stun

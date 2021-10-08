@@ -21,43 +21,73 @@ public class DataClasses : ScriptableObject
 	}
 
 	[System.Serializable]
-	public class Info
+	public class ClassStatsRow
 	{
 		public string Name;
-		[Range(1,5)] public int HP;
-		[Range(1,3)] public int AttackRange;
-		[Range(1,5)] public int AttackSpeed;
-		[Range(1,5)] public int MoveSpeed;
-		[Range(1,5)] public int Damage;
-		[Range(1,5)] public int Defense;
-		[Range(1,5)] public int Agility;
-		[Range(1,5)] public int MP;
-		[Range(1,5)] public int SkillSpeed;
 
-		public bool IsMelee;
-		public string ProjectilePrefab;
+		public int Hp;
+		public float HpVal;
+
+		public int AttackRange;
+
+		public int AttackSpeed;
+		public float AttackSpeedSecs;
+
+		public int SkillSpeed;
+		public float SkillSpeedSecs;
+
+		public int Damage;
+		public float DamageVal;
+
+		public int Defense;
+		public float DefenseVal;
+
+		public int Agility;
+		public float CritChance;
+
+		public string ProjectileName;
+		public string Skills;
 	}
 
-	public List<Info> Classes = new List<Info>();
+	[System.Serializable]
+	public class ClassStats
+	{
+		public ClassStatsRow[] Data;
+	}
 
-	public int HPMin = 100;
-	public int HPMult = 15;
+	[Tooltip("Paste here what you got from the DataClassStats sheet")]
+	[TextArea(5, 10)]
+	public string JsonClassStats;
 
-	public int StatMax = 5;
-	public int DamageMult = 10;
+	public List<ClassStatsRow> Classes;
 
-	public float CritMaxChance = 0.3f;
-	public float CritMult = 1.5f;
+	public void LoadJson()
+	{
+		ClassStats temp = JsonUtility.FromJson<ClassStats>(JsonClassStats);
+		if (temp == null)
+			return;
 
-	public Info GetRandom()
+		Classes.Clear();
+		foreach (var r in temp.Data)
+		{
+			Classes.Add(r);
+		}
+	}
+
+	public ClassStatsRow GetRandom()
 	{
 		int index = Random.Range(0, Classes.Count);
 		return Classes[index];
 	}
 
-	public Info GetByName(string name)
+	public ClassStatsRow GetByName(string name)
 	{
 		return Classes.Find((i) => (i.Name == name));
+	}
+
+	private void OnValidate()
+	{
+		LoadJson();
 	}
 }
 
