@@ -26,6 +26,17 @@ public class DamageTextGroup : MonoBehaviour
 
 		nextIndex = (nextIndex + 1) % texts.Length;
 	}
+
+	public void ShowMsg(string msg)
+	{
+		if (texts == null)
+			return;
+
+		var t = texts[nextIndex];
+		t.ShowMsg(msg);
+
+		nextIndex = (nextIndex + 1) % texts.Length;
+	}
 }
 
 }

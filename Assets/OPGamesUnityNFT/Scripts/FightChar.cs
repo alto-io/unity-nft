@@ -8,6 +8,7 @@ using TMPro;
 namespace OPGames.NFT
 {
 
+// TODO: This class is so effin huge!
 public class FightChar : MonoBehaviour
 {
 	private static int nextId = 1;
@@ -28,7 +29,7 @@ public class FightChar : MonoBehaviour
 	[SerializeField] private Animator spriteAndUIAnimator;
 	[SerializeField] private TextMeshProUGUI textName;
 	[SerializeField] private HPBar hpBar;
-	[SerializeField] private HPBar cooldownBar;
+	[SerializeField] private HPBar skillBar;
 	[SerializeField] private Transform attackPos;
 	[SerializeField] private Transform hitPos;
 	[SerializeField] private Transform view;
@@ -62,6 +63,8 @@ public class FightChar : MonoBehaviour
 	private float cooldownSCurr = 0;
 	private float cooldownS = 0;
 
+	private float stunDuration = 0;
+
 	private float hpCurr = 0;
 
 	public bool Team { get { return team; } }
@@ -80,6 +83,8 @@ public class FightChar : MonoBehaviour
 	private Vector3 moveStart;
 	private Vector3 moveEnd;
 	private Grid grid;
+
+	private List<DataSkills.SkillsRow> skills = new List<DataSkills.SkillsRow>();
 
 	private void Start()
 	{
@@ -101,12 +106,24 @@ public class FightChar : MonoBehaviour
 
 	private void Update()
 	{
+		if (stunDuration > 0)
+		{
+			stunDuration -= Time.deltaTime;
+		}
+		else
+		{
+			cooldownSCurr -= Time.deltaTime;
+			cooldownACurr -= Time.deltaTime;
+		}
+
 		switch (stateCurr)
 		{
 			case State.Idle: UpdateStateIdle(); break;
 			case State.Move: UpdateStateMove(); break;
 			case State.Attack: UpdateStateAttack(); break;
 		}
+
+		RefreshSkillBar();
 	}
 
 	private List<PosDistance> GetNeighbors(Vector3 start, Vector3 end)
@@ -200,20 +217,14 @@ public class FightChar : MonoBehaviour
 
 	private void UpdateStateIdle()
 	{
-		cooldownACurr -= Time.deltaTime;
 		if (cooldownACurr <= 0)
 			DecideAction();
 	}
 
 	private void UpdateStateMove()
 	{
-		//grid.ClearOccupied(transform.position);
-
 		transform.position = Vector3.Lerp(moveStart, moveEnd, 1.0f - (cooldownACurr / moveDuration));
 
-		//grid.SetOccupied(transform.position, id);
-
-		cooldownACurr -= Time.deltaTime;
 		if (cooldownACurr <= 0)
 		{
 			transform.position = moveEnd;
@@ -231,7 +242,6 @@ public class FightChar : MonoBehaviour
 			return;
 		}
 
-		cooldownACurr -= Time.deltaTime;
 		if (cooldownACurr <= 0)
 		{
 			string trigger = "AttackNorth";
@@ -264,10 +274,8 @@ public class FightChar : MonoBehaviour
 						.OnComplete(()=> { Destroy(clone); OnAttackHitRanged(); });
 				}
 			}
-
 			ResetCooldown();
 		}
-
 	}
 
 	private FightChar FindTarget()
@@ -455,6 +463,21 @@ public class FightChar : MonoBehaviour
 		cooldownS     = skillSpeed;
 		cooldownSCurr = cooldownS;
 
+		var dataSkills = DataSkills.Instance;
+		char[] seps = new char[] { ' ', ',' };
+		string[] skillNames = classInfo.Skills.Split(seps, System.StringSplitOptions.RemoveEmptyEntries);
+		foreach (string s in skillNames)
+		{
+			var skillRow = dataSkills.GetByName(s);
+			if (skillRow != null)
+			{
+				skills.Add(skillRow);
+				Debug.LogFormat("Got Skill {0}", skillRow.Name);
+			}
+		}
+
+		RefreshSkillBar();
+
 		//Debug.LogFormat("Class {0}; Speed {1}; ratio {2}; cooldown {3}",
 		//		className, attackSpeed, ratio, cooldown);
 	}
@@ -475,10 +498,10 @@ public class FightChar : MonoBehaviour
 		hpBar.SetValue(v);
 	}
 
-	private void RefreshCooldownBar()
+	private void RefreshSkillBar()
 	{
-		float v = (float)cooldownACurr / (float)cooldownA;
-		cooldownBar.SetValue(1.0f - v);
+		float v = (float)cooldownSCurr / (float)cooldownS;
+		skillBar.SetValue(1.0f - v);
 	}
 
 	public void OnAttackHitRanged()
@@ -501,24 +524,58 @@ public class FightChar : MonoBehaviour
 		if (isCrit)
 			damageFinal *= 2;
 
-		targetCurr.damageText.ShowDamage((int)Mathf.Round(damageFinal), isCrit);
-		targetCurr.hpCurr -= damageFinal;
-		targetCurr.RefreshHPBar();
-
-		if (targetCurr.IsAlive == false)
+		bool isShowDamageText = true;
+		if (cooldownSCurr <= 0 && skills.Count > 0)
 		{
-			cooldownACurr = 0.1f;
-			stateCurr = State.Idle;
-			grid.ClearOccupied(targetCurr.transform.position);
-			targetCurr.animator.SetTrigger("Dead");
-		}
-		else
-		{
-			targetCurr.animator.SetTrigger("Hurt");
+			// use skill instead
+			int r = Random.Range(0, skills.Count);
+			var currSkill = skills[r];
+			if (currSkill != null)
+			{
+				if (currSkill.StunSecs > 0)
+				{
+					targetCurr.stunDuration = currSkill.StunSecs;
+					targetCurr.damageText.ShowMsg("Stun");
+					isShowDamageText = false;
+				}
+
+				if (currSkill.Heal > 0)
+				{
+					hpCurr += currSkill.Heal;
+					damageText.ShowMsg("Heal");
+					RefreshHPBar();
+					isShowDamageText = false;
+				}
+
+				damageFinal = currSkill.Damage;
+				if (isCrit)
+					damageFinal *= 2;
+			}
+
+			cooldownSCurr = cooldownS;
 		}
 
-		if (isCrit)
-			Camera.main.DOShakePosition(0.5f, 0.1f, 30, 45, true);
+		if (damageFinal > 0)
+		{
+			targetCurr.damageText.ShowDamage((int)Mathf.Round(damageFinal), isCrit);
+			targetCurr.hpCurr -= damageFinal;
+			targetCurr.RefreshHPBar();
+
+			if (targetCurr.IsAlive == false)
+			{
+				cooldownACurr = 0.1f;
+				stateCurr = State.Idle;
+				grid.ClearOccupied(targetCurr.transform.position);
+				targetCurr.animator.SetTrigger("Dead");
+			}
+			else
+			{
+				targetCurr.animator.SetTrigger("Hurt");
+			}
+
+			if (isCrit)
+				Camera.main.DOShakePosition(0.5f, 0.1f, 30, 45, true);
+		}
 	}
 
 	public void OnAttackEnd()

@@ -37,6 +37,12 @@ public class DamageText : MonoBehaviour
 	public void OnDone()
 	{
 	}
+
+	public void ShowMsg(string msg)
+	{
+		text.text = msg;
+		animator.SetTrigger("Crit");
+	}
 }
 
 }

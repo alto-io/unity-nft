@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using DG.Tweening;
 using TMPro;
@@ -12,7 +13,15 @@ public class UIFight : MonoBehaviour
 	private TextMeshProUGUI text;
 
 	[SerializeField]
+	private Text textSpeed;
+
+	[SerializeField]
 	private Animator animator;
+
+	private float speed = 1.0f;
+
+	private float[] speedValues = new float[] { 1, 0.5f, 0.25f };
+	private int speedIndex = 0;
 
 	private void Start()
 	{
@@ -21,6 +30,18 @@ public class UIFight : MonoBehaviour
 	public void OnBtnBack()
 	{
 		SceneManager.LoadScene(1);
+	}
+
+	public void OnBtnSpeed()
+	{
+		speedIndex = (speedIndex + 1) % speedValues.Length;
+		speed = speedValues[speedIndex];
+		if (textSpeed != null)
+		{
+			textSpeed.text = speed.ToString() + "x";
+		}
+
+		Time.timeScale = speed;
 	}
 
 	public void SetTextAnimationTrigger(string trigger, string label)

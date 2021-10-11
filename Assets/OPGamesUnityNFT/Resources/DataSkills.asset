@@ -1,0 +1,59 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f3f3cf4767986d42b32e13d835f81e3, type: 3}
+  m_Name: DataSkills
+  m_EditorClassIdentifier: 
+  Json: '{"Data":[{"Name":"Stun","Description":"Stun your target lol","VFXPrefab":"","Icon":"","Damage":30,"Heal":"","StunSecs":2,"DamageAdd":"","DefenseAdd":"","AttackSpeedAdd":""},{"Name":"Heal","Description":"Heal
+    yourself","VFXPrefab":"","Icon":"","Damage":"","Heal":50,"StunSecs":"","DamageAdd":"","DefenseAdd":"","AttackSpeedAdd":""},{"Name":"Damage
+    Boost","Description":"Attack+","VFXPrefab":"","Icon":"","Damage":"","Heal":"","StunSecs":"","DamageAdd":20,"DefenseAdd":"","AttackSpeedAdd":""},{"Name":"Sword
+    Swing","Description":"Damage enemies around you","VFXPrefab":"","Icon":"","Damage":40,"Heal":"","StunSecs":"","DamageAdd":"","DefenseAdd":"","AttackSpeedAdd":""}]}'
+  Skills:
+  - Name: Stun
+    Description: Stun your target lol
+    VFXPrefab: 
+    Icon: 
+    Damage: 30
+    Heal: 0
+    StunSecs: 2
+    DamageAdd: 0
+    DefenseAdd: 0
+    AttackSpeedAdd: 0
+  - Name: Heal
+    Description: Heal yourself
+    VFXPrefab: 
+    Icon: 
+    Damage: 0
+    Heal: 50
+    StunSecs: 0
+    DamageAdd: 0
+    DefenseAdd: 0
+    AttackSpeedAdd: 0
+  - Name: Damage Boost
+    Description: Attack+
+    VFXPrefab: 
+    Icon: 
+    Damage: 0
+    Heal: 0
+    StunSecs: 0
+    DamageAdd: 20
+    DefenseAdd: 0
+    AttackSpeedAdd: 0
+  - Name: Sword Swing
+    Description: Damage enemies around you
+    VFXPrefab: 
+    Icon: 
+    Damage: 40
+    Heal: 0
+    StunSecs: 0
+    DamageAdd: 0
+    DefenseAdd: 0
+    AttackSpeedAdd: 0
