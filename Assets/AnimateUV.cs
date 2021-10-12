@@ -18,8 +18,8 @@ public class AnimateUV : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        offset.x += Time.time * scrollSpeed.x;
-        offset.y += Time.time * scrollSpeed.y;
+        offset.x += Time.deltaTime * scrollSpeed.x;
+        offset.y += Time.deltaTime * scrollSpeed.y;
         renderer.material.mainTextureOffset = offset;
     }
 }
