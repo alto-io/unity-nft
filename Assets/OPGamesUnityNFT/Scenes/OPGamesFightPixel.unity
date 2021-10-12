@@ -1765,6 +1765,26 @@ PrefabInstance:
       propertyPath: m_Name
       value: P2Left
       objectReference: {fileID: 0}
+    - target: {fileID: 6085344568099537362, guid: 11a1763f0b3fd3446b98c827f45f228b, type: 3}
+      propertyPath: colorRamp.ctime2
+      value: 65535
+      objectReference: {fileID: 0}
+    - target: {fileID: 6085344568099537362, guid: 11a1763f0b3fd3446b98c827f45f228b, type: 3}
+      propertyPath: colorRamp.ctime3
+      value: 65535
+      objectReference: {fileID: 0}
+    - target: {fileID: 6085344568099537362, guid: 11a1763f0b3fd3446b98c827f45f228b, type: 3}
+      propertyPath: colorRamp.key2.r
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6085344568099537362, guid: 11a1763f0b3fd3446b98c827f45f228b, type: 3}
+      propertyPath: colorRamp.key3.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6085344568099537362, guid: 11a1763f0b3fd3446b98c827f45f228b, type: 3}
+      propertyPath: colorRamp.m_NumColorKeys
+      value: 3
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 11a1763f0b3fd3446b98c827f45f228b, type: 3}
 --- !u!4 &604160703 stripped
