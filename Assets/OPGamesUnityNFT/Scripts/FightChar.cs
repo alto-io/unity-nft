@@ -472,11 +472,11 @@ public class FightChar : MonoBehaviour
 			if (skillRow != null)
 			{
 				skills.Add(skillRow);
-				Debug.LogFormat("Got Skill {0}", skillRow.Name);
 			}
 		}
 
 		RefreshSkillBar();
+		hpBar.SetSolidColor(team ? Color.green : Color.red);
 
 		//Debug.LogFormat("Class {0}; Speed {1}; ratio {2}; cooldown {3}",
 		//		className, attackSpeed, ratio, cooldown);
