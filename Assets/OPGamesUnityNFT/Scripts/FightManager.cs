@@ -27,9 +27,15 @@ public class FightManager : MonoBehaviour
 	[SerializeField] private List<FightChar> fighters;
 	[SerializeField] private UIFight ui;
 
+	[Header("Strings")]
+	[SerializeField] private string strFight;
+	[SerializeField] private string strWin;
+	[SerializeField] private string strLose;
+
+
+
 	private List<FightChar> teamA = new List<FightChar>();
 	private List<FightChar> teamB = new List<FightChar>();
-
 	private List<FightEvent> events = new List<FightEvent>();
 
 	private void Start()
@@ -102,7 +108,7 @@ public class FightManager : MonoBehaviour
 	private IEnumerator PlayFightCR()
 	{
 		yield return new WaitForSeconds(1.0f);
-		ui.SetTextAnimationTrigger("Fight", "FIGHT!");
+		ui.SetTextAnimationTrigger("Fight", strFight);
 		yield return new WaitForSeconds(1.0f);
 
 		foreach (var f in fighters)
@@ -122,11 +128,11 @@ public class FightManager : MonoBehaviour
 		
 		if (IsTeamAlive(teamA))
 		{
-			ui.SetTextAnimationTrigger("End", "YOU WIN!");
+			ui.SetTextAnimationTrigger("End", strWin);
 		}
 		else
 		{
-			ui.SetTextAnimationTrigger("End", "YOU LOSE! =(");
+			ui.SetTextAnimationTrigger("End", strLose);
 		}
 	}
 

@@ -501,7 +501,7 @@ public class FightChar : MonoBehaviour
 	private void RefreshSkillBar()
 	{
 		float v = (float)cooldownSCurr / (float)cooldownS;
-		skillBar.SetValue(1.0f - v);
+		skillBar.SetValue(1.0f - v, false);
 	}
 
 	public void OnAttackHitRanged()
@@ -557,7 +557,11 @@ public class FightChar : MonoBehaviour
 
 		if (damageFinal > 0)
 		{
-			targetCurr.damageText.ShowDamage((int)Mathf.Round(damageFinal), isCrit);
+			if (isShowDamageText)
+			{
+				targetCurr.damageText.ShowDamage((int)Mathf.Round(damageFinal), isCrit);
+			}
+
 			targetCurr.hpCurr -= damageFinal;
 			targetCurr.RefreshHPBar();
 

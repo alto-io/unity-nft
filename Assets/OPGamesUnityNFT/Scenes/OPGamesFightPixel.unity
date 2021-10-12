@@ -2366,6 +2366,9 @@ MonoBehaviour:
   - {fileID: 1004540385}
   - {fileID: 1488501630}
   ui: {fileID: 2127376804}
+  strFight: FIGHT!
+  strWin: YOU WIN!
+  strLose: YOU LOSE!
 --- !u!4 &793944521
 Transform:
   m_ObjectHideFlags: 0
