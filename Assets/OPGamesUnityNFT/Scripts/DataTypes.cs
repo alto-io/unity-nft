@@ -85,5 +85,30 @@ public class NFTItemData
 	}
 }
 
+[System.Serializable]
+public class OpenSeaAssetItemAssetContract
+{
+	public string address;
+	public string name;
+}
+
+[System.Serializable]
+public class OpenSeaAssetItem
+{
+	public string token_id;
+	public string image_preview_url;
+	public string name;
+	public string description;
+
+	public OpenSeaAssetItemAssetContract asset_contract;
+}
+
+[System.Serializable]
+public class OpenSeaAssets
+{
+	public OpenSeaAssetItem[] assets;
+}
+
+
 
 }
