@@ -34,27 +34,32 @@ SpriteAtlas:
     - {fileID: 102900000, guid: 36a40611ff339f243ab44be2f5a3b3f4, type: 3}
     - {fileID: 102900000, guid: 20a07d85f39815346a444eed04058ece, type: 3}
     - {fileID: 102900000, guid: f4bdc4f52de036446b1990a1bea67fff, type: 3}
-    totalSpriteSurfaceArea: 378464
+    - {fileID: 102900000, guid: f74ded1cda53ec445ae6300a9c8ad452, type: 3}
+    totalSpriteSurfaceArea: 2786723
     bindAsDefault: 1
     isAtlasV2: 0
     cachedData: {fileID: 0}
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
+  - {fileID: 21300000, guid: 1b1e6f30e29fe2a4ba27488e25abf2c1, type: 3}
   - {fileID: 21300000, guid: c8c583e19295db348b17feed92a279d6, type: 3}
   - {fileID: 21300000, guid: 01f0e653d6266d745b0a8dc70bd7ce97, type: 3}
   - {fileID: 21300000, guid: 80c2a3563188f0148b5fc7fd162e3835, type: 3}
   - {fileID: 21300000, guid: 310889d8211cc1d418ee3c79e068da3a, type: 3}
   - {fileID: 21300000, guid: 4808699a85fede0458f59b3bf41617fe, type: 3}
   - {fileID: 21300000, guid: a996f5cab6bb70842bfde03a5dd27308, type: 3}
+  - {fileID: 21300000, guid: c2e411ad9a1a24043bc08dce8150063d, type: 3}
   - {fileID: 21300000, guid: 2791337e23327f7498599a6f0728dff1, type: 3}
   - {fileID: 21300000, guid: 4ca7631f262289d4798f3cda00ff475b, type: 3}
   m_PackedSpriteNamesToIndex:
+  - bg
   - bar_unfilled
   - orange_card
   - green_card
   - purple_card
   - bar_filled
   - blue_card
+  - arcadians
   - checkbox
   - red_card
   m_RenderDataMap: {}

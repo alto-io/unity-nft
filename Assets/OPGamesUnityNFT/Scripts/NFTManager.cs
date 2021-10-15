@@ -91,6 +91,25 @@ public class NFTManager : MonoBehaviour
 		if (_Config.Account != "0x0000000000000000000000000000000000000001")
 			Wallet = _Config.Account;
 
+		yield return StartCoroutine(QueryOSWallet());
+		yield return StartCoroutine(QueryFakeNFTs());
+
+		LoadTempNFT1();
+
+		if (OnNFTListComplete != null)
+			OnNFTListComplete(loadedNFTs);
+
+		IsNFTListComplete = true;
+
+		foreach (var n in loadedNFTs)
+		{
+			if (OnNFTItemLoaded != null)
+				OnNFTItemLoaded(n);
+		}
+	}
+
+	private IEnumerator QueryOSWallet()
+	{
 		const string osAssetsAPI = "https://api.opensea.io/api/v1/assets";
 		string osAssetsRequest = osAssetsAPI + "?owner=" + Wallet;
 		
@@ -122,18 +141,53 @@ public class NFTManager : MonoBehaviour
 				}
 			}
 		}
+	}
 
-		LoadTempNFT1();
+	private IEnumerator QueryFakeNFTs()
+	{
+		const string api = "https://api.opensea.io/api/v1/assets?asset_contract_address={0}";
 
-		if (OnNFTListComplete != null)
-			OnNFTListComplete(loadedNFTs);
-
-		IsNFTListComplete = true;
-
-		foreach (var n in loadedNFTs)
+		DataNFTFake[] fakes = Resources.LoadAll<DataNFTFake>("");
+		foreach (var f in fakes)
 		{
-			if (OnNFTItemLoaded != null)
-				OnNFTItemLoaded(n);
+			if (f.Enabled == false)
+				continue;
+
+			string url = string.Format(api, f.ContractAddr);
+
+			foreach (string tokenId in f.TokenIds)
+			{
+				url += "&token_ids=" + tokenId;
+			}
+
+			using (var www = UnityWebRequest.Get(url))
+			{
+				yield return www.SendWebRequest();
+				var json = www.downloadHandler.text;
+
+				OpenSeaAssets result = JsonUtility.FromJson<OpenSeaAssets>(json);
+				if (result != null)
+				{
+					foreach (var a in result.assets)
+					{
+						Debug.LogFormat("{0}, {1}, {2}, {3}",
+								a.token_id,
+								a.name,
+								a.description,
+								a.image_preview_url);
+
+						NFTItemData item = new NFTItemData();
+						item.TokenId = a.token_id;
+						item.Contract = a.asset_contract.address;
+						item.Name = a.name;
+						item.Description = a.description;
+						item.ImageURL = a.image_preview_url;
+
+						loadedNFTs.Add(item);
+
+					}
+				}
+			}
 		}
 	}
 
