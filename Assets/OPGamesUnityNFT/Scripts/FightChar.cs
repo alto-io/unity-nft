@@ -12,6 +12,8 @@ namespace OPGames.NFT
 public class FightChar : MonoBehaviour
 {
 	private static int nextId = 1;
+
+#region Internal types
 	public enum State
 	{
 		Idle,
@@ -24,7 +26,16 @@ public class FightChar : MonoBehaviour
 		public Vector3 pos;
 		public float distance;
 	}
+#endregion
 
+#region Public Properties
+	public bool Team    { get { return team; } }
+	public bool IsAlive { get { return hpCurr > 0; } }
+	public bool IsReady { get { return cooldownACurr <= 0; } }
+	public float HP     { get { return hpCurr; } }
+#endregion
+
+#region Exposed Variables
 	[SerializeField] private DamageTextGroup damageText;
 	[SerializeField] private Animator spriteAndUIAnimator;
 	[SerializeField] private TextMeshProUGUI textName;
@@ -35,17 +46,19 @@ public class FightChar : MonoBehaviour
 	[SerializeField] private Transform view;
 	[SerializeField] private SpriteRenderer sprite;
 	[SerializeField] private bool team = true;
+#endregion
+
+#region Private variables
 
 	private int id = 0;
-
-	private DataClasses.ClassStatsRow classInfo;
-
 	private bool isMelee;
-
+	private float hpCurr = 0;
+	private float stunDuration = 0;
 	private float critChance;
-
 	private string charName = "";
 	private string projectilePrefab = "";
+
+	private DataClasses.ClassStatsRow classInfo;
 
 	// cooldown attack
 	private float cooldownACurr = 0;
@@ -54,15 +67,6 @@ public class FightChar : MonoBehaviour
 	// cooldown skill
 	private float cooldownSCurr = 0;
 	private float cooldownS = 0;
-
-	private float stunDuration = 0;
-
-	private float hpCurr = 0;
-
-	public bool Team    { get { return team; } }
-	public bool IsAlive { get { return hpCurr > 0; } }
-	public bool IsReady { get { return cooldownACurr <= 0; } }
-	public float HP     { get { return hpCurr; } }
 
 	private Animator animator;
 
@@ -76,16 +80,183 @@ public class FightChar : MonoBehaviour
 	private Grid    grid;
 
 	private List<DataSkills.SkillsRow> skills = new List<DataSkills.SkillsRow>();
+	private List<PosDistance> neighbors = new List<PosDistance>();
 
-	private void Start()
+#endregion
+
+#region Public Methods
+
+	public void SetTargets(List<FightChar> t)
 	{
-		grid = GameObject.FindObjectOfType<Grid>();
-		grid.SetOccupied(transform.position, id);
-
-		FollowCameraAngle();
+		targets = t;
 	}
 
-	public void FollowCameraAngle()
+	public void Reset()
+	{
+		hpCurr = classInfo.HpVal;
+		cooldownACurr = cooldownA;
+	}
+
+	public void SetRandomTempNFT()
+	{
+		Debug.LogFormat("SetRandomTempNFT");
+		var data = DataNFTTemp.Instance;
+		if (data == null)
+			return;
+
+		var info = data.GetRandom();
+		if (info == null)
+			return;
+
+		SetClass(info.CharClass);
+		RefreshName();
+
+		if (info.Spr != null) SetNFTSprite(info.Spr);
+		else                  SetNFTTexture(info.Texture);
+	}
+
+	public void SetNFT(string key)
+	{
+		Debug.LogFormat("SetNFT {0}", key);
+		var mgr = NFTManager.Instance;
+		if (mgr == null)
+			return;
+
+		var nft = mgr.GetNFTItemDataById(key);
+		if (nft == null)
+			return;
+
+		if (string.IsNullOrEmpty(nft.CharClass))
+		{
+			SetClassRandom();
+		}
+		else
+		{
+			SetClass(nft.CharClass);
+		}
+		charName = nft.Name;
+		RefreshName();
+
+		if (nft.Spr != null) SetNFTSprite(nft.Spr);
+		else                 SetNFTTexture(nft.Texture);
+	}
+
+	public void Init()
+	{
+		id = nextId;
+		nextId++;
+
+		animator = GetComponent<Animator>();
+
+		if (spriteAndUIAnimator != null)
+		{
+			spriteAndUIAnimator.Play(0, -1, Random.Range(0.0f, 1.0f));
+		}
+		RefreshName();
+		enabled = false;
+
+		for (int i=0; i<8; i++)
+		{
+			neighbors.Add(new PosDistance());
+		}
+	}
+
+	// Triggered by animation of projectile
+	public void OnAttackHitRanged()
+	{
+		if (!isMelee) OnAttackHit();
+	}
+
+	// Triggered by animation clip
+	public void OnAttackHitMelee()
+	{
+		if (isMelee) OnAttackHit();
+	}
+
+	// When this character is hit
+	public void OnAttackHit()
+	{
+		if (targetCurr == null)
+			return;
+
+		bool isCrit = CalcIfCrit();
+		float damageFinal = classInfo.DamageVal;
+		if (isCrit)
+			damageFinal *= 2;
+
+		bool isShowDamageText = true;
+		if (cooldownSCurr <= 0 && skills.Count > 0)
+		{
+			// use skill instead
+			int r = Random.Range(0, skills.Count);
+			var currSkill = skills[r];
+			if (currSkill != null)
+			{
+				if (currSkill.StunSecs > 0)
+				{
+					targetCurr.stunDuration = currSkill.StunSecs;
+					targetCurr.damageText.ShowMsg("Stun");
+					isShowDamageText = false;
+				}
+
+				if (currSkill.Heal > 0)
+				{
+					hpCurr += currSkill.Heal;
+					damageText.ShowMsg("Heal");
+					RefreshHPBar();
+					isShowDamageText = false;
+				}
+
+				damageFinal = currSkill.Damage;
+				if (isCrit)
+					damageFinal *= 2;
+			}
+
+			cooldownSCurr = cooldownS;
+		}
+
+		if (damageFinal > 0)
+		{
+			if (isShowDamageText)
+			{
+				targetCurr.damageText.ShowDamage((int)Mathf.Round(damageFinal), isCrit);
+			}
+
+			targetCurr.hpCurr -= damageFinal;
+			targetCurr.RefreshHPBar();
+
+			if (targetCurr.IsAlive == false)
+			{
+				cooldownACurr = 0.1f;
+				stateCurr = State.Idle;
+				grid.ClearOccupied(targetCurr.transform.position);
+				targetCurr.animator.SetTrigger("Dead");
+			}
+			else
+			{
+				targetCurr.animator.SetTrigger("Hurt");
+			}
+
+			if (isCrit)
+				Camera.main.DOShakePosition(0.5f, 0.1f, 30, 45, true);
+		}
+	}
+
+	public void OnAttackEnd()
+	{
+		ResetCooldown();
+	}
+
+	public void OnDeadEnd()
+	{
+		gameObject.SetActive(false);
+	}
+
+#endregion
+
+#region Private Methods
+
+	private void FollowCameraAngle()
 	{
 		var cam = Camera.main;
 		if (cam != null && view != null)
@@ -95,41 +266,21 @@ public class FightChar : MonoBehaviour
 		}
 	}
 
-	private void Update()
-	{
-		if (stunDuration > 0)
-		{
-			stunDuration -= Time.deltaTime;
-		}
-		else
-		{
-			cooldownSCurr -= Time.deltaTime;
-			cooldownACurr -= Time.deltaTime;
-		}
-
-		switch (stateCurr)
-		{
-			case State.Idle: UpdateStateIdle(); break;
-			case State.Move: UpdateStateMove(); break;
-			case State.Attack: UpdateStateAttack(); break;
-		}
-
-		RefreshSkillBar();
-	}
-
 	private List<PosDistance> GetNeighbors(Vector3 start, Vector3 end)
 	{
-		List<PosDistance> list = new List<PosDistance>();
-		list.Add(new PosDistance() { pos = new Vector3(end.x-1, end.y-1, end.z), distance = Mathf.Infinity });
-		list.Add(new PosDistance() { pos = new Vector3(end.x-1, end.y-0, end.z), distance = Mathf.Infinity });
-		list.Add(new PosDistance() { pos = new Vector3(end.x-1, end.y+1, end.z), distance = Mathf.Infinity });
-		list.Add(new PosDistance() { pos = new Vector3(end.x-0, end.y-1, end.z), distance = Mathf.Infinity });
-		list.Add(new PosDistance() { pos = new Vector3(end.x-0, end.y+1, end.z), distance = Mathf.Infinity });
-		list.Add(new PosDistance() { pos = new Vector3(end.x+1, end.y-1, end.z), distance = Mathf.Infinity });
-		list.Add(new PosDistance() { pos = new Vector3(end.x+1, end.y-0, end.z), distance = Mathf.Infinity });
-		list.Add(new PosDistance() { pos = new Vector3(end.x+1, end.y+1, end.z), distance = Mathf.Infinity });
+		neighbors[0].pos.Set(end.x-1, end.y-1, end.z); 
+		neighbors[1].pos.Set(end.x-1, end.y-0, end.z); 
+		neighbors[2].pos.Set(end.x-1, end.y+1, end.z); 
+		neighbors[3].pos.Set(end.x-0, end.y-1, end.z); 
+		neighbors[4].pos.Set(end.x-0, end.y+1, end.z); 
+		neighbors[5].pos.Set(end.x+1, end.y-1, end.z); 
+		neighbors[6].pos.Set(end.x+1, end.y-0, end.z); 
+		neighbors[7].pos.Set(end.x+1, end.y+1, end.z); 
 
-		foreach (var p in list)
+		for (int i=0; i<neighbors.Count; i++)
+			neighbors[i].distance = Mathf.Infinity;
+
+		foreach (var p in neighbors)
 		{
 			if (p.pos.x < 0 || p.pos.y < 0)
 				continue;
@@ -137,14 +288,14 @@ public class FightChar : MonoBehaviour
 			p.distance = (start-p.pos).sqrMagnitude;
 		}
 
-		list.Sort((a, b) => 
+		neighbors.Sort((a, b) => 
 				{ 
 					if (a.distance < b.distance) return -1;
 					else if (a.distance > b.distance) return 1;
 					else return 0;
 				});
 
-		return list;
+		return neighbors;
 	}
 
 	private void DecideAction()
@@ -155,15 +306,17 @@ public class FightChar : MonoBehaviour
 		if (targetCurr == null)
 			return;
 
+		// snap to destination if current state is moving
 		Vector3 targetPos = targetCurr.transform.position;
 		if (targetCurr.stateCurr == State.Move)
 			targetPos = targetCurr.moveEnd;
 
+		// Check if target is out of range
 		Vector3 delta = transform.position - targetPos;
 		float distance = delta.magnitude;
 		if (distance > (float)classInfo.AttackRange)
 		{
-			// move to target
+			// out of range - move to target
 			stateCurr = State.Move;
 			cooldownACurr = moveDuration;
 
@@ -181,8 +334,6 @@ public class FightChar : MonoBehaviour
 				break;
 			}
 
-			//Debug.LogFormat("from={0} to={1}; distance={2}, attackrange={3}", transform.position, dest, (transform.position - dest).magnitude, classInfo.AttackRange);
-
 			List<Vector3> path = grid.FindPath(transform.position, dest);
 			if (path != null && path.Count > 0)
 			{
@@ -190,17 +341,11 @@ public class FightChar : MonoBehaviour
 				moveEnd = path[0];
 				grid.ClearOccupied(moveStart);
 				grid.SetOccupied(moveEnd, id);
-				//Debug.LogFormat("{0} move to {1}", id, moveEnd);
-			}
-			else
-			{
-				//Debug.LogFormat("Path not found");
 			}
 		}
 		else
 		{
-			// attack
-			// Debug.LogFormat("{0} Pick Attack {1}", name, targetCurr.name);
+			// within range - attack
 			stateCurr = State.Attack;
 			ResetCooldown();
 		}
@@ -297,61 +442,6 @@ public class FightChar : MonoBehaviour
 		return nearest;
 	}
 
-	public void SetTargets(List<FightChar> t)
-	{
-		targets = t;
-	}
-
-	public void Reset()
-	{
-		hpCurr = classInfo.HpVal;
-		cooldownACurr = cooldownA;
-	}
-
-	public void SetRandomTempNFT()
-	{
-		Debug.LogFormat("SetRandomTempNFT");
-		var data = DataNFTTemp.Instance;
-		if (data == null)
-			return;
-
-		var info = data.GetRandom();
-		if (info == null)
-			return;
-
-		SetClass(info.CharClass);
-		RefreshName();
-
-		if (info.Spr != null) SetNFTSprite(info.Spr);
-		else                  SetNFTTexture(info.Texture);
-	}
-
-	public void SetNFT(string key)
-	{
-		Debug.LogFormat("SetNFT {0}", key);
-		var mgr = NFTManager.Instance;
-		if (mgr == null)
-			return;
-
-		var nft = mgr.GetNFTItemDataById(key);
-		if (nft == null)
-			return;
-
-		if (string.IsNullOrEmpty(nft.CharClass))
-		{
-			SetClassRandom();
-		}
-		else
-		{
-			SetClass(nft.CharClass);
-		}
-		charName = nft.Name;
-		RefreshName();
-
-		if (nft.Spr != null) SetNFTSprite(nft.Spr);
-		else                 SetNFTTexture(nft.Texture);
-	}
-
 	private void RefreshName()
 	{
 		textName.text = string.Format("{0}\n{1}", charName, classInfo.Name);
@@ -385,21 +475,6 @@ public class FightChar : MonoBehaviour
 				100 * scale);
 
 		sprite.sprite = spr;
-	}
-
-	public void Init()
-	{
-		id = nextId;
-		nextId++;
-
-		animator = GetComponent<Animator>();
-
-		if (spriteAndUIAnimator != null)
-		{
-			spriteAndUIAnimator.Play(0, -1, Random.Range(0.0f, 1.0f));
-		}
-		RefreshName();
-		enabled = false;
 	}
 
 	private void SetClassRandom()
@@ -482,93 +557,42 @@ public class FightChar : MonoBehaviour
 		skillBar.SetValue(1.0f - v, false);
 	}
 
-	public void OnAttackHitRanged()
+#endregion
+
+#region Unity Methods
+
+	private void Start()
 	{
-		if (!isMelee) OnAttackHit();
+		grid = GameObject.FindObjectOfType<Grid>();
+		grid.SetOccupied(transform.position, id);
+
+		FollowCameraAngle();
 	}
 
-	public void OnAttackHitMelee()
+	private void Update()
 	{
-		if (isMelee) OnAttackHit();
-	}
-
-	public void OnAttackHit()
-	{
-		if (targetCurr == null)
-			return;
-
-		bool isCrit = CalcIfCrit();
-		float damageFinal = classInfo.DamageVal;
-		if (isCrit)
-			damageFinal *= 2;
-
-		bool isShowDamageText = true;
-		if (cooldownSCurr <= 0 && skills.Count > 0)
+		if (stunDuration > 0)
 		{
-			// use skill instead
-			int r = Random.Range(0, skills.Count);
-			var currSkill = skills[r];
-			if (currSkill != null)
-			{
-				if (currSkill.StunSecs > 0)
-				{
-					targetCurr.stunDuration = currSkill.StunSecs;
-					targetCurr.damageText.ShowMsg("Stun");
-					isShowDamageText = false;
-				}
-
-				if (currSkill.Heal > 0)
-				{
-					hpCurr += currSkill.Heal;
-					damageText.ShowMsg("Heal");
-					RefreshHPBar();
-					isShowDamageText = false;
-				}
-
-				damageFinal = currSkill.Damage;
-				if (isCrit)
-					damageFinal *= 2;
-			}
-
-			cooldownSCurr = cooldownS;
+			stunDuration -= Time.deltaTime;
+		}
+		else
+		{
+			cooldownSCurr -= Time.deltaTime;
+			cooldownACurr -= Time.deltaTime;
 		}
 
-		if (damageFinal > 0)
+		switch (stateCurr)
 		{
-			if (isShowDamageText)
-			{
-				targetCurr.damageText.ShowDamage((int)Mathf.Round(damageFinal), isCrit);
-			}
-
-			targetCurr.hpCurr -= damageFinal;
-			targetCurr.RefreshHPBar();
-
-			if (targetCurr.IsAlive == false)
-			{
-				cooldownACurr = 0.1f;
-				stateCurr = State.Idle;
-				grid.ClearOccupied(targetCurr.transform.position);
-				targetCurr.animator.SetTrigger("Dead");
-			}
-			else
-			{
-				targetCurr.animator.SetTrigger("Hurt");
-			}
-
-			if (isCrit)
-				Camera.main.DOShakePosition(0.5f, 0.1f, 30, 45, true);
+			case State.Idle: UpdateStateIdle(); break;
+			case State.Move: UpdateStateMove(); break;
+			case State.Attack: UpdateStateAttack(); break;
 		}
+
+		RefreshSkillBar();
 	}
 
-	public void OnAttackEnd()
-	{
-		ResetCooldown();
-	}
+#endregion
 
-	public void OnDeadEnd()
-	{
-		gameObject.SetActive(false);
-	}
 }
 
 }
