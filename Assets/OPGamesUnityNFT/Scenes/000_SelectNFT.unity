@@ -491,7 +491,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5e3f666269847d5429e23c19d36e52be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Wallet: 0x3233f67E541444DDbbf9391630D92D7F7Aaf508D
+  TestWallet: 0x3233f67E541444DDbbf9391630D92D7F7Aaf508D
 --- !u!4 &696283022
 Transform:
   m_ObjectHideFlags: 0

@@ -37,21 +37,13 @@ public class FightChar : MonoBehaviour
 	[SerializeField] private bool team = true;
 
 	private int id = 0;
-	private float hp;
-	private float mp;
-	private int attackRange;
-	private float attackSpeed;
-	private float moveSpeed;
-	private float skillSpeed;
-	private float damage;
-	private float defense;
-	private int agility;
+
+	private DataClasses.ClassStatsRow classInfo;
 
 	private bool isMelee;
 
 	private float critChance;
 
-	private string className = "";
 	private string charName = "";
 	private string projectilePrefab = "";
 
@@ -67,12 +59,11 @@ public class FightChar : MonoBehaviour
 
 	private float hpCurr = 0;
 
-	public bool Team { get { return team; } }
+	public bool Team    { get { return team; } }
 	public bool IsAlive { get { return hpCurr > 0; } }
 	public bool IsReady { get { return cooldownACurr <= 0; } }
-	public float HP { get { return hp; } }
+	public float HP     { get { return hpCurr; } }
 
-	public System.Action<FightEvent> OnEventTriggered;
 	private Animator animator;
 
 	private List<FightChar> targets;
@@ -82,7 +73,7 @@ public class FightChar : MonoBehaviour
 
 	private Vector3 moveStart;
 	private Vector3 moveEnd;
-	private Grid grid;
+	private Grid    grid;
 
 	private List<DataSkills.SkillsRow> skills = new List<DataSkills.SkillsRow>();
 
@@ -170,7 +161,7 @@ public class FightChar : MonoBehaviour
 
 		Vector3 delta = transform.position - targetPos;
 		float distance = delta.magnitude;
-		if (distance > (float)attackRange)
+		if (distance > (float)classInfo.AttackRange)
 		{
 			// move to target
 			stateCurr = State.Move;
@@ -190,7 +181,7 @@ public class FightChar : MonoBehaviour
 				break;
 			}
 
-			//Debug.LogFormat("from={0} to={1}; distance={2}, attackrange={3}", transform.position, dest, (transform.position - dest).magnitude, attackRange);
+			//Debug.LogFormat("from={0} to={1}; distance={2}, attackrange={3}", transform.position, dest, (transform.position - dest).magnitude, classInfo.AttackRange);
 
 			List<Vector3> path = grid.FindPath(transform.position, dest);
 			if (path != null && path.Count > 0)
@@ -313,7 +304,7 @@ public class FightChar : MonoBehaviour
 
 	public void Reset()
 	{
-		hpCurr = hp;
+		hpCurr = classInfo.HpVal;
 		cooldownACurr = cooldownA;
 	}
 
@@ -363,7 +354,7 @@ public class FightChar : MonoBehaviour
 
 	private void RefreshName()
 	{
-		textName.text = string.Format("{0}\n{1}", charName, className);
+		textName.text = string.Format("{0}\n{1}", charName, classInfo.Name);
 		if (team == true)
 		{
 			textName.color = Color.blue;
@@ -429,38 +420,25 @@ public class FightChar : MonoBehaviour
 		if (dataClass == null)
 			return;
 
-		var classInfo = dataClass.GetByName(className);
-		SetClassStats(classInfo);
+		SetClassStats(dataClass.GetByName(className));
 	}
 
-	private void SetClassStats(DataClasses.ClassStatsRow classInfo)
+	private void SetClassStats(DataClasses.ClassStatsRow info)
 	{
-		var data = DataClasses.Instance;
-		if (data == null)
+		classInfo = info;
+		if (info == null)
 			return;
 
-		if (classInfo == null)
-			return;
-
-		className     = classInfo.Name;
-		hp            = classInfo.HpVal;
-		attackRange   = classInfo.AttackRange;
-		attackSpeed   = classInfo.AttackSpeedSecs;
-		skillSpeed    = classInfo.SkillSpeedSecs;
-		//moveSpeed     = classInfo.MoveSpeed;
-		damage        = classInfo.DamageVal;
-		defense       = classInfo.DefenseVal;
-		agility       = classInfo.Agility;
 		isMelee       = string.IsNullOrEmpty(classInfo.ProjectileName);
 		critChance    = classInfo.CritChance;
-		hpCurr        = hp;
+		hpCurr        = classInfo.HpVal;
 
 		projectilePrefab = classInfo.ProjectileName;
 
-		cooldownA     = attackSpeed;
+		cooldownA     = classInfo.AttackSpeedSecs;
 		cooldownACurr = cooldownA + Random.Range(0.0f, 0.5f); // add some randomness at the very start
 
-		cooldownS     = skillSpeed;
+		cooldownS     = classInfo.SkillSpeedSecs;
 		cooldownSCurr = cooldownS;
 
 		var dataSkills = DataSkills.Instance;
@@ -479,7 +457,7 @@ public class FightChar : MonoBehaviour
 		hpBar.SetSolidColor(team ? Color.green : Color.red);
 
 		//Debug.LogFormat("Class {0}; Speed {1}; ratio {2}; cooldown {3}",
-		//		className, attackSpeed, ratio, cooldown);
+		//		classInfo.Name, classInfo.AttackSpeedSecs, ratio, cooldown);
 	}
 
 	private void ResetCooldown()
@@ -494,7 +472,7 @@ public class FightChar : MonoBehaviour
 
 	private void RefreshHPBar()
 	{
-		float v = hpCurr / hp;
+		float v = hpCurr / classInfo.HpVal;
 		hpBar.SetValue(v);
 	}
 
@@ -520,7 +498,7 @@ public class FightChar : MonoBehaviour
 			return;
 
 		bool isCrit = CalcIfCrit();
-		float damageFinal = damage;
+		float damageFinal = classInfo.DamageVal;
 		if (isCrit)
 			damageFinal *= 2;
 

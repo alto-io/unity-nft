@@ -9,9 +9,9 @@ EditorBuildSettings:
     path: Assets/Web3Unity/Scenes/WebLogin.unity
     guid: a1b2001e782bb47659732d7e2bcdc35f
   - enabled: 1
-    path: Assets/OPGamesUnityNFT/Scenes/OPGamesNFT.unity
+    path: Assets/OPGamesUnityNFT/Scenes/000_SelectNFT.unity
     guid: 2cda990e2423bbf4892e6590ba056729
   - enabled: 1
-    path: Assets/OPGamesUnityNFT/Scenes/OPGamesFightPixel.unity
+    path: Assets/OPGamesUnityNFT/Scenes/001_FightScene.unity
     guid: c5997b11902d96443be7aebce92fa38e
   m_configObjects: {}

@@ -6,20 +6,19 @@ public class AnimateUV : MonoBehaviour
 {
     public Vector2 scrollSpeed;
 
-    private Renderer renderer;
     private Vector2 offset;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        renderer = GetComponent<Renderer>();
-    }
+	private Renderer r;
 
-    // Update is called once per frame
-    void Update()
+	private void Start()
+	{
+		r = GetComponent<Renderer>();
+	}
+
+    private void Update()
     {
         offset.x += Time.deltaTime * scrollSpeed.x;
         offset.y += Time.deltaTime * scrollSpeed.y;
-        renderer.material.mainTextureOffset = offset;
+        r.material.mainTextureOffset = offset;
     }
 }
