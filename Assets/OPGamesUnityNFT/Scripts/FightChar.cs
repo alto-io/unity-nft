@@ -80,6 +80,7 @@ public class FightChar : MonoBehaviour
 	private Grid    grid;
 
 	private List<DataSkills.SkillsRow> skills = new List<DataSkills.SkillsRow>();
+	private List<PosDistance> neighbors = new List<PosDistance>();
 
 #endregion
 
@@ -153,6 +154,11 @@ public class FightChar : MonoBehaviour
 		}
 		RefreshName();
 		enabled = false;
+
+		for (int i=0; i<8; i++)
+		{
+			neighbors.Add(new PosDistance());
+		}
 	}
 
 	// Triggered by animation of projectile
@@ -262,17 +268,19 @@ public class FightChar : MonoBehaviour
 
 	private List<PosDistance> GetNeighbors(Vector3 start, Vector3 end)
 	{
-		List<PosDistance> list = new List<PosDistance>();
-		list.Add(new PosDistance() { pos = new Vector3(end.x-1, end.y-1, end.z), distance = Mathf.Infinity });
-		list.Add(new PosDistance() { pos = new Vector3(end.x-1, end.y-0, end.z), distance = Mathf.Infinity });
-		list.Add(new PosDistance() { pos = new Vector3(end.x-1, end.y+1, end.z), distance = Mathf.Infinity });
-		list.Add(new PosDistance() { pos = new Vector3(end.x-0, end.y-1, end.z), distance = Mathf.Infinity });
-		list.Add(new PosDistance() { pos = new Vector3(end.x-0, end.y+1, end.z), distance = Mathf.Infinity });
-		list.Add(new PosDistance() { pos = new Vector3(end.x+1, end.y-1, end.z), distance = Mathf.Infinity });
-		list.Add(new PosDistance() { pos = new Vector3(end.x+1, end.y-0, end.z), distance = Mathf.Infinity });
-		list.Add(new PosDistance() { pos = new Vector3(end.x+1, end.y+1, end.z), distance = Mathf.Infinity });
+		neighbors[0].pos.Set(end.x-1, end.y-1, end.z); 
+		neighbors[1].pos.Set(end.x-1, end.y-0, end.z); 
+		neighbors[2].pos.Set(end.x-1, end.y+1, end.z); 
+		neighbors[3].pos.Set(end.x-0, end.y-1, end.z); 
+		neighbors[4].pos.Set(end.x-0, end.y+1, end.z); 
+		neighbors[5].pos.Set(end.x+1, end.y-1, end.z); 
+		neighbors[6].pos.Set(end.x+1, end.y-0, end.z); 
+		neighbors[7].pos.Set(end.x+1, end.y+1, end.z); 
 
-		foreach (var p in list)
+		for (int i=0; i<neighbors.Count; i++)
+			neighbors[i].distance = Mathf.Infinity;
+
+		foreach (var p in neighbors)
 		{
 			if (p.pos.x < 0 || p.pos.y < 0)
 				continue;
@@ -280,14 +288,14 @@ public class FightChar : MonoBehaviour
 			p.distance = (start-p.pos).sqrMagnitude;
 		}
 
-		list.Sort((a, b) => 
+		neighbors.Sort((a, b) => 
 				{ 
 					if (a.distance < b.distance) return -1;
 					else if (a.distance > b.distance) return 1;
 					else return 0;
 				});
 
-		return list;
+		return neighbors;
 	}
 
 	private void DecideAction()
