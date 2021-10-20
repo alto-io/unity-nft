@@ -17,6 +17,8 @@ public class UINFTList : MonoBehaviour
 	[SerializeField] private Button btnNext;
 	[SerializeField] private int numNFTs = 3;
 
+	[SerializeField] private UINFTItem[] selectedUI;
+
 	private Dictionary<string, GameObject> listItems = new Dictionary<string, GameObject>();
 	private Dictionary<string, Toggle> listToggles = new Dictionary<string, Toggle>();
 
@@ -163,6 +165,28 @@ public class UINFTList : MonoBehaviour
 			btnNext.interactable = false;
 		}
 
+		RefreshSelection();
+	}
+
+	private void RefreshSelection()
+	{
+		NFTManager nft = NFTManager.Instance;
+		if (nft == null) return;
+
+		int selectedCount = 0;
+		foreach (string key in GameGlobals.Selected)
+		{
+			if (selectedUI[selectedCount] != null)
+			{
+				NFTItemData d = nft.GetNFTItemDataById(key);
+				selectedUI[selectedCount].Fill(d);
+				selectedUI[selectedCount].gameObject.SetActive(true);
+				selectedCount++;
+			}
+		}
+
+		for (int i=selectedCount; i<selectedUI.Length; i++)
+			selectedUI[i].gameObject.SetActive(false);
 	}
 }
 
