@@ -12,18 +12,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6f3f3cf4767986d42b32e13d835f81e3, type: 3}
   m_Name: DataSkills
   m_EditorClassIdentifier: 
-  Json: '{"Data":[{"Name":"Stun","Description":"Stun your target lol","VFXPrefab":"","Icon":"","Damage":30,"Heal":"","StunSecs":2,"DamageAdd":"","DefenseAdd":"","AttackSpeedAdd":""},{"Name":"Heal","Description":"Heal
-    yourself","VFXPrefab":"","Icon":"","Damage":"","Heal":50,"StunSecs":"","DamageAdd":"","DefenseAdd":"","AttackSpeedAdd":""},{"Name":"Damage
+  Json: '{"Data":[{"Name":"Stun","Description":"Stun your target lol","VFXPrefab":"","Icon":"","Damage":15,"Heal":"","StunSecs":1.5,"DamageAdd":"","DefenseAdd":"","AttackSpeedAdd":""},{"Name":"Heal","Description":"Heal
+    yourself","VFXPrefab":"","Icon":"","Damage":"","Heal":25,"StunSecs":"","DamageAdd":"","DefenseAdd":"","AttackSpeedAdd":""},{"Name":"Damage
     Boost","Description":"Attack+","VFXPrefab":"","Icon":"","Damage":"","Heal":"","StunSecs":"","DamageAdd":20,"DefenseAdd":"","AttackSpeedAdd":""},{"Name":"Sword
-    Swing","Description":"Damage enemies around you","VFXPrefab":"","Icon":"","Damage":40,"Heal":"","StunSecs":"","DamageAdd":"","DefenseAdd":"","AttackSpeedAdd":""}]}'
+    Swing","Description":"Damage enemies around you","VFXPrefab":"","Icon":"","Damage":20,"Heal":"","StunSecs":"","DamageAdd":"","DefenseAdd":"","AttackSpeedAdd":""}]}'
   Skills:
   - Name: Stun
     Description: Stun your target lol
     VFXPrefab: 
     Icon: 
-    Damage: 30
+    Damage: 15
     Heal: 0
-    StunSecs: 2
+    StunSecs: 1.5
     DamageAdd: 0
     DefenseAdd: 0
     AttackSpeedAdd: 0
@@ -32,7 +32,7 @@ MonoBehaviour:
     VFXPrefab: 
     Icon: 
     Damage: 0
-    Heal: 50
+    Heal: 25
     StunSecs: 0
     DamageAdd: 0
     DefenseAdd: 0
@@ -51,7 +51,7 @@ MonoBehaviour:
     Description: Damage enemies around you
     VFXPrefab: 
     Icon: 
-    Damage: 40
+    Damage: 20
     Heal: 0
     StunSecs: 0
     DamageAdd: 0
