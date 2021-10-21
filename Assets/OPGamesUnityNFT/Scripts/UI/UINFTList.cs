@@ -40,6 +40,11 @@ public class UINFTList : MonoBehaviour
 		}
 
 		LoadFromManager();
+
+		foreach (var s in selectedUI)
+		{
+			s.gameObject.SetActive(false);
+		}
 	}
 
 	private void LoadFromManager()
