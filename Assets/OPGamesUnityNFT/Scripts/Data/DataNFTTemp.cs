@@ -12,6 +12,7 @@ public class DataNFTTemp : ScriptableObject
 	{
 		public string Name;
 		public string Description;
+		public string TokenId;
 		public string CharClass;
 		public Texture2D Texture;
 		public Sprite Spr;

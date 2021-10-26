@@ -29,10 +29,13 @@ public class FightChar : MonoBehaviour
 #endregion
 
 #region Public Properties
+	public int Id       { get { return id; } }
 	public bool Team    { get { return team; } }
 	public bool IsAlive { get { return hpCurr > 0; } }
 	public bool IsReady { get { return cooldownACurr <= 0; } }
 	public float HP     { get { return hpCurr; } }
+
+	public DataClasses.ClassStatsRow ClassInfo { get { return classInfo; } }
 #endregion
 
 #region Exposed Variables

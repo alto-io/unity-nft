@@ -7,21 +7,6 @@ using TMPro;
 namespace OPGames.NFT
 {
 
-[System.Serializable]
-public class FightEvent
-{
-	public FightChar source;
-	public FightChar target;
-	public int damage = 0;
-	public bool isCrit = false;
-
-	public override string ToString()
-	{
-		return string.Format("source: {0}, target: {1}, damage: {2}", 
-				source.name, target.name, damage);
-	}
-}
-
 public class FightManager : MonoBehaviour
 {
 	[SerializeField] private List<FightChar> fighters;
@@ -32,11 +17,8 @@ public class FightManager : MonoBehaviour
 	[SerializeField] private string strWin;
 	[SerializeField] private string strLose;
 
-
-
 	private List<FightChar> teamA = new List<FightChar>();
 	private List<FightChar> teamB = new List<FightChar>();
-	private List<FightEvent> events = new List<FightEvent>();
 
 	private void Start()
 	{
@@ -134,12 +116,6 @@ public class FightManager : MonoBehaviour
 		{
 			ui.SetTextAnimationTrigger("End", strLose);
 		}
-	}
-
-	private void OnEventTriggered(FightEvent e)
-	{
-		//Debug.LogFormat("Add event {0}", e);
-		events.Add(e);
 	}
 }
 
