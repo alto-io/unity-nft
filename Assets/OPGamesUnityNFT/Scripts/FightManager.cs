@@ -20,6 +20,8 @@ public class FightManager : MonoBehaviour
 	private List<FightChar> teamA = new List<FightChar>();
 	private List<FightChar> teamB = new List<FightChar>();
 
+	private	FightSim sim = new FightSim();
+
 	private void Start()
 	{
 		// Set teams
@@ -47,10 +49,17 @@ public class FightManager : MonoBehaviour
 			f.SetRandomTempNFT();
 		}
 
+		FightSim.GridObj = GameObject.FindObjectOfType<Grid>();
+		sim.Init();
+
 		foreach (var f in fighters)
 		{
 			f.Init();
+			sim.AddChar(f);
 		}
+
+		sim.Simulate();
+
 
 //		yield return null;
 //		yield return null;
@@ -75,7 +84,7 @@ public class FightManager : MonoBehaviour
 //			f.Reset();
 //		}
 //
-		StartCoroutine(PlayFightCR());
+//		StartCoroutine(PlayFightCR());
 	}
 
 	private bool IsTeamAlive(List<FightChar> team)

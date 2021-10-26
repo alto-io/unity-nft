@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 
+// TODO: public members should start with Capital letter
 public class Grid : MonoBehaviour
 {
 	[System.Serializable]
@@ -69,10 +70,14 @@ public class Grid : MonoBehaviour
 
 	public void SetOccupied(Vector3 world, int id)
 	{
-		Vector2Int g = WorldToGrid(world);
+		SetOccupied(WorldToGrid(world), id);
+	}
+
+	public void SetOccupied(Vector2Int g, int id)
+	{
 		if (g.x < 0 || g.x >= width || g.y < 0 || g.y >= height)
 		{
-			Debug.LogErrorFormat("Index out of range {0}, world={1}", g, world);
+			Debug.LogErrorFormat("Index out of range {0}", g);
 			return;
 		}
 		search[g.x, g.y].occupied = id;
@@ -83,12 +88,21 @@ public class Grid : MonoBehaviour
 		SetOccupied(world, 0);
 	}
 
+	public void ClearOccupied(Vector2Int g)
+	{
+		SetOccupied(g, 0);
+	}
+
 	public int GetOccupied(Vector3 world)
 	{
-		Vector2Int g = WorldToGrid(world);
+		return GetOccupied(WorldToGrid(world));
+	}
+
+	public int GetOccupied(Vector2Int g)
+	{
 		if (g.x < 0 || g.x >= width || g.y < 0 || g.y >= height)
 		{
-			Debug.LogErrorFormat("Index out of range {0}, world={1}", g, world);
+			Debug.LogErrorFormat("Index out of range {0}", g);
 			return 0;
 		}
 		return search[g.x, g.y].occupied;
