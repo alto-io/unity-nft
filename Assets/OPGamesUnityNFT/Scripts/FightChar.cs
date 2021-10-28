@@ -566,14 +566,16 @@ public class FightChar : MonoBehaviour
 
 	private void Start()
 	{
-		grid = GameObject.FindObjectOfType<Grid>();
-		grid.SetOccupied(transform.position, id);
+		//grid = GameObject.FindObjectOfType<Grid>();
+		//grid.SetOccupied(transform.position, id);
 
 		FollowCameraAngle();
 	}
 
 	private void Update()
 	{
+		return;
+
 		if (stunDuration > 0)
 		{
 			stunDuration -= Time.deltaTime;

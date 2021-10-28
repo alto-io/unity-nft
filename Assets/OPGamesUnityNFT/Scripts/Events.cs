@@ -34,6 +34,11 @@ public class ReplayEvtMove : ReplayEvt
 	public int Char;
 	public Vector2Int From;
 	public Vector2Int To;
+
+	public override string ToString()
+	{
+		return string.Format("EvtMove: {0} from:{1}, to:{2}", Char, From.ToString(), To.ToString());
+	}
 }
 
 public class ReplayEvtAttack : ReplayEvt
@@ -41,6 +46,11 @@ public class ReplayEvtAttack : ReplayEvt
 	public int Char;
 	public int Targ;
 	public int Id; // attack Id: 0=normal, 1=skill1, 2=skill2, etc
+
+	public override string ToString()
+	{
+		return string.Format("EvtAttack: {0} target:{1}", Char, Targ);
+	}
 }
 
 public class ReplayEvtDamage : ReplayEvt
@@ -103,9 +113,11 @@ public class ModelChar
 	public int Id;
 	public bool Team;
 	public Vector2Int Pos;
+	public Vector2Int PosDest;
 	public int Hp;
 	public int CdAttack;
 	public int CdAttackFull;
+	public int CdMove;
 	public int Damage;
 	public int Defense;
 	public int CritChance; // in percent 50 = 50%

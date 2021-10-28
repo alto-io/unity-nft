@@ -21,6 +21,9 @@ public class FightManager : MonoBehaviour
 	private List<FightChar> teamB = new List<FightChar>();
 
 	private	FightSim sim = new FightSim();
+	private Grid grid = null;
+
+	private List<ReplayEvt> events;
 
 	private void Start()
 	{
@@ -49,7 +52,8 @@ public class FightManager : MonoBehaviour
 			f.SetRandomTempNFT();
 		}
 
-		FightSim.GridObj = GameObject.FindObjectOfType<Grid>();
+		grid = GameObject.FindObjectOfType<Grid>();
+		FightSim.GridObj = grid;
 		sim.Init();
 
 		foreach (var f in fighters)
@@ -58,8 +62,11 @@ public class FightManager : MonoBehaviour
 			sim.AddChar(f);
 		}
 
-		sim.Simulate();
+		events = sim.Simulate();
+		if (events == null || events.Count == 0)
+			return;
 
+		Debug.Log($"Num Events {events.Count}");
 
 //		yield return null;
 //		yield return null;
@@ -84,7 +91,7 @@ public class FightManager : MonoBehaviour
 //			f.Reset();
 //		}
 //
-//		StartCoroutine(PlayFightCR());
+		StartCoroutine(PlayFightCR());
 	}
 
 	private bool IsTeamAlive(List<FightChar> team)
@@ -95,6 +102,20 @@ public class FightManager : MonoBehaviour
 
 		return false;
 	}
+
+	private void TickEvtMove(ReplayEvtMove evt)
+	{
+		// do the event
+		FightChar fightChar = fighters.Find((x) => (x.Id == evt.Char));
+		fightChar.transform.position = grid.GridToWorld(evt.To);
+		Debug.Log(evt.ToString());
+	}
+
+	private void TickEvtAttack(ReplayEvtAttack evt)
+	{
+		Debug.Log(evt.ToString());
+	}
+
 
 	private IEnumerator PlayFightCR()
 	{
@@ -107,24 +128,56 @@ public class FightManager : MonoBehaviour
 			f.enabled = true;
 		}
 
-		while (IsTeamAlive(teamA) && IsTeamAlive(teamB))
+		int evtIndex = 0;
+		int tick = 0;
+		var evtCurr = events[evtIndex];
+		while (evtCurr != null)
 		{
-			yield return new WaitForSeconds(1.0f);
+			tick++;
+			while (evtCurr != null && evtCurr.Tick == tick)
+			{
+				if (evtCurr is ReplayEvtMove)
+				{
+					TickEvtMove((ReplayEvtMove) evtCurr);
+				}
+				else if (evtCurr is ReplayEvtAttack)
+				{
+					TickEvtAttack((ReplayEvtAttack) evtCurr);
+				}
+
+				evtIndex++;
+				if (evtIndex < events.Count)
+				{
+					evtCurr = events[evtIndex];
+				}
+				else
+				{
+					evtCurr = null;
+				}
+			}
+
+			yield return new WaitForSeconds(0.02f);
 		}
 
-		foreach (var f in fighters)
+		foreach (var e in events)
 		{
-			f.enabled = false;
+
 		}
-		
-		if (IsTeamAlive(teamA))
-		{
-			ui.SetTextAnimationTrigger("End", strWin);
-		}
-		else
-		{
-			ui.SetTextAnimationTrigger("End", strLose);
-		}
+
+
+//		foreach (var f in fighters)
+//		{
+//			f.enabled = false;
+//		}
+//		
+//		if (IsTeamAlive(teamA))
+//		{
+//			ui.SetTextAnimationTrigger("End", strWin);
+//		}
+//		else
+//		{
+//			ui.SetTextAnimationTrigger("End", strLose);
+//		}
 	}
 }
 

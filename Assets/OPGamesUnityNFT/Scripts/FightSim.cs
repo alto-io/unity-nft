@@ -16,7 +16,6 @@ public class FightSim
 	}
 
 	static public Grid GridObj;
-	static private List<PosDistance> neighbors = null;
 
 	public List<ModelChar>       Chars     = new List<ModelChar>();
 	public List<ModelChar>       TeamA     = new List<ModelChar>();
@@ -27,6 +26,7 @@ public class FightSim
 	public List<ReplayEvtDamage> EvtDamage = new List<ReplayEvtDamage>();
 	public List<ReplayEvtBuff>   EvtBuff   = new List<ReplayEvtBuff>();
 
+	public List<ReplayEvt>       EvtAll    = new List<ReplayEvt>();
 
 	public void Init()
 	{
@@ -66,41 +66,78 @@ public class FightSim
 		}
 	}
 
-	public void Simulate()
+	public List<ReplayEvt> Simulate()
 	{
 		int tickId = 0;
 
-		while (IsTeamAlive(TeamA) && IsTeamAlive(TeamB) && tickId < 10)
+		while (IsTeamAliveFunc(TeamA) && IsTeamAliveFunc(TeamB) && tickId < 20)
 		{
 			tickId++;
 
-			foreach (var c in Chars)
-			{
-				c.CdAttack--;
-				c.CdAttack--;
-			}
-
 			foreach (var c in TeamA)
 			{
-				if (c.CurrState == ModelChar.State.Idle)
-				{
-					DecideAction(c, TeamB);
-				}
+				c.CdAttack--;
+				SimulateChar(tickId, c, TeamB);
 			}
 
 			foreach (var c in TeamB)
 			{
-				if (c.CurrState == ModelChar.State.Idle)
-				{
-					DecideAction(c, TeamA);
-				}
+				c.CdAttack--;
+				SimulateChar(tickId, c, TeamA);
 			}
+		}
+
+		return EvtAll;
+	}
+
+	private void SimulateChar(int tickId, ModelChar src, List<ModelChar> enemies)
+	{
+		switch (src.CurrState)
+		{
+			case ModelChar.State.Idle:
+				DecideAction(tickId, src, enemies);
+				break;
+
+			case ModelChar.State.Move:
+				src.CdMove--;
+				if (src.CdMove <= 0)
+				{
+					src.Pos = src.PosDest;
+					DecideAction(tickId, src, enemies);
+				}
+
+				break;
+
+			case ModelChar.State.Attack:
+				ModelChar target = enemies.Find((c) => c.Id == src.TargetId);
+				if (target != null)
+				{
+					target.Hp -= src.Damage;
+
+					Debug.Log($"Attack target {target.Id}, damage {src.Damage}");
+
+					ReplayEvtAttack evt = new ReplayEvtAttack();
+					evt.Tick = tickId;
+					evt.Char = src.Id;
+					evt.Targ = target.Id;
+
+					EvtAttack.Add(evt);
+					EvtAll.Add(evt);
+
+					if (target.Hp <= 0)
+					{
+						Debug.Log($"Dead target {target.Id}");
+
+						src.CurrState = ModelChar.State.Idle;
+					}
+				}
+				break;
 		}
 	}
 
-	static private void DecideAction(ModelChar src, List<ModelChar> enemies)
+	private void DecideAction(int tickId, ModelChar src, List<ModelChar> enemies)
 	{
-		var target = FindTarget(src, enemies);
+		var target = FindTargetFunc(src, enemies);
 		if (target == null)
 			return;
 
@@ -109,33 +146,19 @@ public class FightSim
 		float distance = (src.Pos - target.Pos).magnitude;
 		if (distance > (float)src.ClassInfo.AttackRange)
 		{
-			// find path
-			Vector2Int dest = target.Pos;
-			List<PosDistance> list = GetNeighbors(src.Pos, target.Pos);
-			foreach (var l in list)
-			{
-				if (l.Distance == Mathf.Infinity)
-					continue;
+			src.PosDest = GetNextNodeFunc(src, target.Pos);
+			//if (src.PosDest != src.Pos)
+			//	src.CdMove = 2;
 
-				if (GridObj.GetOccupied(l.Pos) != 0)
-					continue;
+			ReplayEvtMove evt = new ReplayEvtMove();
+			evt.Tick = tickId;
+			evt.Char = src.Id;
+			evt.From = src.Pos;
+			evt.To = src.PosDest;
+			EvtMove.Add(evt);
+			EvtAll.Add(evt);
 
-				dest = l.Pos;
-				break;
-			}
-
-			var path = GridObj.FindPath(src.Pos, dest);
-			if (path != null && path.Count > 0)
-			{
-				var start = src.Pos;
-				var end = path[0].pos;
-				GridObj.ClearOccupied(start);
-				GridObj.SetOccupied(end, src.Id);
-
-				Debug.Log($"Char {src.Id} will move to {end.ToString()}");
-
-				src.Pos = end;
-			}
+			src.Pos = src.PosDest;
 		}
 		else
 		{
@@ -143,7 +166,38 @@ public class FightSim
 		}
 	}
 
-	static private ModelChar FindTarget(ModelChar src, List<ModelChar> enemies)
+	// Pure function, don't modify inputs
+	static private Vector2Int GetNextNodeFunc(ModelChar src, Vector2Int dest)
+	{
+		// find path
+		List<PosDistance> list = GetNeighborsFunc(src.Pos, dest);
+		foreach (var l in list)
+		{
+			if (l.Distance == Mathf.Infinity)
+				continue;
+
+			if (GridObj.GetOccupied(l.Pos) != 0)
+				continue;
+
+			dest = l.Pos;
+			break;
+		}
+
+		var path = GridObj.FindPath(src.Pos, dest);
+		if (path != null && path.Count > 0)
+		{
+			var start = src.Pos;
+			var end = path[0].pos;
+			GridObj.ClearOccupied(start);
+			GridObj.SetOccupied(end, src.Id);
+
+			return end;
+		}
+
+		return src.Pos;
+	}
+
+	static private ModelChar FindTargetFunc(ModelChar src, List<ModelChar> enemies)
 	{
 		float nearestDist = Mathf.Infinity;
 		ModelChar nearest = null;
@@ -163,7 +217,7 @@ public class FightSim
 		return nearest;
 	}
 
-	static private bool IsTeamAlive(List<ModelChar> team)
+	static private bool IsTeamAliveFunc(List<ModelChar> team)
 	{
 		int hpTotal = 0;
 		foreach (var c in team)
@@ -172,7 +226,8 @@ public class FightSim
 		return hpTotal > 0;
 	}
 
-	static private List<PosDistance> GetNeighbors(Vector2Int start, Vector2Int end)
+	static private List<PosDistance> neighbors = null;
+	static private List<PosDistance> GetNeighborsFunc(Vector2Int start, Vector2Int end)
 	{
 		neighbors[0].Pos.Set(end.x-1, end.y-1); 
 		neighbors[1].Pos.Set(end.x-1, end.y-0); 
