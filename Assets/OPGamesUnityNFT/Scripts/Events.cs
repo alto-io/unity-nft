@@ -58,6 +58,11 @@ public class ReplayEvtDamage : ReplayEvt
 	public int Char;
 	public int Dmg;
 	public bool Crit;
+
+	public override string ToString()
+	{
+		return string.Format("EvtDamage: {0} damage:{1}", Char, Dmg);
+	}
 }
 
 public class ReplayEvtBuff : ReplayEvt

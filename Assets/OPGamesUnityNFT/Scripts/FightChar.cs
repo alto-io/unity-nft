@@ -33,7 +33,7 @@ public class FightChar : MonoBehaviour
 	public bool Team    { get { return team; } }
 	public bool IsAlive { get { return hpCurr > 0; } }
 	public bool IsReady { get { return cooldownACurr <= 0; } }
-	public float HP     { get { return hpCurr; } }
+	public float HP     { get { return hpCurr; } set { hpCurr = value; RefreshHPBar(); } }
 
 	public DataClasses.ClassStatsRow ClassInfo { get { return classInfo; } }
 #endregion
@@ -71,7 +71,7 @@ public class FightChar : MonoBehaviour
 	private float cooldownSCurr = 0;
 	private float cooldownS = 0;
 
-	private Animator animator;
+	public Animator animator;
 
 	private List<FightChar> targets;
 	private FightChar targetCurr = null;

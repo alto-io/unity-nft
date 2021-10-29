@@ -70,7 +70,7 @@ public class FightSim
 	{
 		int tickId = 0;
 
-		while (IsTeamAliveFunc(TeamA) && IsTeamAliveFunc(TeamB) && tickId < 20)
+		while (IsTeamAliveFunc(TeamA) && IsTeamAliveFunc(TeamB))
 		{
 			tickId++;
 
@@ -86,6 +86,8 @@ public class FightSim
 				SimulateChar(tickId, c, TeamA);
 			}
 		}
+
+		EvtAll.Sort((a, b) => { return a.Tick - b.Tick; });
 
 		return EvtAll;
 	}
@@ -109,12 +111,15 @@ public class FightSim
 				break;
 
 			case ModelChar.State.Attack:
+				if (src.CdAttack > 0)
+					break;
+
 				ModelChar target = enemies.Find((c) => c.Id == src.TargetId);
 				if (target != null)
 				{
 					target.Hp -= src.Damage;
 
-					Debug.Log($"Attack target {target.Id}, damage {src.Damage}");
+					//Debug.Log($"Attack target {target.Id}, damage {src.Damage}");
 
 					ReplayEvtAttack evt = new ReplayEvtAttack();
 					evt.Tick = tickId;
@@ -126,10 +131,19 @@ public class FightSim
 
 					if (target.Hp <= 0)
 					{
-						Debug.Log($"Dead target {target.Id}");
-
+						//Debug.Log($"Dead target {target.Id}");
 						src.CurrState = ModelChar.State.Idle;
 					}
+
+					ReplayEvtDamage evt2 = new ReplayEvtDamage();
+					evt2.Tick = tickId + 2;
+					evt2.Char = src.Id;
+					evt2.Dmg = src.Damage;
+
+					EvtDamage.Add(evt2);
+					EvtAll.Add(evt2);
+
+					src.CdAttack = src.CdAttackFull;
 				}
 				break;
 		}

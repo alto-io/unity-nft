@@ -108,14 +108,23 @@ public class FightManager : MonoBehaviour
 		// do the event
 		FightChar fightChar = fighters.Find((x) => (x.Id == evt.Char));
 		fightChar.transform.position = grid.GridToWorld(evt.To);
-		Debug.Log(evt.ToString());
 	}
 
 	private void TickEvtAttack(ReplayEvtAttack evt)
 	{
-		Debug.Log(evt.ToString());
+		// do attack animation
 	}
 
+	private void TickEvtDamage(ReplayEvtDamage evt)
+	{
+		FightChar fightChar = fighters.Find((x) => (x.Id == evt.Char));
+		fightChar.HP -= evt.Dmg;
+
+		if (fightChar.HP <= 0)
+		{
+			fightChar.animator.SetTrigger("Dead");
+		}
+	}
 
 	private IEnumerator PlayFightCR()
 	{
@@ -136,6 +145,7 @@ public class FightManager : MonoBehaviour
 			tick++;
 			while (evtCurr != null && evtCurr.Tick == tick)
 			{
+				Debug.Log($"{tick} - {evtCurr.ToString()}");
 				if (evtCurr is ReplayEvtMove)
 				{
 					TickEvtMove((ReplayEvtMove) evtCurr);
@@ -143,6 +153,10 @@ public class FightManager : MonoBehaviour
 				else if (evtCurr is ReplayEvtAttack)
 				{
 					TickEvtAttack((ReplayEvtAttack) evtCurr);
+				}
+				else if (evtCurr is ReplayEvtDamage)
+				{
+					TickEvtDamage((ReplayEvtDamage) evtCurr);
 				}
 
 				evtIndex++;
@@ -155,29 +169,22 @@ public class FightManager : MonoBehaviour
 					evtCurr = null;
 				}
 			}
-
 			yield return new WaitForSeconds(0.02f);
 		}
 
-		foreach (var e in events)
+		foreach (var f in fighters)
 		{
-
+			f.enabled = false;
 		}
-
-
-//		foreach (var f in fighters)
-//		{
-//			f.enabled = false;
-//		}
-//		
-//		if (IsTeamAlive(teamA))
-//		{
-//			ui.SetTextAnimationTrigger("End", strWin);
-//		}
-//		else
-//		{
-//			ui.SetTextAnimationTrigger("End", strLose);
-//		}
+		
+		if (IsTeamAlive(teamA))
+		{
+			ui.SetTextAnimationTrigger("End", strWin);
+		}
+		else
+		{
+			ui.SetTextAnimationTrigger("End", strLose);
+		}
 	}
 }
 
