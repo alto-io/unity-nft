@@ -255,6 +255,11 @@ public class FightChar : MonoBehaviour
 		gameObject.SetActive(false);
 	}
 
+	public void AnimationTrigger(string t)
+	{
+		animator.SetTrigger(t);
+	}
+
 #endregion
 
 #region Private Methods

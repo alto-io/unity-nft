@@ -70,6 +70,12 @@ public class FightSim
 	{
 		int tickId = 0;
 
+		foreach (var c in Chars)
+		{
+			if (c.Team == true) c.Enemies = TeamB;
+			else                c.Enemies = TeamA;
+		}
+
 		while (IsTeamAliveFunc(TeamA) && IsTeamAliveFunc(TeamB))
 		{
 			tickId++;
@@ -77,13 +83,13 @@ public class FightSim
 			foreach (var c in TeamA)
 			{
 				c.CdAttack--;
-				SimulateChar(tickId, c, TeamB);
+				SimulateChar(tickId, c);
 			}
 
 			foreach (var c in TeamB)
 			{
 				c.CdAttack--;
-				SimulateChar(tickId, c, TeamA);
+				SimulateChar(tickId, c);
 			}
 		}
 
@@ -92,66 +98,90 @@ public class FightSim
 		return EvtAll;
 	}
 
-	private void SimulateChar(int tickId, ModelChar src, List<ModelChar> enemies)
+	private void SimulateChar(int tickId, ModelChar src)
 	{
 		switch (src.CurrState)
 		{
-			case ModelChar.State.Idle:
-				DecideAction(tickId, src, enemies);
-				break;
-
-			case ModelChar.State.Move:
-				src.CdMove--;
-				if (src.CdMove <= 0)
-				{
-					src.Pos = src.PosDest;
-					DecideAction(tickId, src, enemies);
-				}
-
-				break;
-
-			case ModelChar.State.Attack:
-				if (src.CdAttack > 0)
-					break;
-
-				ModelChar target = enemies.Find((c) => c.Id == src.TargetId);
-				if (target != null)
-				{
-					target.Hp -= src.Damage;
-
-					//Debug.Log($"Attack target {target.Id}, damage {src.Damage}");
-
-					ReplayEvtAttack evt = new ReplayEvtAttack();
-					evt.Tick = tickId;
-					evt.Char = src.Id;
-					evt.Targ = target.Id;
-
-					EvtAttack.Add(evt);
-					EvtAll.Add(evt);
-
-					if (target.Hp <= 0)
-					{
-						//Debug.Log($"Dead target {target.Id}");
-						src.CurrState = ModelChar.State.Idle;
-					}
-
-					ReplayEvtDamage evt2 = new ReplayEvtDamage();
-					evt2.Tick = tickId + 2;
-					evt2.Char = src.Id;
-					evt2.Dmg = src.Damage;
-
-					EvtDamage.Add(evt2);
-					EvtAll.Add(evt2);
-
-					src.CdAttack = src.CdAttackFull;
-				}
-				break;
+			case ModelChar.State.Idle:   SimulateIdle(tickId, src);   break;
+			case ModelChar.State.Move:   SimulateMove(tickId, src);   break;
+			case ModelChar.State.Attack: SimulateAttack(tickId, src); break;
 		}
 	}
 
-	private void DecideAction(int tickId, ModelChar src, List<ModelChar> enemies)
+	private void SimulateIdle(int tickId, ModelChar src)
 	{
-		var target = FindTargetFunc(src, enemies);
+		DecideAction(tickId, src);
+	}
+
+	private void SimulateMove(int tickId, ModelChar src)
+	{
+		src.CdMove--;
+		if (src.CdMove <= 0)
+		{
+			src.Pos = src.PosDest;
+			DecideAction(tickId, src);
+		}
+
+	}
+
+	private void SimulateAttack(int tickId, ModelChar src)
+	{
+		if (src.CdAttack > 0)
+			return;
+
+		ModelChar target = src.Enemies.Find((c) => c.Id == src.TargetId);
+		if (target != null)
+		{
+			target.Hp -= src.Damage;
+
+			//Debug.Log($"Attack target {target.Id}, damage {src.Damage}");
+
+			ReplayEvtAttack evt = new ReplayEvtAttack();
+			evt.Tick = tickId;
+			evt.Char = src.Id;
+			evt.Targ = target.Id;
+
+			if (src.Pos.y < target.Pos.y)
+			{
+				evt.Dir = AttackDir.North;
+			}
+			else if (src.Pos.y > target.Pos.y)
+			{
+				evt.Dir = AttackDir.South;
+			}
+			else if (src.Pos.x < target.Pos.x)
+			{
+				evt.Dir = AttackDir.East;
+			}
+			else
+			{
+				evt.Dir = AttackDir.West;
+			}
+
+			EvtAttack.Add(evt);
+			EvtAll.Add(evt);
+
+			if (target.Hp <= 0)
+			{
+				//Debug.Log($"Dead target {target.Id}");
+				src.CurrState = ModelChar.State.Idle;
+			}
+
+			ReplayEvtDamage evt2 = new ReplayEvtDamage();
+			evt2.Tick = tickId + 2;
+			evt2.Char = src.Id;
+			evt2.Dmg = src.Damage;
+
+			EvtDamage.Add(evt2);
+			EvtAll.Add(evt2);
+
+			src.CdAttack = src.CdAttackFull;
+		}
+	}
+
+	private void DecideAction(int tickId, ModelChar src)
+	{
+		var target = FindTargetFunc(src);
 		if (target == null)
 			return;
 
@@ -211,14 +241,14 @@ public class FightSim
 		return src.Pos;
 	}
 
-	static private ModelChar FindTargetFunc(ModelChar src, List<ModelChar> enemies)
+	static private ModelChar FindTargetFunc(ModelChar src)
 	{
 		float nearestDist = Mathf.Infinity;
 		ModelChar nearest = null;
 
-		for (int i=0; i<enemies.Count; i++)
+		for (int i=0; i<src.Enemies.Count; i++)
 		{
-			ModelChar e = enemies[i];
+			ModelChar e = src.Enemies[i];
 			if (e.Hp <= 0) continue;
 
 			float distance = (src.Pos - e.Pos).sqrMagnitude;

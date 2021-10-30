@@ -7,10 +7,18 @@ namespace OPGames.NFT
 
 public enum ReplayEventType
 {
-	Null = 0,
-	Move,
-	Attack,
-	Skill,
+	Null   = 0,
+	Move   = 1,
+	Attack = 2,
+	Skill  = 3,
+}
+
+public enum AttackDir
+{
+	North = 0,
+	South = 1,
+	East  = 2,
+	West  = 3,
 }
 
 // Replay event
@@ -46,6 +54,7 @@ public class ReplayEvtAttack : ReplayEvt
 	public int Char;
 	public int Targ;
 	public int Id; // attack Id: 0=normal, 1=skill1, 2=skill2, etc
+	public AttackDir Dir;
 
 	public override string ToString()
 	{
@@ -134,6 +143,7 @@ public class ModelChar
 	public List<int> Skills;
 	public List<int> CdSkill;
 	public List<ModelBuff> Buffs;
+	public List<ModelChar> Enemies;
 }
 
 

@@ -68,29 +68,6 @@ public class FightManager : MonoBehaviour
 
 		Debug.Log($"Num Events {events.Count}");
 
-//		yield return null;
-//		yield return null;
-//
-//		// Run the battle simulaton
-//		bool teamAAlive = true;
-//		bool teamBAlive = true;
-//
-//		while (teamAAlive && teamBAlive)
-//		{
-//			foreach (var f in fighters)
-//			{
-//			}
-//
-//			teamAAlive = IsTeamAlive(teamA);
-//			teamBAlive = IsTeamAlive(teamB);
-//		}
-//		
-//		// Reset everything
-//		foreach (var f in fighters)
-//		{
-//			f.Reset();
-//		}
-//
 		StartCoroutine(PlayFightCR());
 	}
 
@@ -107,12 +84,19 @@ public class FightManager : MonoBehaviour
 	{
 		// do the event
 		FightChar fightChar = fighters.Find((x) => (x.Id == evt.Char));
-		fightChar.transform.position = grid.GridToWorld(evt.To);
+		if (fightChar != null)
+		{
+			fightChar.transform.position = grid.GridToWorld(evt.To);
+		}
 	}
 
 	private void TickEvtAttack(ReplayEvtAttack evt)
 	{
-		// do attack animation
+		FightChar fightChar = fighters.Find((x) => (x.Id == evt.Char));
+		if (fightChar != null)
+		{
+			fightChar.AnimationTrigger("Attack" + evt.Dir.ToString());
+		}
 	}
 
 	private void TickEvtDamage(ReplayEvtDamage evt)
@@ -122,7 +106,7 @@ public class FightManager : MonoBehaviour
 
 		if (fightChar.HP <= 0)
 		{
-			fightChar.animator.SetTrigger("Dead");
+			fightChar.AnimationTrigger("Dead");
 		}
 	}
 
