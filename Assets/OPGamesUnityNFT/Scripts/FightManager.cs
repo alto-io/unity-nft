@@ -130,7 +130,7 @@ public class FightManager : MonoBehaviour
 			tick++;
 			while (evtCurr != null && evtCurr.Tick == tick)
 			{
-				Debug.Log($"{tick} - {evtCurr.ToString()}");
+				//Debug.Log($"{tick} - {evtCurr.ToString()}");
 				if (evtCurr is ReplayEvtMove)
 				{
 					TickEvtMove((ReplayEvtMove) evtCurr);

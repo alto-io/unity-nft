@@ -83,7 +83,12 @@ public class FightSim
 		{
 			ModelChar target = Chars.Find((c) => c.Id == d.Char);
 			if (target != null)
+			{
 				target.Hp -= d.Dmg;
+
+				if (target.Hp <= 0)
+					Debug.Log($"{tickId} = {target.Id} is dead");
+			}
 		}
 
 		DelayedDamage.RemoveAll((d) => (d.Tick == tickId));
@@ -190,7 +195,7 @@ public class FightSim
 		}
 
 		ReplayEvtDamage evt2 = new ReplayEvtDamage();
-		evt2.Tick = tickId + 5;
+		evt2.Tick = tickId + 2;
 		evt2.Char = target.Id;
 		evt2.Dmg = src.Damage;
 
@@ -288,11 +293,11 @@ public class FightSim
 
 	static private bool IsTeamAliveFunc(List<ModelChar> team)
 	{
-		int hpTotal = 0;
 		foreach (var c in team)
-			hpTotal += c.Hp;
+			if (c.Hp > 0)
+				return true;
 
-		return hpTotal > 0;
+		return false;
 	}
 
 	static private List<PosDistance> neighbors = null;

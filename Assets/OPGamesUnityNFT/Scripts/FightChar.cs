@@ -108,7 +108,6 @@ public class FightChar : MonoBehaviour
 
 	public void SetRandomTempNFT()
 	{
-		Debug.LogFormat("SetRandomTempNFT");
 		var data = DataNFTTemp.Instance;
 		if (data == null)
 			return;
