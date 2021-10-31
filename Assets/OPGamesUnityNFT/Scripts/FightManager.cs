@@ -27,11 +27,15 @@ public class FightManager : MonoBehaviour
 
 	private void Start()
 	{
+		grid = GameObject.FindObjectOfType<Grid>();
+
 		// Set teams
 		foreach (var f in fighters)
 		{
 			if (f.Team == true) teamA.Add(f);
 			else                teamB.Add(f);
+
+			f.SetGrid(grid);
 		}
 
 		// set nft and targets
@@ -52,7 +56,6 @@ public class FightManager : MonoBehaviour
 			f.SetRandomTempNFT();
 		}
 
-		grid = GameObject.FindObjectOfType<Grid>();
 		FightSim.GridObj = grid;
 		sim.Init();
 
@@ -86,7 +89,7 @@ public class FightManager : MonoBehaviour
 		FightChar fightChar = fighters.Find((x) => (x.Id == evt.Char));
 		if (fightChar != null)
 		{
-			fightChar.transform.position = grid.GridToWorld(evt.To);
+			fightChar.DoEvtMove(evt);
 		}
 	}
 
@@ -95,18 +98,16 @@ public class FightManager : MonoBehaviour
 		FightChar fightChar = fighters.Find((x) => (x.Id == evt.Char));
 		if (fightChar != null)
 		{
-			fightChar.AnimationTrigger("Attack" + evt.Dir.ToString());
+			fightChar.DoEvtAttack(evt);
 		}
 	}
 
 	private void TickEvtDamage(ReplayEvtDamage evt)
 	{
 		FightChar fightChar = fighters.Find((x) => (x.Id == evt.Char));
-		fightChar.HP -= evt.Dmg;
-
-		if (fightChar.HP <= 0)
+		if (fightChar != null)
 		{
-			fightChar.AnimationTrigger("Dead");
+			fightChar.DoEvtDamage(evt);
 		}
 	}
 
@@ -153,7 +154,7 @@ public class FightManager : MonoBehaviour
 					evtCurr = null;
 				}
 			}
-			yield return new WaitForSeconds(0.02f);
+			yield return new WaitForSeconds(Constants.TickDt);
 		}
 
 		foreach (var f in fighters)

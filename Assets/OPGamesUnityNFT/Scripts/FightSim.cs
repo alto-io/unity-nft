@@ -14,7 +14,7 @@ public class FightSim
 		public Vector2Int Pos;
 		public float Distance;
 	}
-
+	
 	static public Grid GridObj;
 
 	public List<ModelChar>       Chars     = new List<ModelChar>();
@@ -27,6 +27,8 @@ public class FightSim
 	public List<ReplayEvtBuff>   EvtBuff   = new List<ReplayEvtBuff>();
 
 	public List<ReplayEvt>       EvtAll    = new List<ReplayEvt>();
+
+	public List<ReplayEvtDamage> DelayedDamage = new List<ReplayEvtDamage>();
 
 	public void Init()
 	{
@@ -48,11 +50,14 @@ public class FightSim
 		model.Team      = c.Team;
 		model.Pos       = GridObj.WorldToGrid(p);
 		model.Hp        = (int)info.HpVal;
-		model.CdAttack  = model.CdAttackFull = (int)(info.SkillSpeedSecs * Constants.TicksPerSec);
 		model.Damage    = (int)info.DamageVal;
 		model.Defense   = (int)info.DefenseVal;
 		model.CurrState = ModelChar.State.Idle;
 		model.ClassInfo = c.ClassInfo;
+
+		int cdAttack = (int) Mathf.Floor(info.AttackSpeedSecs * (float)Constants.TicksPerSec);
+		model.CdAttack = cdAttack;
+		model.CdAttackFull = cdAttack;
 
 		Chars.Add(model);
 
@@ -64,6 +69,24 @@ public class FightSim
 		{
 			TeamB.Add(model);
 		}
+	}
+
+	private List<int> indexToDeleteInDelayed = new List<int>();
+	private void ApplyDelayedDamage(int tickId)
+	{
+		int len = DelayedDamage.Count;
+		if (len <= 0)
+			return;
+
+		var listTemp = DelayedDamage.FindAll((d) => (d.Tick == tickId));
+		foreach (var d in listTemp)
+		{
+			ModelChar target = Chars.Find((c) => c.Id == d.Char);
+			if (target != null)
+				target.Hp -= d.Dmg;
+		}
+
+		DelayedDamage.RemoveAll((d) => (d.Tick == tickId));
 	}
 
 	public List<ReplayEvt> Simulate()
@@ -79,6 +102,8 @@ public class FightSim
 		while (IsTeamAliveFunc(TeamA) && IsTeamAliveFunc(TeamB))
 		{
 			tickId++;
+
+			ApplyDelayedDamage(tickId);
 
 			foreach (var c in TeamA)
 			{
@@ -119,9 +144,8 @@ public class FightSim
 		if (src.CdMove <= 0)
 		{
 			src.Pos = src.PosDest;
-			DecideAction(tickId, src);
+			src.CurrState = ModelChar.State.Idle;
 		}
-
 	}
 
 	private void SimulateAttack(int tickId, ModelChar src)
@@ -130,53 +154,51 @@ public class FightSim
 			return;
 
 		ModelChar target = src.Enemies.Find((c) => c.Id == src.TargetId);
-		if (target != null)
+		if (target == null)
+			return;
+
+		//Debug.Log($"Attack target {target.Id}, damage {src.Damage}");
+
+		ReplayEvtAttack evt = new ReplayEvtAttack();
+		evt.Tick = tickId;
+		evt.Char = src.Id;
+		evt.Targ = target.Id;
+
+		if (src.Pos.y < target.Pos.y)
 		{
-			target.Hp -= src.Damage;
-
-			//Debug.Log($"Attack target {target.Id}, damage {src.Damage}");
-
-			ReplayEvtAttack evt = new ReplayEvtAttack();
-			evt.Tick = tickId;
-			evt.Char = src.Id;
-			evt.Targ = target.Id;
-
-			if (src.Pos.y < target.Pos.y)
-			{
-				evt.Dir = AttackDir.North;
-			}
-			else if (src.Pos.y > target.Pos.y)
-			{
-				evt.Dir = AttackDir.South;
-			}
-			else if (src.Pos.x < target.Pos.x)
-			{
-				evt.Dir = AttackDir.East;
-			}
-			else
-			{
-				evt.Dir = AttackDir.West;
-			}
-
-			EvtAttack.Add(evt);
-			EvtAll.Add(evt);
-
-			if (target.Hp <= 0)
-			{
-				//Debug.Log($"Dead target {target.Id}");
-				src.CurrState = ModelChar.State.Idle;
-			}
-
-			ReplayEvtDamage evt2 = new ReplayEvtDamage();
-			evt2.Tick = tickId + 2;
-			evt2.Char = src.Id;
-			evt2.Dmg = src.Damage;
-
-			EvtDamage.Add(evt2);
-			EvtAll.Add(evt2);
-
-			src.CdAttack = src.CdAttackFull;
+			evt.Dir = AttackDir.North;
 		}
+		else if (src.Pos.y > target.Pos.y)
+		{
+			evt.Dir = AttackDir.South;
+		}
+		else if (src.Pos.x < target.Pos.x)
+		{
+			evt.Dir = AttackDir.East;
+		}
+		else
+		{
+			evt.Dir = AttackDir.West;
+		}
+
+		EvtAttack.Add(evt);
+		EvtAll.Add(evt);
+
+		if (target.Hp-src.Damage <= 0)
+		{
+			src.CurrState = ModelChar.State.Idle;
+		}
+
+		ReplayEvtDamage evt2 = new ReplayEvtDamage();
+		evt2.Tick = tickId + 5;
+		evt2.Char = target.Id;
+		evt2.Dmg = src.Damage;
+
+		DelayedDamage.Add(evt2);
+		EvtDamage.Add(evt2);
+		EvtAll.Add(evt2);
+
+		src.CdAttack = src.CdAttackFull;
 	}
 
 	private void DecideAction(int tickId, ModelChar src)
@@ -191,18 +213,21 @@ public class FightSim
 		if (distance > (float)src.ClassInfo.AttackRange)
 		{
 			src.PosDest = GetNextNodeFunc(src, target.Pos);
-			//if (src.PosDest != src.Pos)
-			//	src.CdMove = 2;
+			if (src.PosDest != src.Pos)
+				src.CdMove = Constants.MoveTicks;
 
 			ReplayEvtMove evt = new ReplayEvtMove();
 			evt.Tick = tickId;
 			evt.Char = src.Id;
 			evt.From = src.Pos;
 			evt.To = src.PosDest;
+			evt.NumTicks = Constants.MoveTicks;
+
 			EvtMove.Add(evt);
 			EvtAll.Add(evt);
 
 			src.Pos = src.PosDest;
+			src.CurrState = ModelChar.State.Move;
 		}
 		else
 		{

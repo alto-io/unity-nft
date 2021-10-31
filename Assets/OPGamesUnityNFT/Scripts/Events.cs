@@ -42,6 +42,7 @@ public class ReplayEvtMove : ReplayEvt
 	public int Char;
 	public Vector2Int From;
 	public Vector2Int To;
+	public int NumTicks;
 
 	public override string ToString()
 	{

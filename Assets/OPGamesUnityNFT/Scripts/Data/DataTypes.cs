@@ -8,6 +8,8 @@ static public class Constants
 {
 	static public string BurnAddress = "0x0000000000000000000000000000000000000000";
 	static public int TicksPerSec = 10;
+	static public float TickDt = 1.0f / TicksPerSec;
+	static public int MoveTicks = 5;
 }
 
 [System.Serializable]

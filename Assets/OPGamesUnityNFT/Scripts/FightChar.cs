@@ -49,6 +49,7 @@ public class FightChar : MonoBehaviour
 	[SerializeField] private Transform view;
 	[SerializeField] private SpriteRenderer sprite;
 	[SerializeField] private bool team = true;
+	[SerializeField] private Ease moveEaseType;
 #endregion
 
 #region Private variables
@@ -88,6 +89,11 @@ public class FightChar : MonoBehaviour
 #endregion
 
 #region Public Methods
+
+	public void SetGrid(Grid g)
+	{
+		grid = g;
+	}
 
 	public void SetTargets(List<FightChar> t)
 	{
@@ -258,6 +264,31 @@ public class FightChar : MonoBehaviour
 	public void AnimationTrigger(string t)
 	{
 		animator.SetTrigger(t);
+	}
+
+	public void DoEvtMove(ReplayEvtMove evt)
+	{
+		const float shortenBySecs = 0.1f;
+		Vector3 posStart = grid.GridToWorld(evt.From);
+		Vector3 posEnd = grid.GridToWorld(evt.To);
+		float duration = ((float)evt.NumTicks / (float)Constants.TicksPerSec) - shortenBySecs;
+
+		transform.position = posStart;
+		transform.DOMove(posEnd, duration).SetEase(moveEaseType);
+	}
+
+	public void DoEvtAttack(ReplayEvtAttack evt)
+	{
+		AnimationTrigger("Attack" + evt.Dir.ToString());
+	}
+
+	public void DoEvtDamage(ReplayEvtDamage evt)
+	{
+		HP -= evt.Dmg;
+		damageText.ShowDamage(evt.Dmg, evt.Crit);
+
+		if (HP <= 0)
+			AnimationTrigger("Dead");
 	}
 
 #endregion

@@ -202,6 +202,8 @@ MonoBehaviour:
   view: {fileID: 444334553901794649}
   sprite: {fileID: 6085344567570470289}
   team: 1
+  moveEaseType: 19
+  animator: {fileID: 0}
 --- !u!95 &4041744733553048825
 Animator:
   serializedVersion: 3
