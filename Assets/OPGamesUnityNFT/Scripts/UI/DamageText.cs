@@ -29,9 +29,8 @@ public class DamageText : MonoBehaviour
 		if (text == null)
 			return;
 
-		text.text = damage == 0 ? "MISS" : damage.ToString();
-		text.enabled = true;
-		animator.SetTrigger(isCrit ? "Crit" : "Normal");
+		string msg = damage == 0 ? "MISS" : damage.ToString();
+		ShowMsg(msg, isCrit ? "Crit" : "Normal");
 	}
 
 	public void OnDone()
@@ -42,8 +41,15 @@ public class DamageText : MonoBehaviour
 	{
 		text.text = msg;
 
-		if (msg == "Heal") animator.SetTrigger("Heal");
-		else               animator.SetTrigger("Skill");
+		if (msg == "Heal") ShowMsg(msg, "Heal");
+		else               ShowMsg(msg, "Skill");
+	}
+
+	public void ShowMsg(string msg, string animTrigger)
+	{
+		text.text = msg;
+		text.enabled = true;
+		animator.SetTrigger(animTrigger);
 	}
 }
 
