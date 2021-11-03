@@ -87,7 +87,10 @@ public class FightSim
 				target.Hp -= d.Dmg;
 
 				if (target.Hp <= 0)
-					Debug.Log($"{tickId} = {target.Id} is dead");
+				{
+					//Debug.Log($"{tickId} = {target.Id} is dead");
+					target.CurrState = ModelChar.State.Dead;
+				}
 			}
 		}
 
@@ -195,7 +198,7 @@ public class FightSim
 		}
 
 		ReplayEvtDamage evt2 = new ReplayEvtDamage();
-		evt2.Tick = tickId + 2;
+		evt2.Tick = tickId + (Constants.TicksPerSec / 4);
 		evt2.Char = target.Id;
 		evt2.Dmg = src.Damage;
 

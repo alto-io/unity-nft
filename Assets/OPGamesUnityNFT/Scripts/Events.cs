@@ -123,6 +123,7 @@ public class ModelChar
 		Move,
 		Attack,
 		Skill,
+		Dead,
 	}
 
 	public int Id;

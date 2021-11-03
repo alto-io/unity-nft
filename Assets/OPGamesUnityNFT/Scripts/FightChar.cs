@@ -79,6 +79,7 @@ public class FightChar : MonoBehaviour
 	private State stateCurr = State.Idle;
 	private const float moveDuration = 0.1f;
 
+	private Vector3 initialPos;
 	private Vector3 moveStart;
 	private Vector3 moveEnd;
 	private Grid    grid;
@@ -102,8 +103,14 @@ public class FightChar : MonoBehaviour
 
 	public void Reset()
 	{
+		damageText.Reset();
+		transform.position = initialPos;
+		gameObject.SetActive(true);
 		hpCurr = classInfo.HpVal;
+		RefreshHPBar();
+		RefreshSkillBar();
 		cooldownACurr = cooldownA;
+		animator.Play("FightCharIdle");
 	}
 
 	public void SetRandomTempNFT()
@@ -154,6 +161,7 @@ public class FightChar : MonoBehaviour
 		id = nextId;
 		nextId++;
 
+		initialPos = transform.position;
 		animator = GetComponent<Animator>();
 
 		if (spriteAndUIAnimator != null)
@@ -279,6 +287,21 @@ public class FightChar : MonoBehaviour
 	public void DoEvtAttack(ReplayEvtAttack evt)
 	{
 		AnimationTrigger("Attack" + evt.Dir.ToString());
+
+		if (isMelee == false)
+		{
+			var t = targets.Find((c) => (c.Id == evt.Targ));
+
+			var info = DataVFX.Instance.GetByName(projectilePrefab);
+			if (info != null && info.Prefab != null)
+			{
+				GameObject clone = Instantiate(info.Prefab);
+				clone.transform.position = transform.position;
+				clone.transform.LookAt(t.transform.position);
+				var projectile = clone.transform.DOMove(t.transform.position, 0.5f)
+					.OnComplete(()=> { Destroy(clone); });
+			}
+		}
 	}
 
 	public void DoEvtDamage(ReplayEvtDamage evt)
@@ -288,6 +311,8 @@ public class FightChar : MonoBehaviour
 
 		if (HP <= 0)
 			AnimationTrigger("Dead");
+		else
+			AnimationTrigger("Hurt");
 	}
 
 #endregion

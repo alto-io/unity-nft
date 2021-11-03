@@ -6,6 +6,10 @@ using UnityEngine.SceneManagement;
 using DG.Tweening;
 using TMPro;
 
+namespace OPGames.NFT
+{
+
+
 [RequireComponent(typeof(Animator))]
 public class UIFight : MonoBehaviour
 {
@@ -17,6 +21,9 @@ public class UIFight : MonoBehaviour
 
 	[SerializeField]
 	private Animator animator;
+
+	[SerializeField]
+	private FightManager manager;
 
 	private float speed = 1.0f;
 
@@ -44,6 +51,11 @@ public class UIFight : MonoBehaviour
 		Time.timeScale = speed;
 	}
 
+	public void OnBtnReplay()
+	{
+		manager.PlayFight();
+	}
+
 	public void SetTextAnimationTrigger(string trigger, string label)
 	{
 		if (animator == null) return;
@@ -57,4 +69,6 @@ public class UIFight : MonoBehaviour
 	{
 		Camera.main.DOShakePosition(0.5f, 0.2f, 30, 45, true);
 	}
+}
+
 }

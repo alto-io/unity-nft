@@ -71,7 +71,13 @@ public class FightManager : MonoBehaviour
 
 		Debug.Log($"Num Events {events.Count}");
 
-		StartCoroutine(PlayFightCR());
+		PlayFight();
+	}
+
+	public void PlayFight()
+	{
+		StopCoroutine("PlayFightCR");
+		StartCoroutine("PlayFightCR");
 	}
 
 	private bool IsTeamAlive(List<FightChar> team)
@@ -113,14 +119,15 @@ public class FightManager : MonoBehaviour
 
 	private IEnumerator PlayFightCR()
 	{
+		foreach (var f in fighters)
+		{
+			f.Reset();
+			f.enabled = true;
+		}
+
 		yield return new WaitForSeconds(1.0f);
 		ui.SetTextAnimationTrigger("Fight", strFight);
 		yield return new WaitForSeconds(1.0f);
-
-		foreach (var f in fighters)
-		{
-			f.enabled = true;
-		}
 
 		int evtIndex = 0;
 		int tick = 0;

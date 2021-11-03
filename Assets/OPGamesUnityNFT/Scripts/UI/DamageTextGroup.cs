@@ -33,6 +33,17 @@ public class DamageTextGroup : MonoBehaviour
 		texts = GetComponentsInChildren<DamageText>(true);
 	}
 
+	public void Reset()
+	{
+		nextIndex = 0;
+		queueCurr = 0;
+		queueNext = 0;
+		cooldownCurr = 0;
+
+		foreach (var t in texts)
+			t.enabled = false;
+	}
+
 	private void Update()
 	{
 		cooldownCurr -= Time.deltaTime;
