@@ -30,7 +30,6 @@ public class DamageTextGroup : MonoBehaviour
 
 	private void Start()
 	{
-		texts = GetComponentsInChildren<DamageText>(true);
 	}
 
 	public void Reset()
@@ -40,6 +39,8 @@ public class DamageTextGroup : MonoBehaviour
 		queueNext = 0;
 		cooldownCurr = 0;
 
+		if (texts == null)
+			texts = GetComponentsInChildren<DamageText>(true);
 		foreach (var t in texts)
 			t.enabled = false;
 	}

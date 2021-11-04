@@ -179,22 +179,10 @@ public class FightSim
 		evt.Char = src.Id;
 		evt.Targ = target.Id;
 
-		if (src.Pos.y < target.Pos.y)
-		{
-			evt.Dir = AttackDir.North;
-		}
-		else if (src.Pos.y > target.Pos.y)
-		{
-			evt.Dir = AttackDir.South;
-		}
-		else if (src.Pos.x < target.Pos.x)
-		{
-			evt.Dir = AttackDir.East;
-		}
-		else
-		{
-			evt.Dir = AttackDir.West;
-		}
+		if (src.Pos.y < target.Pos.y)      evt.Dir = AttackDir.North;
+		else if (src.Pos.y > target.Pos.y) evt.Dir = AttackDir.South;
+		else if (src.Pos.x < target.Pos.x) evt.Dir = AttackDir.East;
+		else                               evt.Dir = AttackDir.West;
 
 		EvtAttack.Add(evt);
 		EvtAll.Add(evt);
@@ -207,12 +195,18 @@ public class FightSim
 		ReplayEvtDamage evt2 = new ReplayEvtDamage();
 		evt2.Tick = tickId + (Constants.TicksPerSec / 4);
 		evt2.Char = target.Id;
-		evt2.Dmg = src.Damage;
+		evt2.Dmg  = src.Damage;
 
 		if (Random.Range(0, 100) <= src.CritChance)
 		{
 			evt2.Dmg = src.Damage * 2;
 			evt2.Crit = true;
+		}
+
+		evt2.Dmg -= target.Defense;
+		if (evt2.Dmg < 1)
+		{
+			evt2.Dmg = 1;
 		}
 
 		DelayedDamage.Add(evt2);

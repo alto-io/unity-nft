@@ -136,7 +136,7 @@ public class ModelChar
 	public int CdMove;
 	public int Damage;
 	public int Defense;
-	public float CritChance; // in percent 50 = 50%
+	public int CritChance; // in percent 50 = 50%
 	public State CurrState;
 	public int TargetId;
 
