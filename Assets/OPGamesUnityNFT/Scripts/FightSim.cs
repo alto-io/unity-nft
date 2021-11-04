@@ -69,6 +69,12 @@ public class FightSim
 		{
 			TeamB.Add(model);
 		}
+
+		// So they don't attack all in the same tick?
+		// But won't it be not fair if we do this?
+		 Chars.Sort((a, b) => { return a.CdAttack - b.CdAttack; });
+		 for (int i=0; i<Chars.Count; i++)
+		 	Chars[i].CdAttack += i;
 	}
 
 	private List<int> indexToDeleteInDelayed = new List<int>();
