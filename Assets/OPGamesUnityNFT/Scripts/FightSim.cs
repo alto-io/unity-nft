@@ -54,6 +54,7 @@ public class FightSim
 		model.Defense   = (int)info.DefenseVal;
 		model.CurrState = ModelChar.State.Idle;
 		model.ClassInfo = c.ClassInfo;
+		model.CritChance= (int)Mathf.Round(c.ClassInfo.CritChance * 100.0f);
 
 		int cdAttack = (int) Mathf.Floor(info.AttackSpeedSecs * (float)Constants.TicksPerSec);
 		model.CdAttack = cdAttack;
@@ -207,6 +208,12 @@ public class FightSim
 		evt2.Tick = tickId + (Constants.TicksPerSec / 4);
 		evt2.Char = target.Id;
 		evt2.Dmg = src.Damage;
+
+		if (Random.Range(0, 100) <= src.CritChance)
+		{
+			evt2.Dmg = src.Damage * 2;
+			evt2.Crit = true;
+		}
 
 		DelayedDamage.Add(evt2);
 		EvtDamage.Add(evt2);
