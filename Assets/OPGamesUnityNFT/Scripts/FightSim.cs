@@ -42,33 +42,44 @@ public class FightSim
 
 	public void AddChar(FightChar c)
 	{
-		var     info    = c.ClassInfo;
-		Vector3 p       = c.transform.position;
+		// Save basic info
+		var       info   = c.ClassInfo;
+		Vector3   p      = c.transform.position;
+		ModelChar model  = new ModelChar();
 
-		ModelChar model = new ModelChar();
-		model.Id        = c.Id;
-		model.Team      = c.Team;
-		model.Pos       = GridObj.WorldToGrid(p);
-		model.Hp        = (int)info.HpVal;
-		model.Damage    = (int)info.DamageVal;
-		model.Defense   = (int)info.DefenseVal;
-		model.CurrState = ModelChar.State.Idle;
-		model.ClassInfo = c.ClassInfo;
-		model.CritChance= (int)Mathf.Round(c.ClassInfo.CritChance * 100.0f);
+		model.Id         = c.Id;
+		model.Team       = c.Team;
+		model.Pos        = GridObj.WorldToGrid(p);
+		model.Hp         = (int)info.HpVal;
+		model.Damage     = (int)info.DamageVal;
+		model.Defense    = (int)info.DefenseVal;
+		model.CurrState  = ModelChar.State.Idle;
+		model.ClassInfo  = c.ClassInfo;
+		model.CritChance = (int)Mathf.Round(c.ClassInfo.CritChance * 100.0f);
 
-		int cdAttack = (int) Mathf.Floor(info.AttackSpeedSecs * (float)Constants.TicksPerSec);
-		model.CdAttack = cdAttack;
+		// Set cooldowns
+		int cdAttack       = SecsToTicksFunc(info.AttackSpeedSecs);
+		model.CdAttack     = cdAttack;
 		model.CdAttackFull = cdAttack;
 
+		// Add to the appropriate lists
 		Chars.Add(model);
+		if (c.Team) TeamA.Add(model);
+		else        TeamB.Add(model);
 
-		if (c.Team)
+		// Skills
+		char[] seps         = new char[] { ' ', ',' };
+		var dataSkills      = DataSkills.Instance;
+		string[] skillNames = c.ClassInfo.Skills.Split(seps, System.StringSplitOptions.RemoveEmptyEntries);
+		foreach (string s in skillNames)
 		{
-			TeamA.Add(model);
-		}
-		else
-		{
-			TeamB.Add(model);
+			var skillRow = dataSkills.GetByName(s);
+			if (skillRow == null) continue;
+
+			var newSkill  = new ModelSkill();
+			newSkill.Info = skillRow;
+			newSkill.Cd   = SecsToTicksFunc(skillRow.CooldownSecs);
+			model.Skills.Add(newSkill);
 		}
 
 		// So they don't attack all in the same tick?
@@ -78,26 +89,33 @@ public class FightSim
 		 	Chars[i].CdAttack += i;
 	}
 
+	private void TickCooldowns(ModelChar m)
+	{
+		m.CdAttack--;
+		m.CdMove--;
+		for (int i=0; i<m.Skills.Count; i++)
+		{
+			m.Skills[i].Cd--;
+		}
+	}
+
 	private List<int> indexToDeleteInDelayed = new List<int>();
 	private void ApplyDelayedDamage(int tickId)
 	{
 		int len = DelayedDamage.Count;
-		if (len <= 0)
-			return;
+		if (len <= 0) return;
 
 		var listTemp = DelayedDamage.FindAll((d) => (d.Tick == tickId));
 		foreach (var d in listTemp)
 		{
 			ModelChar target = Chars.Find((c) => c.Id == d.Char);
-			if (target != null)
-			{
-				target.Hp -= d.Dmg;
+			if (target == null) continue;
 
-				if (target.Hp <= 0)
-				{
-					//Debug.Log($"{tickId} = {target.Id} is dead");
-					target.CurrState = ModelChar.State.Dead;
-				}
+			target.Hp -= d.Dmg;
+			if (target.Hp <= 0)
+			{
+				//Debug.Log($"{tickId} = {target.Id} is dead");
+				target.CurrState = ModelChar.State.Dead;
 			}
 		}
 
@@ -117,29 +135,18 @@ public class FightSim
 		while (IsTeamAliveFunc(TeamA) && IsTeamAliveFunc(TeamB))
 		{
 			tickId++;
-
 			ApplyDelayedDamage(tickId);
-
-			foreach (var c in TeamA)
-			{
-				c.CdAttack--;
+			foreach (var c in Chars)
 				SimulateChar(tickId, c);
-			}
-
-			foreach (var c in TeamB)
-			{
-				c.CdAttack--;
-				SimulateChar(tickId, c);
-			}
 		}
 
 		EvtAll.Sort((a, b) => { return a.Tick - b.Tick; });
-
 		return EvtAll;
 	}
 
 	private void SimulateChar(int tickId, ModelChar src)
 	{
+		TickCooldowns(src);
 		switch (src.CurrState)
 		{
 			case ModelChar.State.Idle:   SimulateIdle(tickId, src);   break;
@@ -155,7 +162,6 @@ public class FightSim
 
 	private void SimulateMove(int tickId, ModelChar src)
 	{
-		src.CdMove--;
 		if (src.CdMove <= 0)
 		{
 			src.Pos = src.PosDest;
@@ -232,16 +238,16 @@ public class FightSim
 				src.CdMove = Constants.MoveTicks;
 
 			ReplayEvtMove evt = new ReplayEvtMove();
-			evt.Tick = tickId;
-			evt.Char = src.Id;
-			evt.From = src.Pos;
-			evt.To = src.PosDest;
+			evt.Tick     = tickId;
+			evt.Char     = src.Id;
+			evt.From     = src.Pos;
+			evt.To       = src.PosDest;
 			evt.NumTicks = Constants.MoveTicks;
 
 			EvtMove.Add(evt);
 			EvtAll.Add(evt);
 
-			src.Pos = src.PosDest;
+			src.Pos       = src.PosDest; // so pathfinding knows
 			src.CurrState = ModelChar.State.Move;
 		}
 		else
@@ -342,6 +348,12 @@ public class FightSim
 
 		return neighbors;
 	}
+
+	static public int SecsToTicksFunc(float secs)
+	{
+		return (int) Mathf.Round(secs * Constants.TicksPerSec);
+	}
+
 
 }
 

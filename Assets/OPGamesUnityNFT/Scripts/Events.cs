@@ -114,6 +114,11 @@ public class ModelBuff
 	public int Speed;
 }
 
+public class ModelSkill
+{
+	public DataSkills.SkillsRow Info;
+	public int Cd;
+}
 
 public class ModelChar
 {
@@ -142,10 +147,9 @@ public class ModelChar
 
 	public DataClasses.ClassStatsRow ClassInfo;
 
-	public List<int> Skills;
-	public List<int> CdSkill;
-	public List<ModelBuff> Buffs;
-	public List<ModelChar> Enemies;
+	public List<ModelSkill> Skills = new List<ModelSkill>();
+	public List<ModelBuff> Buffs   = new List<ModelBuff>();
+	public List<ModelChar> Enemies; // will assign a ref here
 }
 
 

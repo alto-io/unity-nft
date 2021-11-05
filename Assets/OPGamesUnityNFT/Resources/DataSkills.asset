@@ -12,15 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6f3f3cf4767986d42b32e13d835f81e3, type: 3}
   m_Name: DataSkills
   m_EditorClassIdentifier: 
-  Json: '{"Data":[{"Name":"Stun","Description":"Stun your target lol","VFXPrefab":"","Icon":"","Damage":15,"Heal":"","StunSecs":1.5,"DamageAdd":"","DefenseAdd":"","AttackSpeedAdd":""},{"Name":"Heal","Description":"Heal
-    yourself","VFXPrefab":"","Icon":"","Damage":"","Heal":25,"StunSecs":"","DamageAdd":"","DefenseAdd":"","AttackSpeedAdd":""},{"Name":"Damage
-    Boost","Description":"Attack+","VFXPrefab":"","Icon":"","Damage":"","Heal":"","StunSecs":"","DamageAdd":20,"DefenseAdd":"","AttackSpeedAdd":""},{"Name":"Sword
-    Swing","Description":"Damage enemies around you","VFXPrefab":"","Icon":"","Damage":20,"Heal":"","StunSecs":"","DamageAdd":"","DefenseAdd":"","AttackSpeedAdd":""}]}'
+  Json: '{"Data":[{"Name":"Stun","Description":"Stun your target lol","VFXPrefab":"","Icon":"","CooldownSecs":2,"Damage":15,"Heal":"","StunSecs":1.5,"DamageAdd":"","DefenseAdd":"","AttackSpeedAdd":"","Duration":""},{"Name":"Heal","Description":"Heal
+    yourself","VFXPrefab":"","Icon":"","CooldownSecs":3,"Damage":"","Heal":25,"StunSecs":"","DamageAdd":"","DefenseAdd":"","AttackSpeedAdd":"","Duration":""},{"Name":"Damage
+    Boost","Description":"Attack+","VFXPrefab":"","Icon":"","CooldownSecs":2.5,"Damage":"","Heal":"","StunSecs":"","DamageAdd":20,"DefenseAdd":"","AttackSpeedAdd":"","Duration":2},{"Name":"Sword
+    Swing","Description":"Damage enemies around you","VFXPrefab":"","Icon":"","CooldownSecs":3.5,"Damage":20,"Heal":"","StunSecs":"","DamageAdd":"","DefenseAdd":"","AttackSpeedAdd":"","Duration":""}]}'
   Skills:
   - Name: Stun
     Description: Stun your target lol
     VFXPrefab: 
     Icon: 
+    CooldownSecs: 2
     Damage: 15
     Heal: 0
     StunSecs: 1.5
@@ -31,6 +32,7 @@ MonoBehaviour:
     Description: Heal yourself
     VFXPrefab: 
     Icon: 
+    CooldownSecs: 3
     Damage: 0
     Heal: 25
     StunSecs: 0
@@ -41,6 +43,7 @@ MonoBehaviour:
     Description: Attack+
     VFXPrefab: 
     Icon: 
+    CooldownSecs: 2.5
     Damage: 0
     Heal: 0
     StunSecs: 0
@@ -51,6 +54,7 @@ MonoBehaviour:
     Description: Damage enemies around you
     VFXPrefab: 
     Icon: 
+    CooldownSecs: 3.5
     Damage: 20
     Heal: 0
     StunSecs: 0

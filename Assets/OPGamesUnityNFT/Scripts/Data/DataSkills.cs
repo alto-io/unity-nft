@@ -15,6 +15,7 @@ public class DataSkills : ScriptableObject
 		public string Description;
 		public string VFXPrefab;
 		public string Icon;
+		public float CooldownSecs;
 		public float Damage;
 		public float Heal;
 		public float StunSecs;
