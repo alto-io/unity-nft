@@ -21,6 +21,15 @@ public enum AttackDir
 	West  = 3,
 }
 
+public enum BuffType
+{
+	Null = 0,
+	Stun = 1,
+	Atk  = 2,
+	Def  = 3,
+	Spd  = 4,
+}
+
 // Replay event
 public class ReplayEvent
 {
@@ -79,8 +88,8 @@ public class ReplayEvtBuff : ReplayEvt
 {
 	public int Char;
 	public int TCnt; // tick count
-	public int Dmg;  // +/- Damage
 	public int Atk;  // +/- Attack
+	public int Def;  // +/- Attack
 	public int Spd;  // +/- Speed
 	public bool Stun;
 }
@@ -107,11 +116,15 @@ public class Replay
 	public ReplayEvent[] Events;
 }
 
+// Use this for both Buff and Debuff
 public class ModelBuff
 {
 	public int Attack;
 	public int Defense;
 	public int Speed;
+	public bool Stun;
+
+	public int Cd;
 }
 
 public class ModelSkill

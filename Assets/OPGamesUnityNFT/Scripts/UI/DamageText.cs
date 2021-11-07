@@ -24,25 +24,8 @@ public class DamageText : MonoBehaviour
 		startLocalPos = transform.localPosition;
 	}
 
-	public void ShowDamage(int damage, bool isCrit)
-	{
-		if (text == null)
-			return;
-
-		string msg = damage == 0 ? "MISS" : damage.ToString();
-		ShowMsg(msg, isCrit ? "Crit" : "Normal");
-	}
-
 	public void OnDone()
 	{
-	}
-
-	public void ShowMsg(string msg)
-	{
-		text.text = msg;
-
-		if (msg == "Heal") ShowMsg(msg, "Heal");
-		else               ShowMsg(msg, "Skill");
 	}
 
 	public void ShowMsg(string msg, string animTrigger)

@@ -117,6 +117,15 @@ public class FightManager : MonoBehaviour
 		}
 	}
 
+	private void TickEvtBuff(ReplayEvtBuff evt)
+	{
+		FightChar fightChar = fighters.Find((x) => (x.Id == evt.Char));
+		if (fightChar != null)
+		{
+			fightChar.DoEvtBuff(evt);
+		}
+	}
+
 	private IEnumerator PlayFightCR()
 	{
 		foreach (var f in fighters)
@@ -149,6 +158,10 @@ public class FightManager : MonoBehaviour
 				else if (evtCurr is ReplayEvtDamage)
 				{
 					TickEvtDamage((ReplayEvtDamage) evtCurr);
+				}
+				else if (evtCurr is ReplayEvtBuff)
+				{
+					TickEvtBuff((ReplayEvtBuff) evtCurr);
 				}
 
 				evtIndex++;

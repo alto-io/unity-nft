@@ -42,6 +42,7 @@ public class FightChar : MonoBehaviour
 	[SerializeField] private DamageTextGroup damageText;
 	[SerializeField] private Animator spriteAndUIAnimator;
 	[SerializeField] private TextMeshProUGUI textName;
+	[SerializeField] private TextMeshProUGUI textStatus;
 	[SerializeField] private HPBar hpBar;
 	[SerializeField] private HPBar skillBar;
 	[SerializeField] private Transform attackPos;
@@ -104,6 +105,7 @@ public class FightChar : MonoBehaviour
 	public void Reset()
 	{
 		damageText.Reset();
+		textStatus.text = "";
 		transform.position = initialPos;
 		gameObject.SetActive(true);
 		hpCurr = classInfo.HpVal;
@@ -313,6 +315,14 @@ public class FightChar : MonoBehaviour
 			AnimationTrigger("Dead");
 		else
 			AnimationTrigger("Hurt");
+	}
+
+	public void DoEvtBuff(ReplayEvtBuff evt)
+	{
+		if (evt.Stun == true)
+		{
+			damageText.ShowMsg("Stun");
+		}
 	}
 
 #endregion

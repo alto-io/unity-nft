@@ -16,11 +16,11 @@ public class DataSkills : ScriptableObject
 		public string VFXPrefab;
 		public string Icon;
 		public float CooldownSecs;
-		public float Damage;
-		public float Heal;
+		public int Damage;
+		public int Heal;
 		public float StunSecs;
-		public float DamageAdd;
-		public float DefenseAdd;
+		public int DamageAdd;
+		public int DefenseAdd;
 		public float AttackSpeedAdd;
 	}
 

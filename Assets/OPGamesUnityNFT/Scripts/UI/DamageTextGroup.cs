@@ -65,8 +65,20 @@ public class DamageTextGroup : MonoBehaviour
 		if (texts == null)
 			return;
 
-		queue[queueNext].Msg = damage == 0 ? "MISS" : damage.ToString();
-		queue[queueNext].AnimTrigger = isCrit ? "Crit" : "Normal";
+		string trigger = isCrit ? "Crit" : "Normal";
+		string msg = damage.ToString();
+		if (damage < 0)
+		{
+			msg = (-damage).ToString();
+			trigger = "Heal";
+		}
+		else if (damage == 0)
+		{
+			msg = "MISS";
+		}
+
+		queue[queueNext].Msg = msg;
+		queue[queueNext].AnimTrigger = trigger;
 		queueNext = (queueNext+1) % MAX_QUEUE;
 	}
 
