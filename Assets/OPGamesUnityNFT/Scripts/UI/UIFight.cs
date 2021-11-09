@@ -56,6 +56,11 @@ public class UIFight : MonoBehaviour
 		manager.PlayFight();
 	}
 
+	public void OnBtnReplayFromFile()
+	{
+		manager.LoadReplayFromFile();
+	}
+
 	public void SetTextAnimationTrigger(string trigger, string label)
 	{
 		if (animator == null) return;

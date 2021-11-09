@@ -30,22 +30,13 @@ public enum BuffType
 	Spd  = 4,
 }
 
-// Replay event
-public class ReplayEvent
-{
-	public ReplayEventType Type;
-	public int Tick;
-	public int Src;
-	public int Targ;
-	public int Dmg;
-	public string Skl;
-}
-
+[System.Serializable]
 public class ReplayEvt
 {
 	public int Tick;
 }
 
+[System.Serializable]
 public class ReplayEvtMove : ReplayEvt
 {
 	public int Char;
@@ -59,6 +50,7 @@ public class ReplayEvtMove : ReplayEvt
 	}
 }
 
+[System.Serializable]
 public class ReplayEvtAttack : ReplayEvt
 {
 	public int Char;
@@ -72,6 +64,7 @@ public class ReplayEvtAttack : ReplayEvt
 	}
 }
 
+[System.Serializable]
 public class ReplayEvtDamage : ReplayEvt
 {
 	public int Char;
@@ -84,6 +77,7 @@ public class ReplayEvtDamage : ReplayEvt
 	}
 }
 
+[System.Serializable]
 public class ReplayEvtBuff : ReplayEvt
 {
 	public int Char;
@@ -95,26 +89,25 @@ public class ReplayEvtBuff : ReplayEvt
 	public bool Stun;
 }
 
-public class ReplayEvtHeal : ReplayEvt
-{
-	public int Char;
-	public int Heal;
-	public bool Crit;
-}
-
+[System.Serializable]
 public class ReplayChar
 {
+	public int Id;
 	public string Cont;
 	public string Tok;
 	public bool Team;
 	public Vector2Int Pos;
 }
 
+[System.Serializable]
 public class Replay
 {
 	public int Seed;
-	public ReplayChar[] Chars;
-	public ReplayEvent[] Events;
+	public List<ReplayChar>      Chars  = new List<ReplayChar>();
+	public List<ReplayEvtMove>   Move   = new List<ReplayEvtMove>();
+	public List<ReplayEvtDamage> Damage = new List<ReplayEvtDamage>();
+	public List<ReplayEvtAttack> Attack = new List<ReplayEvtAttack>();
+	public List<ReplayEvtBuff>   Buff   = new List<ReplayEvtBuff>();
 }
 
 // Use this for both Buff and Debuff

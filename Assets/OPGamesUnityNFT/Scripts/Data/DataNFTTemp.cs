@@ -31,13 +31,18 @@ public class DataNFTTemp : ScriptableObject
 		}
 	}
 
-	public Info[] InfoList;
+	public List<Info> InfoList;
 	public bool enabled = true;
 
 	public Info GetRandom()
 	{
-		int index = Random.Range(0, InfoList.Length);
+		int index = Random.Range(0, InfoList.Count);
 		return InfoList[index];
+	}
+
+	public Info GetByTokenId(string token)
+	{
+		return InfoList.Find((i) => i.TokenId == token);
 	}
 }
 

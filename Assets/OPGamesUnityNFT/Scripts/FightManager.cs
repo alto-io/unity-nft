@@ -23,6 +23,7 @@ public class FightManager : MonoBehaviour
 	private	FightSim sim = new FightSim();
 	private Grid grid = null;
 
+	private Replay replayFull = new Replay();
 	private List<ReplayEvt> events;
 	private List<ReplayEvtBuff> activeBuffs = new List<ReplayEvtBuff>();
 
@@ -71,8 +72,92 @@ public class FightManager : MonoBehaviour
 			return;
 
 		Debug.Log($"Num Events {events.Count}");
+		SaveReplayFull();
 
 		PlayFight();
+	}
+
+	private void SaveReplayFull()
+	{
+		foreach (var f in fighters)
+		{
+			ReplayChar c = new ReplayChar();
+
+			c.Id = f.Id;
+			c.Cont = f.Contract;
+			c.Tok = f.TokenId;
+			c.Team = f.Team;
+			c.Pos = grid.WorldToGrid(f.transform.position);
+
+			replayFull.Chars.Add(c);
+		}
+
+		foreach (var e in events)
+		{
+			if (e is ReplayEvtMove)
+			{
+				replayFull.Move.Add((ReplayEvtMove) e);
+			}
+			else if (e is ReplayEvtAttack)
+			{
+				replayFull.Attack.Add((ReplayEvtAttack) e);
+			}
+			else if (e is ReplayEvtDamage)
+			{
+				replayFull.Damage.Add((ReplayEvtDamage) e);
+			}
+			else if (e is ReplayEvtBuff)
+			{
+				replayFull.Buff.Add((ReplayEvtBuff) e);
+			}
+		}
+
+		var json = JsonUtility.ToJson(replayFull);
+		Debug.Log(json);
+	}
+
+	public void LoadReplayFromFile()
+	{
+		TextAsset text = Resources.Load<TextAsset>("Replay");
+		if (text == null)
+			return;
+
+		Replay replay = JsonUtility.FromJson<Replay>(text.text);
+		if (replay == null)
+			return;
+
+		StopCoroutine("PlayFightCR");
+
+		events.Clear();
+		activeBuffs.Clear();
+		foreach (var e in replay.Move)
+			events.Add(e);
+
+		foreach (var e in replay.Damage)
+			events.Add(e);
+
+		foreach (var e in replay.Attack)
+			events.Add(e);
+
+		foreach (var e in replay.Buff)
+			events.Add(e);
+
+		events.Sort((a, b) => { return a.Tick - b.Tick; });
+
+		// set chars in place
+		foreach (var c in replay.Chars)
+		{
+			var f = fighters.Find((f) => f.Id == c.Id);
+			if (f == null) continue;
+
+			f.SetNFT(c.Cont, c.Tok);
+			f.Team = c.Team;
+			f.transform.position = grid.GridToWorld(c.Pos);
+			f.Init();
+			f.Reset();
+		}
+
+		StartCoroutine("PlayFightCR");
 	}
 
 	public void PlayFight()
@@ -132,16 +217,20 @@ public class FightManager : MonoBehaviour
 
 	private IEnumerator PlayFightCR()
 	{
+		// reset data first
 		foreach (var f in fighters)
 		{
 			f.Reset();
 			f.enabled = true;
 		}
+		activeBuffs.Clear();
 
+		// Animate start of fight
 		yield return new WaitForSeconds(1.0f);
 		ui.SetTextAnimationTrigger("Fight", strFight);
 		yield return new WaitForSeconds(1.0f);
 
+		// Run the simulation
 		int evtIndex = 0;
 		int tick = 0;
 		var evtCurr = events[evtIndex];
@@ -187,6 +276,7 @@ public class FightManager : MonoBehaviour
 			f.enabled = false;
 		}
 		
+		// Animate result
 		if (IsTeamAlive(teamA))
 		{
 			ui.SetTextAnimationTrigger("End", strWin);
@@ -208,8 +298,6 @@ public class FightManager : MonoBehaviour
 			evt.TLeft--;
 			if (evt.TLeft <= 0)
 			{
-				Debug.Log($"Remove stun from {evt.Char}");
-
 				FightChar fightChar = fighters.Find((x) => (x.Id == evt.Char));
 				if (fightChar != null)
 				{

@@ -21,13 +21,7 @@ public class FightSim
 	public List<ModelChar>       TeamA     = new List<ModelChar>();
 	public List<ModelChar>       TeamB     = new List<ModelChar>();
 
-	public List<ReplayEvtMove>   EvtMove   = new List<ReplayEvtMove>();
-	public List<ReplayEvtAttack> EvtAttack = new List<ReplayEvtAttack>();
-	public List<ReplayEvtDamage> EvtDamage = new List<ReplayEvtDamage>();
-	public List<ReplayEvtBuff>   EvtBuff   = new List<ReplayEvtBuff>();
-
 	public List<ReplayEvt>       EvtAll    = new List<ReplayEvt>();
-
 	public List<ReplayEvt>       DelayedEffects = new List<ReplayEvt>();
 
 	public void Init()
@@ -233,7 +227,6 @@ public class FightSim
 		evt.Id   = 0;
 		evt.Dir  = GetAttackDir(src, target);
 
-		EvtAttack.Add(evt);
 		EvtAll.Add(evt);
 
 		if (target.Hp-src.Damage <= 0)
@@ -261,7 +254,6 @@ public class FightSim
 		}
 
 		DelayedEffects.Add(evt2);
-		EvtDamage.Add(evt2);
 		EvtAll.Add(evt2);
 		src.CdAttack = src.CdAttackFull;
 	}
@@ -278,7 +270,6 @@ public class FightSim
 		evt.Id   = skillIndex + 1;
 		evt.Dir  = GetAttackDir(src, target);
 
-		EvtAttack.Add(evt);
 		EvtAll.Add(evt);
 
 		int applyAddTick = (Constants.TicksPerSec / 4);
@@ -290,7 +281,6 @@ public class FightSim
 			evt2.Char = src.Id;
 			evt2.Dmg  = -info.Heal;
 			DelayedEffects.Add(evt2);
-			EvtDamage.Add(evt2);
 			EvtAll.Add(evt2);
 
 			//Debug.Log($"HEAL {src.Id} for {info.Heal}");
@@ -307,7 +297,7 @@ public class FightSim
 			DelayedEffects.Add(evtBuff);
 			EvtAll.Add(evtBuff);
 
-			Debug.Log($"STUN {target.Id} for {evtBuff.TCnt} ticks");
+			//Debug.Log($"STUN {target.Id} for {evtBuff.TCnt} ticks");
 		}
 	}
 
@@ -341,7 +331,6 @@ public class FightSim
 			evt.To            = src.PosDest;
 			evt.NumTicks      = Constants.MoveTicks;
 
-			EvtMove.Add(evt);
 			EvtAll.Add(evt);
 
 			src.Pos       = src.PosDest; // so pathfinding knows

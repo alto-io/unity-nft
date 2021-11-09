@@ -225,7 +225,7 @@ public class NFTManager : MonoBehaviour
 		if (nft.enabled == false)
 			return;
 
-		int len = nft.InfoList.Length;
+		int len = nft.InfoList.Count;
 		for (int i=0; i<len; i++)
 		{
 			var n = nft.InfoList[i];
@@ -234,7 +234,7 @@ public class NFTManager : MonoBehaviour
 			item.Chain = "localhost";
 			item.TokenId = i.ToString();
 			item.URI = "temp";
-			item.Contract = "0x0000";
+			item.Contract = "ArcadiansTemp";
 			item.Name = n.Name;
 			item.Description = n.Description;
 			item.Texture = n.Texture;

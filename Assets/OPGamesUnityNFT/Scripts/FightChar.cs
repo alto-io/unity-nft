@@ -30,10 +30,13 @@ public class FightChar : MonoBehaviour
 
 #region Public Properties
 	public int Id       { get { return id; } }
-	public bool Team    { get { return team; } }
+	public bool Team    { get { return team; } set { team = value; } }
 	public bool IsAlive { get { return hpCurr > 0; } }
 	public bool IsReady { get { return cooldownACurr <= 0; } }
 	public float HP     { get { return hpCurr; } set { hpCurr = value; RefreshHPBar(); } }
+
+	public string Contract { get; private set; }
+	public string TokenId { get; private set; }
 
 	public DataClasses.ClassStatsRow ClassInfo { get { return classInfo; } }
 #endregion
@@ -103,34 +106,13 @@ public class FightChar : MonoBehaviour
 		targets = t;
 	}
 
-	public void Reset()
-	{
-		damageText.Reset();
-		textStatus.text = "";
-		transform.position = initialPos;
-		gameObject.SetActive(true);
-		hpCurr = classInfo.HpVal;
-		RefreshHPBar();
-		RefreshSkillBar();
-		cooldownACurr = cooldownA;
-		animator.Play("FightCharIdle");
-	}
-
 	public void SetRandomTempNFT()
 	{
 		var data = DataNFTTemp.Instance;
 		if (data == null)
 			return;
 
-		var info = data.GetRandom();
-		if (info == null)
-			return;
-
-		SetClass(info.CharClass);
-		RefreshName();
-
-		if (info.Spr != null) SetNFTSprite(info.Spr);
-		else                  SetNFTTexture(info.Texture);
+		SetNFTTemp(data.GetRandom());
 	}
 
 	public void SetNFT(string key)
@@ -153,16 +135,51 @@ public class FightChar : MonoBehaviour
 			SetClass(nft.CharClass);
 		}
 		charName = nft.Name;
+		TokenId = nft.TokenId;
+		Contract = nft.Contract;
+
 		RefreshName();
 
 		if (nft.Spr != null) SetNFTSprite(nft.Spr);
 		else                 SetNFTTexture(nft.Texture);
 	}
 
+	public void SetNFT(string contract, string tokenId)
+	{
+		// actually have to change this anyway
+		if (contract == "ArcadiansTemp")
+		{
+			var data = DataNFTTemp.Instance;
+			var info = data.GetByTokenId(tokenId);
+			SetNFTTemp(info);
+		}
+		else
+		{
+		}
+	}
+
+	private void SetNFTTemp(DataNFTTemp.Info info)
+	{
+		if (info == null)
+			return;
+
+		TokenId = info.TokenId;
+		Contract = "ArcadiansTemp";
+
+		SetClass(info.CharClass);
+		RefreshName();
+
+		if (info.Spr != null) SetNFTSprite(info.Spr);
+		else                  SetNFTTexture(info.Texture);
+	}
+
 	public void Init()
 	{
-		id = nextId;
-		nextId++;
+		if (id == 0) 
+		{
+			id = nextId;
+			nextId++;
+		}
 
 		initialPos = transform.position;
 		animator = GetComponent<Animator>();
@@ -178,6 +195,19 @@ public class FightChar : MonoBehaviour
 		{
 			neighbors.Add(new PosDistance());
 		}
+	}
+
+	public void Reset()
+	{
+		damageText.Reset();
+		textStatus.text = "";
+		transform.position = initialPos;
+		gameObject.SetActive(true);
+		hpCurr = classInfo.HpVal;
+		RefreshHPBar();
+		RefreshSkillBar();
+		cooldownACurr = cooldownA;
+		animator.Play("FightCharIdle");
 	}
 
 	// Triggered by animation of projectile
