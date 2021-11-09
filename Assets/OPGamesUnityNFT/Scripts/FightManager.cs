@@ -24,6 +24,7 @@ public class FightManager : MonoBehaviour
 	private Grid grid = null;
 
 	private List<ReplayEvt> events;
+	private List<ReplayEvtBuff> activeBuffs = new List<ReplayEvtBuff>();
 
 	private void Start()
 	{
@@ -123,6 +124,9 @@ public class FightManager : MonoBehaviour
 		if (fightChar != null)
 		{
 			fightChar.DoEvtBuff(evt);
+
+			evt.TLeft = evt.TCnt;
+			activeBuffs.Add(evt);
 		}
 	}
 
@@ -144,6 +148,7 @@ public class FightManager : MonoBehaviour
 		while (evtCurr != null)
 		{
 			tick++;
+			TickBuffs();
 			while (evtCurr != null && evtCurr.Tick == tick)
 			{
 				//Debug.Log($"{tick} - {evtCurr.ToString()}");
@@ -190,6 +195,30 @@ public class FightManager : MonoBehaviour
 		{
 			ui.SetTextAnimationTrigger("End", strLose);
 		}
+	}
+
+	private void TickBuffs()
+	{
+		if (activeBuffs.Count <= 0)
+			return;
+
+		for (int i=0; i<activeBuffs.Count; i++)
+		{
+			ReplayEvtBuff evt = activeBuffs[i];
+			evt.TLeft--;
+			if (evt.TLeft <= 0)
+			{
+				Debug.Log($"Remove stun from {evt.Char}");
+
+				FightChar fightChar = fighters.Find((x) => (x.Id == evt.Char));
+				if (fightChar != null)
+				{
+					fightChar.RemoveEvtBuff(evt);
+				}
+			}
+		}
+
+		activeBuffs.RemoveAll((b) => (b.TLeft <= 0));
 	}
 }
 

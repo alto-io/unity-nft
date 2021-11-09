@@ -87,6 +87,7 @@ public class FightChar : MonoBehaviour
 
 	private List<DataSkills.SkillsRow> skills = new List<DataSkills.SkillsRow>();
 	private List<PosDistance> neighbors = new List<PosDistance>();
+	private List<BuffType> buffs = new List<BuffType>();
 
 #endregion
 
@@ -322,7 +323,18 @@ public class FightChar : MonoBehaviour
 		if (evt.Stun == true)
 		{
 			damageText.ShowMsg("Stun");
+			buffs.Add(BuffType.Stun);
 		}
+		RefreshStatus();
+	}
+
+	public void RemoveEvtBuff(ReplayEvtBuff evt)
+	{
+		if (evt.Stun == true)
+		{
+			buffs.Remove(BuffType.Stun);
+		}
+		RefreshStatus();
 	}
 
 #endregion
@@ -513,6 +525,23 @@ public class FightChar : MonoBehaviour
 			}
 		}
 		return nearest;
+	}
+
+	private void RefreshStatus()
+	{
+		string status = "";
+		foreach (BuffType b in buffs)
+		{
+			switch (b)
+			{
+				case BuffType.Stun:
+					status = status + "<sprite name=\"Stun\">"; break;
+				case BuffType.Atk:
+					status = status + "<sprite name=\"Atk\">"; break;
+			}
+		}
+
+		textStatus.text = status;
 	}
 
 	private void RefreshName()

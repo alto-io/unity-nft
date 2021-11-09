@@ -88,6 +88,7 @@ public class ReplayEvtBuff : ReplayEvt
 {
 	public int Char;
 	public int TCnt; // tick count
+	public int TLeft;// temp value used by FightManager
 	public int Atk;  // +/- Attack
 	public int Def;  // +/- Attack
 	public int Spd;  // +/- Speed

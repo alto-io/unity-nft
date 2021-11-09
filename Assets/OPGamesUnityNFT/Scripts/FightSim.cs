@@ -307,7 +307,7 @@ public class FightSim
 			DelayedEffects.Add(evtBuff);
 			EvtAll.Add(evtBuff);
 
-			//Debug.Log($"STUN {target.Id} for {info.StunSecs}");
+			Debug.Log($"STUN {target.Id} for {evtBuff.TCnt} ticks");
 		}
 	}
 
@@ -448,7 +448,7 @@ public class FightSim
 
 	static public int SecsToTicksFunc(float secs)
 	{
-		return (int) Mathf.Round(secs * Constants.TicksPerSec);
+		return (int) Mathf.Round(secs * (float)Constants.TicksPerSec);
 	}
 
 
