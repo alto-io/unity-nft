@@ -20,6 +20,8 @@ public class NFTManager : MonoBehaviour
 	[Tooltip("Fill with test address")]
 	public string TestWallet = "";
 
+	public List<string> NFTWhiteList = new List<string>();
+
 	// Temp wallet for testing. To be replaced with the metamask wallet address
 	private string wallet = Constants.BurnAddress;
 
@@ -107,7 +109,7 @@ public class NFTManager : MonoBehaviour
 
 		LoadTempNFT();
 
-		yield return StartCoroutine(QueryFakeNFTs());
+		//yield return StartCoroutine(QueryFakeNFTs());
 
 		if (wallet != Constants.BurnAddress)
 			yield return StartCoroutine(QueryOSWallet());
@@ -148,11 +150,10 @@ public class NFTManager : MonoBehaviour
 			{
 				foreach (var a in result.assets)
 				{
-					Debug.LogFormat("{0}, {1}, {2}, {3}",
-							a.token_id,
-							a.name,
-							a.description,
-							a.image_preview_url);
+					if (NFTWhiteList.Find((w) => IsContractAddrEqual(w, a.asset_contract.address)) == null)
+						continue;
+
+					Debug.Log(a.ToString());
 
 					NFTItemData item = new NFTItemData();
 					item.TokenId = a.token_id;
@@ -166,6 +167,11 @@ public class NFTManager : MonoBehaviour
 				}
 			}
 		}
+	}
+
+	static public bool IsContractAddrEqual(string c1, string c2)
+	{
+		return string.Compare(c1, c2, true) == 0;
 	}
 
 	private IEnumerator QueryFakeNFTs()
@@ -195,11 +201,7 @@ public class NFTManager : MonoBehaviour
 				{
 					foreach (var a in result.assets)
 					{
-						Debug.LogFormat("{0}, {1}, {2}, {3}",
-								a.token_id,
-								a.name,
-								a.description,
-								a.image_preview_url);
+						Debug.Log(a.ToString());
 
 						NFTItemData item = new NFTItemData();
 						item.TokenId = a.token_id;

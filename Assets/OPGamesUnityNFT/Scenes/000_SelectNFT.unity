@@ -783,6 +783,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   TestWallet: 0x3233f67E541444DDbbf9391630D92D7F7Aaf508D
+  NFTWhiteList:
+  - 0xc3C8A1E1cE5386258176400541922c414e1B35Fd
 --- !u!4 &696283022
 Transform:
   m_ObjectHideFlags: 0

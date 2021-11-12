@@ -55,6 +55,12 @@ public class OpenSeaAssetItem
 	public string description;
 
 	public OpenSeaAssetItemAssetContract asset_contract;
+
+	public override string ToString()
+	{
+		return string.Format("{0}, {1}, {2}", token_id, asset_contract.address, name);
+		//return string.Format("{0}, {1}, {2}, {3}", token_id, asset_contract.address, name, image_preview_url);
+	}
 }
 
 [System.Serializable]
