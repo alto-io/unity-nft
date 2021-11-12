@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System.Collections.Generic;
+using System.Collections;
 
 namespace OPGames.NFT
 {
@@ -24,6 +25,15 @@ public class UINFTList : MonoBehaviour
 
 	public void OnBtnNext()
 	{
+		StartCoroutine(LoadFightScene());
+	}
+
+	private IEnumerator LoadFightScene()
+	{
+		// TODO: super fake lol
+
+		UIManager.Show(UIType.Matchmaking);
+		yield return new WaitForSeconds(2.0f);
 		SceneManager.LoadScene(2);
 	}
 

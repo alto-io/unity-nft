@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1065052467235",
+    "project_id": "opgavatarbattler",
+    "storage_bucket": "opgavatarbattler.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1065052467235:android:4fcf2c6d917cc7f4dd8196",
+        "android_client_info": {
+          "package_name": "com.opgames.avatarbattler"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1065052467235-b57mikepl7a3hucuoptnk3unser07mgb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBJbH054VnZ8U2xB4muh5w1o4pJplHcLeo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1065052467235-b57mikepl7a3hucuoptnk3unser07mgb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
