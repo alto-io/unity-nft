@@ -140,8 +140,9 @@ public class FightChar : MonoBehaviour
 
 		RefreshName();
 
-		if (nft.Spr != null) SetNFTSprite(nft.Spr);
-		else                 SetNFTTexture(nft.Texture);
+		//if (nft.Spr != null) SetNFTSprite(nft.Spr);
+		//else                 SetNFTTexture(nft.Texture);
+		SetNFTTexture(nft.Texture);
 	}
 
 	public void SetNFT(string contract, string tokenId)
@@ -169,8 +170,9 @@ public class FightChar : MonoBehaviour
 		SetClass(info.CharClass);
 		RefreshName();
 
-		if (info.Spr != null) SetNFTSprite(info.Spr);
-		else                  SetNFTTexture(info.Texture);
+		//if (info.Spr != null) SetNFTSprite(info.Spr);
+		//else                  SetNFTTexture(info.Texture);
+		SetNFTTexture(info.Texture);
 	}
 
 	public void Init()
