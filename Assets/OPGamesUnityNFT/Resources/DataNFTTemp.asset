@@ -19,54 +19,54 @@ MonoBehaviour:
       thinking to further the overall value proposition.
     TokenId: 1
     CharClass: Gunner
-    Texture: {fileID: 2800000, guid: f628e94b6df70e540b1ffb5a9517851b, type: 3}
-    Spr: {fileID: 21300000, guid: f628e94b6df70e540b1ffb5a9517851b, type: 3}
+    Texture: {fileID: 2800000, guid: d873c90af5692eb46b0890716f26e263, type: 3}
+    Spr: {fileID: 21300000, guid: d873c90af5692eb46b0890716f26e263, type: 3}
   - Name: Gunner 2
     Description: Leverage agile frameworks to provide a robust synopsis for high
       level overviews. Iterative approaches to corporate strategy foster collaborative
       thinking to further the overall value proposition.
     TokenId: 2
     CharClass: Gunner
-    Texture: {fileID: 2800000, guid: 4850d8a6f81147d4498831d60d1ad801, type: 3}
-    Spr: {fileID: 21300000, guid: 4850d8a6f81147d4498831d60d1ad801, type: 3}
+    Texture: {fileID: 2800000, guid: a21b9d65365c36e43bb7f13215fc3133, type: 3}
+    Spr: {fileID: 21300000, guid: a21b9d65365c36e43bb7f13215fc3133, type: 3}
   - Name: Gunner 3
     Description: Leverage agile frameworks to provide a robust synopsis for high
       level overviews. Iterative approaches to corporate strategy foster collaborative
       thinking to further the overall value proposition.
     TokenId: 3
     CharClass: Gunner
-    Texture: {fileID: 2800000, guid: cdcf29bb5f746ee42b50bf856110ad55, type: 3}
-    Spr: {fileID: 21300000, guid: cdcf29bb5f746ee42b50bf856110ad55, type: 3}
+    Texture: {fileID: 2800000, guid: 52b0a197813384349ad2601c0c846668, type: 3}
+    Spr: {fileID: 21300000, guid: 52b0a197813384349ad2601c0c846668, type: 3}
   - Name: Knight Drone
     Description: Leverage agile frameworks to provide a robust synopsis for high
       level overviews. Iterative approaches to corporate strategy foster collaborative
       thinking to further the overall value proposition.
     TokenId: 4
     CharClass: Knight
-    Texture: {fileID: 2800000, guid: e703a24ccdf41a841981210acd35914b, type: 3}
-    Spr: {fileID: 21300000, guid: e703a24ccdf41a841981210acd35914b, type: 3}
+    Texture: {fileID: 2800000, guid: 289c9057ac414344fbe3a434957239b3, type: 3}
+    Spr: {fileID: 21300000, guid: 289c9057ac414344fbe3a434957239b3, type: 3}
   - Name: Knight Medieval
     Description: Leverage agile frameworks to provide a robust synopsis for high
       level overviews. Iterative approaches to corporate strategy foster collaborative
       thinking to further the overall value proposition.
     TokenId: 5
     CharClass: Knight
-    Texture: {fileID: 2800000, guid: 94d5977998e2dff448ae92bf4fb95a8c, type: 3}
-    Spr: {fileID: 21300000, guid: 94d5977998e2dff448ae92bf4fb95a8c, type: 3}
+    Texture: {fileID: 2800000, guid: 5a3684c456962ae4c885e2dcd7debe75, type: 3}
+    Spr: {fileID: 21300000, guid: 5a3684c456962ae4c885e2dcd7debe75, type: 3}
   - Name: Tech 1
     Description: Leverage agile frameworks to provide a robust synopsis for high
       level overviews. Iterative approaches to corporate strategy foster collaborative
       thinking to further the overall value proposition.
     TokenId: 6
     CharClass: Tech
-    Texture: {fileID: 2800000, guid: 07d37173059e5ab4b84201ae4157b8dd, type: 3}
-    Spr: {fileID: 21300000, guid: 07d37173059e5ab4b84201ae4157b8dd, type: 3}
+    Texture: {fileID: 2800000, guid: e202061709359a543aac2a38526ec811, type: 3}
+    Spr: {fileID: 21300000, guid: e202061709359a543aac2a38526ec811, type: 3}
   - Name: Tech 2
     Description: Leverage agile frameworks to provide a robust synopsis for high
       level overviews. Iterative approaches to corporate strategy foster collaborative
       thinking to further the overall value proposition.
     TokenId: 7
     CharClass: Tech
-    Texture: {fileID: 2800000, guid: 595173d8bafb45c49852983e1a8936ab, type: 3}
-    Spr: {fileID: 21300000, guid: 595173d8bafb45c49852983e1a8936ab, type: 3}
+    Texture: {fileID: 2800000, guid: 78fb4c540553dd0438573ffe62b0e41a, type: 3}
+    Spr: {fileID: 21300000, guid: 78fb4c540553dd0438573ffe62b0e41a, type: 3}
   enabled: 1
