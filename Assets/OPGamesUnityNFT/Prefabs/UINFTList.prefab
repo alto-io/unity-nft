@@ -1224,7 +1224,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 9006822404326171759}
         m_TargetAssemblyTypeName: OPGames.NFT.UINFTList, Assembly-CSharp
-        m_MethodName: OnBtnNext
+        m_MethodName: OnBtnReset
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

@@ -33,6 +33,16 @@ public class UINFTList : MonoBehaviour
 		UIManager.Close();
 	}
 
+	public void OnBtnReset()
+	{
+		foreach (var kvp in listToggles)
+		{
+			kvp.Value.isOn = false;
+		}
+
+		RefreshSelection();
+	}
+
 	private void Start()
 	{
 		NFTManager nft = NFTManager.Instance;
