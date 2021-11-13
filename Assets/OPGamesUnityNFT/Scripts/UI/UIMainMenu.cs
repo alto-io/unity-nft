@@ -2,16 +2,19 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
+namespace OPGames.NFT
+{
+
 public class UIMainMenu : MonoBehaviour
 {
 	public void OnBtnPlay()
 	{
-		UIManager.Show(UIType.EditSquad);
+		UIManager.Open(UIType.EditSquad);
 	}
 
 	public void OnBtnEditSquad()
 	{
-		UIManager.Show(UIType.EditSquad);
+		UIManager.Open(UIType.EditSquad);
 	}
 
 	public void OnBtnLeaderboard()
@@ -25,4 +28,6 @@ public class UIMainMenu : MonoBehaviour
 	public void OnBtnSettings()
 	{
 	}
+}
+
 }

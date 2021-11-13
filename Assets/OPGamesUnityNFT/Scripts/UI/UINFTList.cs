@@ -25,16 +25,12 @@ public class UINFTList : MonoBehaviour
 
 	public void OnBtnNext()
 	{
-		StartCoroutine(LoadFightScene());
+		UIManager.Open(UIType.Matchmaking);
 	}
-
-	private IEnumerator LoadFightScene()
+	
+	public void OnBtnBack()
 	{
-		// TODO: super fake lol
-
-		UIManager.Show(UIType.Matchmaking);
-		yield return new WaitForSeconds(2.0f);
-		SceneManager.LoadScene(2);
+		UIManager.Close();
 	}
 
 	private void Start()

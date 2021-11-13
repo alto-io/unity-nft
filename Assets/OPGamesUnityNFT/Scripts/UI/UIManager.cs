@@ -2,15 +2,19 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
+namespace OPGames.NFT
+{
+
 public enum UIType
 {
-	MainMenu = 0,
-	EditSquad = 1,
-	Settings = 2,
-	Leaderboard = 3,
-	History = 4,
-	BattleResult = 5,
-	Matchmaking = 6,
+	Null = 0,
+	MainMenu = 1,
+	EditSquad = 2,
+	Settings = 3,
+	Leaderboard = 4,
+	History = 5,
+	BattleResult = 6,
+	Matchmaking = 7,
 }
 
 public class UIManager : MonoBehaviour
@@ -25,7 +29,6 @@ public class UIManager : MonoBehaviour
 	}
 
 	public List<Item> Items = new List<Item>();
-
 	public Stack<Item> UIStack = new Stack<Item>();
 
 	private void Awake()
@@ -41,10 +44,10 @@ public class UIManager : MonoBehaviour
 		foreach (var i in Items)
 			i.Go.SetActive(false);
 
-		Show(UIType.MainMenu);
+		Open(UIType.MainMenu);
 	}
 
-	static public void Show(UIType t)
+	static public void Open(UIType t)
 	{
 		foreach (var i in _instance.Items)
 		{
@@ -54,13 +57,27 @@ public class UIManager : MonoBehaviour
 				var canvas = i.Go.GetComponent<Canvas>();
 				if (canvas != null)
 					canvas.sortingOrder = _instance.UIStack.Count;
+
+				if (_instance.UIStack.Count > 0)
+				{
+					var top = _instance.UIStack.Peek();
+					top.Go.SetActive(false);
+				}
+
 				_instance.UIStack.Push(i);
 				break;
 			}
 		}
 	}
 
-	static public void Hide(UIType t)
+	static public void Close()
 	{
+		var top = _instance.UIStack.Pop();
+		var next = _instance.UIStack.Peek();
+
+		next.Go.SetActive(true);
+		top.Go.SetActive(false);
 	}
+}
+
 }
