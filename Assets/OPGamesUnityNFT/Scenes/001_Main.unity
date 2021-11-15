@@ -409,13 +409,13 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 3541828618712592075, guid: efff68db8a20d3145863109b83417149, type: 3}
-      propertyPath: m_AdditionalShaderChannelsFlag
-      value: 25
-      objectReference: {fileID: 0}
     - target: {fileID: 3541828618712592118, guid: efff68db8a20d3145863109b83417149, type: 3}
       propertyPath: m_Name
       value: UIMainMenu
+      objectReference: {fileID: 0}
+    - target: {fileID: 3541828618712592118, guid: efff68db8a20d3145863109b83417149, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: efff68db8a20d3145863109b83417149, type: 3}
@@ -841,7 +841,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9006822404014413799, guid: b5f9ebd3c519ea040bde13e5453b9bf7, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0.9999998
+      objectReference: {fileID: 0}
+    - target: {fileID: 9006822404014413799, guid: b5f9ebd3c519ea040bde13e5453b9bf7, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9006822404326171758, guid: b5f9ebd3c519ea040bde13e5453b9bf7, type: 3}
       propertyPath: m_Pivot.x
