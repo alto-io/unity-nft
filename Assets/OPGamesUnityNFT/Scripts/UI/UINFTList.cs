@@ -12,6 +12,7 @@ public class UINFTList : MonoBehaviour
 	[SerializeField] private GameObject loadingParent;
 	[SerializeField] private Text loadingStatus;
 
+	[SerializeField] private RectTransform gridButtonsParent;
 	[SerializeField] private RectTransform contentParent;
 	[SerializeField] private GameObject prefabNFT;
 
@@ -19,13 +20,34 @@ public class UINFTList : MonoBehaviour
 	[SerializeField] private int numNFTs = 3;
 
 	[SerializeField] private UINFTItem[] selectedUI;
+	[SerializeField] private Toggle[] selectedToggle;
 
-	private Dictionary<string, GameObject> listItems = new Dictionary<string, GameObject>();
-	private Dictionary<string, Toggle> listToggles = new Dictionary<string, Toggle>();
+	[SerializeField] private GameObject panelNFT;
+	[SerializeField] private GameObject panelGrid;
+
+	private Dictionary<string, GameObject> listItems   = new Dictionary<string, GameObject>();
+	private Dictionary<string, Toggle>     listToggles = new Dictionary<string, Toggle>();
+
+	private Button[] gridButtonOccupied;
+
+	private int step = 0;
 
 	public void OnBtnNext()
 	{
-		UIManager.Open(UIType.Matchmaking);
+		if (step == 0)
+		{
+			step++;
+			panelNFT.SetActive(false);
+			panelGrid.SetActive(true);
+
+			foreach (var t in selectedToggle)
+				t.gameObject.SetActive(true);
+		}
+		else
+		{
+			UIManager.Open(UIType.Matchmaking);
+			step = 0;
+		}
 	}
 	
 	public void OnBtnBack()
@@ -43,8 +65,51 @@ public class UINFTList : MonoBehaviour
 		RefreshSelection();
 	}
 
+	public void OnGridBtnClick(int x, int y, Button b)
+	{
+		Debug.Log($"OnGridBtnClick {x}, {y}");
+
+		var image = b.GetComponent<Image>();
+		if (image == null)
+			return;
+
+		int index = 0;
+		for (int i=0; i<selectedToggle.Length; i++)
+		{
+			if (selectedToggle[i].isOn == false)
+				continue;
+
+			index = i;
+			break;
+		}
+
+		if (gridButtonOccupied[index] != null)
+		{
+			var prev = gridButtonOccupied[index];
+			prev.image.sprite = null;
+			prev.image.color = new Color(0,0,0,0);
+		}
+
+		var nftItem = selectedUI[index];
+		image.sprite = nftItem.GetSprite();
+		image.color = Color.white;
+
+		GameGlobals.Selected[index].Pos = new Vector2Int(x,y);
+
+		gridButtonOccupied[index] = b;
+	}
+
+	private void OnEnable()
+	{
+		step = 0;
+		panelNFT.SetActive(true);
+		panelGrid.SetActive(false);
+	}
+
 	private void Start()
 	{
+		gridButtonOccupied = new Button[numNFTs];
+
 		NFTManager nft = NFTManager.Instance;
 		if (nft != null)
 		{
@@ -58,8 +123,32 @@ public class UINFTList : MonoBehaviour
 		LoadFromManager();
 
 		foreach (var s in selectedUI)
-		{
 			s.gameObject.SetActive(false);
+
+		foreach (var t in selectedToggle)
+			t.gameObject.SetActive(false);
+
+		InitGridButtons();
+	}
+
+	private void InitGridButtons()
+	{
+		int x = 0;
+		int y = 2;
+		int len = gridButtonsParent.childCount;
+		for (int i=0; i<len; i++)
+		{
+			var child = gridButtonsParent.GetChild(i);
+			var b = child.GetComponent<Button>();
+			if (b == null) continue;
+
+			int xTemp = x;
+			int yTemp = y;
+			b.onClick.AddListener(() => OnGridBtnClick(xTemp, yTemp, b));
+
+			x = (x + 1) % 6;
+			if (x == 0)
+				y--;
 		}
 	}
 
@@ -161,7 +250,9 @@ public class UINFTList : MonoBehaviour
 			if (kvp.Value.isOn) 
 			{
 				count++;
-				GameGlobals.Selected.Add(kvp.Key);
+				var info = new GameGlobals.SelectedInfo();
+				info.Id = kvp.Key;
+				GameGlobals.Selected.Add(info);
 			}
 		}
 
@@ -195,8 +286,9 @@ public class UINFTList : MonoBehaviour
 		if (nft == null) return;
 
 		int selectedCount = 0;
-		foreach (string key in GameGlobals.Selected)
+		foreach (var info in GameGlobals.Selected)
 		{
+			string key = info.Id;
 			if (selectedUI[selectedCount] != null)
 			{
 				NFTItemData d = nft.GetNFTItemDataById(key);

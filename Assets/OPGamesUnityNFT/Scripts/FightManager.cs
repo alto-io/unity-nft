@@ -47,9 +47,15 @@ public class FightManager : MonoBehaviour
 			f.SetTargets(teamB);
 
 			if (GameGlobals.Selected.Count > i)
-				f.SetNFT(GameGlobals.Selected[i]);
+			{
+				var info = GameGlobals.Selected[i];
+				f.SetNFT(info.Id);
+				f.transform.position = grid.GridToWorld(info.Pos);
+			}
 			else
+			{
 				f.SetRandomTempNFT();
+			}
 		}
 
 		foreach (var f in teamB)

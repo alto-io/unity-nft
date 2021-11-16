@@ -13,6 +13,11 @@ public class UINFTItem : MonoBehaviour
 	[SerializeField] private TextMeshProUGUI textName;
 	[SerializeField] private TextMeshProUGUI textDesc;
 
+	public Sprite GetSprite()
+	{
+		return image.sprite;
+	}
+
 	public void Fill(NFTItemData nft)
 	{
 		if (textName != null) 

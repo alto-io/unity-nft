@@ -6,7 +6,13 @@ namespace OPGames.NFT
 
 static public class GameGlobals
 {
-	static public List<string> Selected = new List<string>();
+	public class SelectedInfo
+	{
+		public string Id;
+		public Vector2Int Pos;
+	}
+
+	static public List<SelectedInfo> Selected = new List<SelectedInfo>();
 }
 
 }
