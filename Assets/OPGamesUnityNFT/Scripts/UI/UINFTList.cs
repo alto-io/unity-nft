@@ -67,8 +67,6 @@ public class UINFTList : MonoBehaviour
 
 	public void OnGridBtnClick(int x, int y, Button b)
 	{
-		Debug.Log($"OnGridBtnClick {x}, {y}");
-
 		var image = b.GetComponent<Image>();
 		if (image == null)
 			return;
