@@ -17,7 +17,8 @@ public class UIMatchmaking : MonoBehaviour
 	private IEnumerator WaitForMatch()
 	{
 		yield return new WaitForSeconds(2.0f);
-		SceneManager.LoadScene(2);
+		UIManager.Open(UIType.EditSquadGrid);
+		//SceneManager.LoadScene(2);
 	}
 
 	public void OnBtnBack()

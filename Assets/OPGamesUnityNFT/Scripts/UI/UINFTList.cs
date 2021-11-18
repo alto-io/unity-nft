@@ -12,7 +12,6 @@ public class UINFTList : MonoBehaviour
 	[SerializeField] private GameObject loadingParent;
 	[SerializeField] private Text loadingStatus;
 
-	[SerializeField] private RectTransform gridButtonsParent;
 	[SerializeField] private RectTransform contentParent;
 	[SerializeField] private GameObject prefabNFT;
 
@@ -22,32 +21,14 @@ public class UINFTList : MonoBehaviour
 	[SerializeField] private UINFTItem[] selectedUI;
 	[SerializeField] private Toggle[] selectedToggle;
 
-	[SerializeField] private GameObject panelNFT;
-	[SerializeField] private GameObject panelGrid;
-
 	private Dictionary<string, GameObject> listItems   = new Dictionary<string, GameObject>();
 	private Dictionary<string, Toggle>     listToggles = new Dictionary<string, Toggle>();
-
-	private Button[] gridButtonOccupied;
 
 	private int step = 0;
 
 	public void OnBtnNext()
 	{
-		if (step == 0)
-		{
-			step++;
-			panelNFT.SetActive(false);
-			panelGrid.SetActive(true);
-
-			foreach (var t in selectedToggle)
-				t.gameObject.SetActive(true);
-		}
-		else
-		{
-			UIManager.Open(UIType.Matchmaking);
-			step = 0;
-		}
+		UIManager.Open(UIType.Matchmaking);
 	}
 	
 	public void OnBtnBack()
@@ -81,33 +62,19 @@ public class UINFTList : MonoBehaviour
 			break;
 		}
 
-		if (gridButtonOccupied[index] != null)
-		{
-			var prev = gridButtonOccupied[index];
-			prev.image.sprite = null;
-			prev.image.color = new Color(0,0,0,0);
-		}
-
 		var nftItem = selectedUI[index];
 		image.sprite = nftItem.GetSprite();
 		image.color = Color.white;
 
 		GameGlobals.Selected[index].Pos = new Vector2Int(x,y);
-
-		gridButtonOccupied[index] = b;
 	}
 
 	private void OnEnable()
 	{
-		step = 0;
-		panelNFT.SetActive(true);
-		panelGrid.SetActive(false);
 	}
 
 	private void Start()
 	{
-		gridButtonOccupied = new Button[numNFTs];
-
 		NFTManager nft = NFTManager.Instance;
 		if (nft != null)
 		{
@@ -125,30 +92,28 @@ public class UINFTList : MonoBehaviour
 
 		foreach (var t in selectedToggle)
 			t.gameObject.SetActive(false);
-
-		InitGridButtons();
 	}
 
-	private void InitGridButtons()
-	{
-		int x = 0;
-		int y = 2;
-		int len = gridButtonsParent.childCount;
-		for (int i=0; i<len; i++)
-		{
-			var child = gridButtonsParent.GetChild(i);
-			var b = child.GetComponent<Button>();
-			if (b == null) continue;
-
-			int xTemp = x;
-			int yTemp = y;
-			b.onClick.AddListener(() => OnGridBtnClick(xTemp, yTemp, b));
-
-			x = (x + 1) % 6;
-			if (x == 0)
-				y--;
-		}
-	}
+//	private void InitGridButtons()
+//	{
+//		int x = 0;
+//		int y = 2;
+//		int len = gridButtonsParent.childCount;
+//		for (int i=0; i<len; i++)
+//		{
+//			var child = gridButtonsParent.GetChild(i);
+//			var b = child.GetComponent<Button>();
+//			if (b == null) continue;
+//
+//			int xTemp = x;
+//			int yTemp = y;
+//			b.onClick.AddListener(() => OnGridBtnClick(xTemp, yTemp, b));
+//
+//			x = (x + 1) % 6;
+//			if (x == 0)
+//				y--;
+//		}
+//	}
 
 	private void LoadFromManager()
 	{

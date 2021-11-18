@@ -15,6 +15,7 @@ public enum UIType
 	History = 5,
 	BattleResult = 6,
 	Matchmaking = 7,
+	EditSquadGrid = 8,
 }
 
 public class UIManager : MonoBehaviour
