@@ -848,6 +848,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2079218093}
     m_Modifications:
+    - target: {fileID: 5406477393461654802, guid: e0480bf7fd0e38b41a0a5682a2bd978f, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 5914198666590298186, guid: e0480bf7fd0e38b41a0a5682a2bd978f, type: 3}
       propertyPath: m_Name
       value: UIEditSquadGrid

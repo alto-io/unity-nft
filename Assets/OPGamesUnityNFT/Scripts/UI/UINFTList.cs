@@ -94,27 +94,6 @@ public class UINFTList : MonoBehaviour
 			t.gameObject.SetActive(false);
 	}
 
-//	private void InitGridButtons()
-//	{
-//		int x = 0;
-//		int y = 2;
-//		int len = gridButtonsParent.childCount;
-//		for (int i=0; i<len; i++)
-//		{
-//			var child = gridButtonsParent.GetChild(i);
-//			var b = child.GetComponent<Button>();
-//			if (b == null) continue;
-//
-//			int xTemp = x;
-//			int yTemp = y;
-//			b.onClick.AddListener(() => OnGridBtnClick(xTemp, yTemp, b));
-//
-//			x = (x + 1) % 6;
-//			if (x == 0)
-//				y--;
-//		}
-//	}
-
 	private void LoadFromManager()
 	{
 		NFTManager nft = NFTManager.Instance;

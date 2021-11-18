@@ -1883,13 +1883,14 @@ GameObject:
   m_Component:
   - component: {fileID: 7730704612321137589}
   - component: {fileID: 8526804549047654271}
+  - component: {fileID: 8512227866866234455}
   m_Layer: 5
   m_Name: SquadGrid
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &7730704612321137589
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1924,6 +1925,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Padding: {x: 0, y: 0, z: 0, w: 0}
   m_Softness: {x: 0, y: 0}
+--- !u!114 &8512227866866234455
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6445892326206586424}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ec2148a99574a3e41b5fca9438d91234, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gridButtonsParent: {fileID: 1041823674273735832}
 --- !u!1 &6485692332464103468
 GameObject:
   m_ObjectHideFlags: 0
