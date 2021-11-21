@@ -51,11 +51,13 @@ public class DamageTextGroup : MonoBehaviour
 		if (queueCurr != queueNext && cooldownCurr <= 0)
 		{
 			var t = texts[nextIndex];
-			t.ShowMsg(queue[queueCurr].Msg, queue[queueCurr].AnimTrigger);
+			if (t != null)
+			{
+				t.ShowMsg(queue[queueCurr].Msg, queue[queueCurr].AnimTrigger);
+			}
 
 			queueCurr = (queueCurr + 1) % MAX_QUEUE;
 			nextIndex = (nextIndex + 1) % texts.Length;
-
 			cooldownCurr = cooldown;
 		}
 	}

@@ -14,14 +14,10 @@ public class DamageText : MonoBehaviour
 	private TextMeshProUGUI text;
 	private Vector3 startLocalPos;
 
+	private bool initialized = false;
+
 	private void Start()
 	{
-		animator = GetComponent<Animator>();
-
-		text = GetComponent<TextMeshProUGUI>();
-		text.enabled = false;
-
-		startLocalPos = transform.localPosition;
 	}
 
 	public void OnDone()
@@ -30,9 +26,41 @@ public class DamageText : MonoBehaviour
 
 	public void ShowMsg(string msg, string animTrigger)
 	{
-		text.text = msg;
-		text.enabled = true;
-		animator.SetTrigger(animTrigger);
+		if (!initialized) Init();
+
+		if (text != null)
+		{
+			text.text = msg;
+			text.enabled = true;
+		}
+		else
+		{
+			Debug.Log("DamageText:ShowMsg - text is null");
+		}
+
+		if (animator != null)
+		{
+			animator.SetTrigger(animTrigger);
+		}
+	}
+
+	private void Init()
+	{
+		animator = GetComponent<Animator>();
+
+		text = GetComponent<TextMeshProUGUI>();
+		if (text != null)
+		{
+			text.enabled = false;
+		}
+		else
+		{
+			Debug.Log("DamageText:Start - cannot find TextMeshProUGUI");
+		}
+
+		startLocalPos = transform.localPosition;
+
+		initialized = true;
 	}
 }
 

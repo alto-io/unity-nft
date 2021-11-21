@@ -117,7 +117,7 @@ public class FightChar : MonoBehaviour
 
 	public void SetNFT(string key)
 	{
-		Debug.LogFormat("SetNFT {0}", key);
+		//Debug.LogFormat("SetNFT {0}", key);
 		var mgr = NFTManager.Instance;
 		if (mgr == null)
 			return;
@@ -197,6 +197,8 @@ public class FightChar : MonoBehaviour
 		{
 			neighbors.Add(new PosDistance());
 		}
+
+		damageText.Reset();
 	}
 
 	public void Reset()

@@ -151,7 +151,7 @@ public class UINFTList : MonoBehaviour
 				toggle.onValueChanged.AddListener(RefreshTogglesAndNext);
 			}
 
-			Debug.LogFormat("OnNFTListComplete - add to list {0}", n.UniqueId);
+			//Debug.LogFormat("OnNFTListComplete - add to list {0}", n.UniqueId);
 		}
 	}
 

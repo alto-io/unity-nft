@@ -14,14 +14,16 @@ public class UIEditSquadGrid : MonoBehaviour, IDragHandler, IBeginDragHandler, I
 	[SerializeField]
 	private RectTransform gridButtonsParent;
 
-	private Image[,] cellImage = new Image[6,3];
-	private int[,] cellIndex = new int[6,3];
+	private Image[,] cellImage = new Image[Constants.GridCols,Constants.GridRows];
+	private int[,] cellIndex = new int[Constants.GridCols,Constants.GridRows];
 
 	private bool initialized = false;
 
 	private Sprite[] nftSprites = new Sprite[3];
 
 	private Vector2Int prevCoord = new Vector2Int(-1,-1);
+
+	private Color colorTransparent = new Color(0,0,0,0);
 
 	private void Start()
 	{
@@ -106,13 +108,26 @@ public class UIEditSquadGrid : MonoBehaviour, IDragHandler, IBeginDragHandler, I
 
 	public void OnBeginDrag(PointerEventData eventData)
 	{
-		OnDragInternal(eventData);
+		var go = GetCell(eventData);
+		if (go == null) return;
+
+		Vector2Int coord = GetPosFromCellName(go.name);
+
+		if (!IsValidCoord(coord))
+			return;
+
+		var imageCurr = cellImage[coord.x, coord.y];
+		if (imageCurr.sprite == null)
+			return;
+
+		prevCoord = coord;
 	}
 
 	public void OnDrag(PointerEventData eventData)
 	{
 		OnDragInternal(eventData);
 	}
+
 
 	public void OnEndDrag(PointerEventData eventData)
 	{
@@ -126,29 +141,32 @@ public class UIEditSquadGrid : MonoBehaviour, IDragHandler, IBeginDragHandler, I
 		if (go == null) return;
 
 		Vector2Int coord = GetPosFromCellName(go.name);
-
-		if (prevCoord.x == -1 && prevCoord.y == -1)
-			prevCoord = coord;
-
 		if (prevCoord == coord)
+			return;
+
+		// error checking of index
+		if (!IsValidCoord(prevCoord) || !IsValidCoord(coord))
 			return;
 
 		var imagePrev = cellImage[prevCoord.x, prevCoord.y];
 		var imageCurr = cellImage[coord.x, coord.y];
 
-		if (imageCurr.sprite != null)
-			return;
-
 		imageCurr.sprite = imagePrev.sprite;
-		imageCurr.color = Color.white;
+		imageCurr.color = (imageCurr.sprite != null) ? Color.white : colorTransparent;
 
 		imagePrev.sprite = null;
-		imagePrev.color = new Color(0,0,0,0);
+		imagePrev.color = colorTransparent;
 
 		cellIndex[coord.x, coord.y] = cellIndex[prevCoord.x, prevCoord.y];
 		cellIndex[prevCoord.x, prevCoord.y] = -1;
 
 		prevCoord = coord;
+	}
+
+	private bool IsValidCoord(Vector2Int c)
+	{
+		return c.x >= 0 && c.x < Constants.GridCols &&
+			   c.y >= 0 && c.y < Constants.GridRows;
 	}
 
 	private Vector2Int GetPosFromCellName(string n)
@@ -167,9 +185,9 @@ public class UIEditSquadGrid : MonoBehaviour, IDragHandler, IBeginDragHandler, I
 	public void AssignFinalPositions()
 	{
 		Debug.Log("AssignFinalPositions");
-		for (int x=0; x<cellIndex.GetLength(0); x++)
+		for (int x=0; x<Constants.GridCols; x++)
 		{
-			for (int y=0; y<cellIndex.GetLength(1); y++)
+			for (int y=0; y<Constants.GridRows; y++)
 			{
 				if (cellIndex[x,y] == -1) continue;
 

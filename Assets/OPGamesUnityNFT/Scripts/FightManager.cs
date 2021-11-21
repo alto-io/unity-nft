@@ -119,7 +119,7 @@ public class FightManager : MonoBehaviour
 		}
 
 		var json = JsonUtility.ToJson(replayFull);
-		Debug.Log(json);
+		//Debug.Log(json);
 	}
 
 	public void LoadReplayFromFile()

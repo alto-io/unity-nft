@@ -6,10 +6,12 @@ namespace OPGames.NFT
 
 static public class Constants
 {
-	static public string BurnAddress = "0x0000000000000000000000000000000000000000";
-	static public int TicksPerSec = 20;
-	static public float TickDt = 1.0f / TicksPerSec;
-	static public int MoveTicks = 5;
+	public const string BurnAddress = "0x0000000000000000000000000000000000000000";
+	public const int TicksPerSec = 20;
+	public const float TickDt = 1.0f / TicksPerSec;
+	public const int MoveTicks = 5;
+	public const int GridRows = 3;
+	public const int GridCols = 6;
 }
 
 [System.Serializable]
