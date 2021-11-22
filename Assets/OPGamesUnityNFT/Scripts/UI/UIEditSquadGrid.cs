@@ -147,6 +147,10 @@ public class UIEditSquadGrid : MonoBehaviour, IDragHandler, IBeginDragHandler, I
 		var imagePrev = cellImage[prevCoord.x, prevCoord.y];
 		var imageCurr = cellImage[coord.x, coord.y];
 
+		// something occupies this one
+		if (imageCurr.sprite != null)
+			return;
+
 		imageCurr.sprite = imagePrev.sprite;
 		imageCurr.color = (imageCurr.sprite != null) ? Color.white : colorTransparent;
 
