@@ -34,7 +34,14 @@ public class UIEditSquadGrid : MonoBehaviour, IDragHandler, IBeginDragHandler, I
 	private void InitGridButtons()
 	{
 		if (initialized)
+		{
+			foreach (var image in cellImage)
+			{
+				image.sprite = null;
+				image.color = colorTransparent;
+			}
 			return;
+		}
 
 		int x = 0;
 		int y = 2;
@@ -67,7 +74,6 @@ public class UIEditSquadGrid : MonoBehaviour, IDragHandler, IBeginDragHandler, I
 	{
 		NFTManager mgr = NFTManager.Instance;
 
-		int x = 0;
 		var list = selected;
 		for (int i=0; i<list.Count; i++)
 		{
@@ -75,19 +81,32 @@ public class UIEditSquadGrid : MonoBehaviour, IDragHandler, IBeginDragHandler, I
 			var nft = mgr.GetNFTItemDataById(info.Id);
 			if (nft == null) continue;
 
-			info.Pos.x = x;
-			info.Pos.y = 0;
-			
-			var image = cellImage[x, 0];
+			if (info.Pos.x == -1 || info.Pos.y == -1)
+			{
+				info.Pos = GetFreeCell();
+			}
+
+			var image = cellImage[info.Pos.x, info.Pos.y];
 			Utils.SetImageTexture(image, nft.Texture);
 
-			cellIndex[x,0] = i;
-
+			cellIndex[info.Pos.x, info.Pos.y] = i;
 			nftSprites[i] = image.sprite;
-
 			image.color = Color.white;
-			x++;
 		}
+	}
+
+	private Vector2Int GetFreeCell()
+	{
+		for (int y = 0; y<Constants.GridRows; y++)
+		{
+			for (int x = 0; x<Constants.GridCols; x++)
+			{
+				if (cellIndex[x,y] == -1)
+					return new Vector2Int(x,y);
+			}
+		}
+
+		return new Vector2Int(0,0);
 	}
 
 	private GameObject GetCell(PointerEventData eventData)

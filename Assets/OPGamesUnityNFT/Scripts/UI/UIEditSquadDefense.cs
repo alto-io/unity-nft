@@ -22,6 +22,16 @@ public class UIEditSquadDefense : MonoBehaviour
 		UIManager.Close();
 	}
 
+	public void OnBtnSave()
+	{
+		var grid = goGrid.GetComponentInChildren<UIEditSquadGrid>();
+		if (grid != null)
+			grid.AssignFinalPositions();
+
+		SaveManager.Instance.Save();
+		UIManager.Close();
+	}
+
 	public void OnBtnEditSquad(bool isActive)
 	{
 		goSelect.SetActive(isActive);

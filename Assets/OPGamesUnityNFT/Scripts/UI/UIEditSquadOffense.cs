@@ -17,6 +17,7 @@ public class UIEditSquadOffense : MonoBehaviour
 	public void OnBtnConfirm()
 	{
 		grid.AssignFinalPositions();
+		SaveManager.Instance.Save();
 		SceneManager.LoadScene(2);
 	}
 }

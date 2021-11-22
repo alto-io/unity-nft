@@ -39,37 +39,20 @@ public class UINFTSelect : MonoBehaviour
 		RefreshSelection();
 	}
 
-	public void OnGridBtnClick(int x, int y, Button b)
-	{
-		var image = b.GetComponent<Image>();
-		if (image == null)
-			return;
-
-		int index = 0;
-		for (int i=0; i<selectedToggle.Length; i++)
-		{
-			if (selectedToggle[i].isOn == false)
-				continue;
-
-			index = i;
-			break;
-		}
-
-		var nftItem = selectedUI[index];
-		image.sprite = nftItem.GetSprite();
-		image.color = Color.white;
-
-		selected[index].Pos = new Vector2Int(x,y);
-	}
-
 	private void OnEnable()
 	{
 		if (isOffense) selected = GameGlobals.Offense;
 		else           selected = GameGlobals.Defense;
+
+		StartCoroutine(FillCR());
 	}
 
-	private void Start()
+	private IEnumerator FillCR()
 	{
+		NFTManager nft = NFTManager.Instance;
+		while (nft.IsNFTListComplete == false)
+			yield return new WaitForSeconds(0.1f);
+
 		LoadFromManager();
 
 		foreach (var s in selectedUI)
@@ -77,17 +60,13 @@ public class UINFTSelect : MonoBehaviour
 
 		foreach (var t in selectedToggle)
 			t.gameObject.SetActive(false);
+
+		RefreshSelection();
 	}
 
 	private void LoadFromManager()
 	{
 		NFTManager nft = NFTManager.Instance;
-		if (nft == null)
-			return;
-
-		if (nft.IsNFTListComplete == false)
-			return;
-
 		var list = nft.LoadedNFTs;
 		AddNFTListItems(list);
 		RefreshTogglesAndNext();
@@ -95,17 +74,30 @@ public class UINFTSelect : MonoBehaviour
 
 	private void AddNFTListItems(List<NFTItemData> list)
 	{
+		listToggles.Clear();
+
 		foreach (var n in list)
 		{
-			GameObject clone = Instantiate(prefabNFT);
-			clone.transform.SetParent(contentParent);
-			clone.transform.localScale = UnityEngine.Vector3.one;
+			GameObject clone = null;
 
-			listItems.Add(n.UniqueId, clone);
+			if (listItems.ContainsKey(n.UniqueId))
+			{
+				clone = listItems[n.UniqueId];
+			}
+			else
+			{
+				clone = Instantiate(prefabNFT);
+				clone.transform.SetParent(contentParent);
+				clone.transform.localScale = UnityEngine.Vector3.one;
+				listItems.Add(n.UniqueId, clone);
+			}
 
 			var toggle = clone.GetComponentInChildren<Toggle>();
 			if (toggle != null)
 			{
+				var info = selected.Find((info) => info.Id == n.UniqueId);
+				if (info != null) toggle.isOn = true;
+
 				listToggles.Add(n.UniqueId, toggle);
 				toggle.onValueChanged.AddListener(RefreshTogglesAndNext);
 			}
@@ -119,15 +111,22 @@ public class UINFTSelect : MonoBehaviour
 	private void RefreshTogglesAndNext(bool dontCare = false)
 	{
 		int count = 0;
-		selected.Clear();
 		foreach (var kvp in listToggles)
 		{
 			if (kvp.Value.isOn) 
 			{
 				count++;
-				var info = new GameGlobals.SelectedInfo();
+				var info = selected.Find((i) => (i.Id == kvp.Key));
+				if (info != null)
+					continue;
+
+				info = new GameGlobals.SelectedInfo();
 				info.Id = kvp.Key;
 				selected.Add(info);
+			}
+			else
+			{
+				selected.RemoveAll((i) => (i.Id == kvp.Key));
 			}
 		}
 
