@@ -46,9 +46,9 @@ public class FightManager : MonoBehaviour
 			var f = teamA[i];
 			f.SetTargets(teamB);
 
-			if (GameGlobals.Selected.Count > i)
+			if (GameGlobals.Offense.Count > i)
 			{
-				var info = GameGlobals.Selected[i];
+				var info = GameGlobals.Offense[i];
 				f.SetNFT(info.Id);
 				f.transform.position = grid.GridToWorld(info.Pos);
 			}

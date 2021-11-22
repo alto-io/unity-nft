@@ -522,7 +522,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7042111372674163316, guid: 40cc0014ff55cdd418a272b57d320240, type: 3}
       propertyPath: m_Name
-      value: UIEditSquad
+      value: UIEditSquadDefense
       objectReference: {fileID: 0}
     - target: {fileID: 7042111372674163316, guid: 40cc0014ff55cdd418a272b57d320240, type: 3}
       propertyPath: m_IsActive
@@ -533,6 +533,11 @@ PrefabInstance:
 --- !u!224 &1065113407 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 7042111372674163272, guid: 40cc0014ff55cdd418a272b57d320240, type: 3}
+  m_PrefabInstance: {fileID: 1065113406}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1168417229 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7042111372674163316, guid: 40cc0014ff55cdd418a272b57d320240, type: 3}
   m_PrefabInstance: {fileID: 1065113406}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1697028853
@@ -823,7 +828,7 @@ MonoBehaviour:
   Items:
   - Type: 1
     Go: {fileID: 794307544}
-  - Type: 2
+  - Type: 9
     Go: {fileID: 2026922510}
   - Type: 7
     Go: {fileID: 2036130327}
@@ -831,6 +836,8 @@ MonoBehaviour:
     Go: {fileID: 1697028855}
   - Type: 8
     Go: {fileID: 4110597068255661758}
+  - Type: 2
+    Go: {fileID: 1168417229}
 --- !u!224 &4110597068255661698 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 5914198666590298230, guid: e0480bf7fd0e38b41a0a5682a2bd978f, type: 3}
@@ -850,7 +857,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 5914198666590298186, guid: e0480bf7fd0e38b41a0a5682a2bd978f, type: 3}
       propertyPath: m_Name
-      value: UIEditSquadGrid
+      value: UIEditSquadOffense
       objectReference: {fileID: 0}
     - target: {fileID: 5914198666590298230, guid: e0480bf7fd0e38b41a0a5682a2bd978f, type: 3}
       propertyPath: m_Pivot.x

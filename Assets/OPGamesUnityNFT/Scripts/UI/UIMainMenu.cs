@@ -9,12 +9,12 @@ public class UIMainMenu : MonoBehaviour
 {
 	public void OnBtnPlay()
 	{
-		UIManager.Open(UIType.EditSquad);
+		UIManager.Open(UIType.NFTList);
 	}
 
 	public void OnBtnEditSquad()
 	{
-		UIManager.Open(UIType.EditSquad);
+		UIManager.Open(UIType.EditSquadDef);
 	}
 
 	public void OnBtnLeaderboard()

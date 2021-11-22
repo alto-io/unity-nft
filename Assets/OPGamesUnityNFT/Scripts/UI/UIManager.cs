@@ -9,13 +9,14 @@ public enum UIType
 {
 	Null = 0,
 	MainMenu = 1,
-	EditSquad = 2,
+	EditSquadDef = 2,
 	Settings = 3,
 	Leaderboard = 4,
 	History = 5,
 	BattleResult = 6,
 	Matchmaking = 7,
-	EditSquadGrid = 8,
+	EditSquadOff = 8,
+	NFTList = 9,
 }
 
 public class UIManager : MonoBehaviour

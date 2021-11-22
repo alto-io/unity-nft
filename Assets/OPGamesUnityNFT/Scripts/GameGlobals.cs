@@ -12,7 +12,8 @@ static public class GameGlobals
 		public Vector2Int Pos;
 	}
 
-	static public List<SelectedInfo> Selected = new List<SelectedInfo>();
+	static public List<SelectedInfo> Offense = new List<SelectedInfo>();
+	static public List<SelectedInfo> Defense = new List<SelectedInfo>();
 }
 
 }

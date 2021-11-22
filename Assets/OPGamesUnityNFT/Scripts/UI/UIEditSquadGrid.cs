@@ -11,26 +11,22 @@ namespace OPGames.NFT
 
 public class UIEditSquadGrid : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHandler
 {
-	[SerializeField]
-	private RectTransform gridButtonsParent;
+	[SerializeField] private RectTransform gridButtonsParent;
+	[SerializeField] private bool isOffense;
 
 	private Image[,] cellImage = new Image[Constants.GridCols,Constants.GridRows];
 	private int[,] cellIndex = new int[Constants.GridCols,Constants.GridRows];
-
 	private bool initialized = false;
-
 	private Sprite[] nftSprites = new Sprite[3];
-
 	private Vector2Int prevCoord = new Vector2Int(-1,-1);
-
 	private Color colorTransparent = new Color(0,0,0,0);
-
-	private void Start()
-	{
-	}
+	private List<GameGlobals.SelectedInfo> selected;
 
 	private void OnEnable()
 	{
+		if (isOffense) selected = GameGlobals.Offense;
+		else           selected = GameGlobals.Defense;
+
 		InitGridButtons();
 		InitCharacters();
 	}
@@ -72,7 +68,7 @@ public class UIEditSquadGrid : MonoBehaviour, IDragHandler, IBeginDragHandler, I
 		NFTManager mgr = NFTManager.Instance;
 
 		int x = 0;
-		var list = GameGlobals.Selected;
+		var list = selected;
 		for (int i=0; i<list.Count; i++)
 		{
 			var info = list[i];
@@ -193,7 +189,7 @@ public class UIEditSquadGrid : MonoBehaviour, IDragHandler, IBeginDragHandler, I
 
 				int index = cellIndex[x,y];
 
-				GameGlobals.Selected[index].Pos.Set(x,y);
+				selected[index].Pos.Set(x,y);
 			}
 		}
 	}
