@@ -7,6 +7,7 @@ namespace OPGames.NFT
 [System.Serializable]
 public class SaveData
 {
+	public string Wallet;
 	public List<GameGlobals.SelectedInfo> Offense;
 	public List<GameGlobals.SelectedInfo> Defense;
 }
@@ -35,6 +36,7 @@ public class SaveManager : MonoBehaviour
 
 	private void Start()
 	{
+		DontDestroyOnLoad(gameObject);
 		Load();
 
 		data.Offense = GameGlobals.Offense;
