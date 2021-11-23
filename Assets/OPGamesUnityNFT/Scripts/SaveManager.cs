@@ -4,6 +4,13 @@ using System.Collections.Generic;
 namespace OPGames.NFT
 {
 
+//  For serializing to json
+[System.Serializable]
+public class SaveDataSelectedList
+{
+	public List<GameGlobals.SelectedInfo> List;
+}
+
 [System.Serializable]
 public class SaveData
 {
@@ -45,7 +52,7 @@ public class SaveManager : MonoBehaviour
 
 	private void OnApplicationPause(bool isPaused)
 	{
-		if (loaded)
+		if (loaded && isPaused)
 			Save();
 	}
 
@@ -74,6 +81,9 @@ public class SaveManager : MonoBehaviour
 		var str = JsonUtility.ToJson(data);
 		PlayerPrefs.SetString("Save", str);
 		Debug.LogFormat("Save: {0}", str);
+
+		if (PlayFabManager.Instance != null)
+			PlayFabManager.Instance.SaveToCloud(data);
 	}
 }
 
