@@ -832,6 +832,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 5914198666590298230}
     m_Modifications:
+    - target: {fileID: 3368616718950133617, guid: a64c7e89f251d964a80bc574fa0645f0, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 105
+      objectReference: {fileID: 0}
+    - target: {fileID: 3368616718950133622, guid: a64c7e89f251d964a80bc574fa0645f0, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6445892326206586424, guid: a64c7e89f251d964a80bc574fa0645f0, type: 3}
       propertyPath: m_Name
       value: SquadGrid
