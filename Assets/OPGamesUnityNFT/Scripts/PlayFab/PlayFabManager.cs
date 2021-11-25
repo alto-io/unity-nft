@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using PlayFab;
 using PlayFab.ClientModels;
@@ -7,11 +8,21 @@ using System.Collections.Generic;
 namespace OPGames.NFT
 {
 
+[System.Serializable]
+public class PVPPlayerModel
+{
+	public string DisplayName;
+	public string PlayFabId;
+	public string Defense;
+}
+
 public class PlayFabManager : MonoBehaviour
 {
 	// Implemented as a singleton for easy access
 	static private PlayFabManager instance = null;
 	static public PlayFabManager Instance { get { return instance; } }
+
+	public bool IsLoggedIn { get; private set; }
 
 	private string playFabId;
 	private string entityId;
@@ -40,6 +51,7 @@ public class PlayFabManager : MonoBehaviour
 
 		var request = new LoginWithCustomIDRequest 
 		{ 
+			// TODO: replace this. it can't be just the wallet address
 			CustomId = _Config.Account, 
 			CreateAccount = true,
 			InfoRequestParameters = parameters,
@@ -49,25 +61,42 @@ public class PlayFabManager : MonoBehaviour
 
 	private void OnLoginSuccess(LoginResult result)
 	{
-		Debug.Log("Login success");
+		IsLoggedIn = true;
 
 		playFabId = result.PlayFabId;
 		entityId = result.EntityToken.Entity.Id;
         entityType = result.EntityToken.Entity.Type;
 
+		if (result.NewlyCreated)
+		{
+			PlayFabClientAPI.UpdateUserTitleDisplayName(
+				new UpdateUserTitleDisplayNameRequest
+				{
+					DisplayName = _Config.Account
+				},
+				(result) => { Debug.LogFormat("Display name updated to {0}", result.DisplayName); },
+				OnPlayFabError);
+		}
+
 		var payload = result.InfoResultPayload;
 		if (payload != null)
 		{
-			if (payload.PlayerStatistics != null)
-			{
-				foreach (var s in payload.PlayerStatistics)
-				{
-					Debug.Log($"{s.StatisticName} = {s.Value}");
-				}
-			}
+			//if (payload.PlayerStatistics != null)
+			//{
+			//	foreach (var s in payload.PlayerStatistics)
+			//	{
+			//		Debug.Log($"{s.StatisticName} = {s.Value}");
+			//	}
+			//}
 		}
 
-		RequestMatchmaking();
+		RequestMatchmaking(
+				(result) =>
+				{
+					Debug.LogFormat("Got opponent {0}, {1}\n{2}",
+							result.PlayFabId, result.DisplayName, result.Defense);
+				},
+				(error) => Debug.LogError(error));
 	}
 
 	private void OnPlayFabError(PlayFabError error)
@@ -77,6 +106,9 @@ public class PlayFabManager : MonoBehaviour
 
 	public void SaveToCloud(SaveData data)
 	{
+		if (IsLoggedIn == false)
+			return;
+
 		var offense = new SaveDataSelectedList() { List = data.Offense };
 		var defense = new SaveDataSelectedList() { List = data.Defense };
 
@@ -100,33 +132,68 @@ public class PlayFabManager : MonoBehaviour
 		OnPlayFabError);
 	}
 
-	public void RequestMatchmaking()
+	public void RequestMatchmaking(Action<PVPPlayerModel> resultCallback, Action<string> errorCallback)
 	{
-		PlayFabClientAPI.GetLeaderboardAroundPlayer(new GetLeaderboardAroundPlayerRequest {
+		var request = new GetLeaderboardAroundPlayerRequest 
+		{
 				StatisticName = "MMR",
 				PlayFabId = playFabId,
-				MaxResultsCount = 20 },
-		result => {
-			int len = result.Leaderboard.Count;
-			int index = Random.Range(0, len);
+				MaxResultsCount = 20
+		};
 
-			GetUserInternalData(result.Leaderboard[index].PlayFabId);
-		}, 
-		OnPlayFabError);
+		PlayFabClientAPI.GetLeaderboardAroundPlayer(
+			request,
+			(result) => 
+			{
+				result.Leaderboard.RemoveAll((x) => x.PlayFabId == this.playFabId);
+				int len   = result.Leaderboard.Count;
+				int index = UnityEngine.Random.Range(0, len);
+				var entry = result.Leaderboard[index];
+
+				Debug.LogFormat("Getting data for {0} {1}", entry.PlayFabId, entry.DisplayName);
+				GetUserInternalData(
+						entry.PlayFabId, 
+						(result) =>
+						{
+							if (string.IsNullOrEmpty(result) == false)
+							{
+								resultCallback(new PVPPlayerModel
+									{
+										DisplayName = entry.DisplayName,
+										PlayFabId = entry.PlayFabId,
+										Defense = result
+									});
+							}
+							else
+							{
+								errorCallback("No defensive lineup");
+							}
+						});
+			}, 
+			OnPlayFabError);
 	}
-	public void GetUserInternalData(string id) 
+
+	public void GetUserInternalData(string id, Action<string> defenseResult) 
 	{
+		string defenseVal = "";
 		PlayFabClientAPI.GetUserData(
-			new GetUserDataRequest() { PlayFabId = id, },
+			new GetUserDataRequest() { PlayFabId = id },
 			result => 
 			{
-				if (result.Data != null)
+				if (result.Data == null)
+					return;
+
+				foreach (var kvp in result.Data)
 				{
-					foreach (var kvp in result.Data)
-					{
-						Debug.Log($"{kvp.Key} = {kvp.Value.Value}");
-					}
+					if (kvp.Key != "Defense")
+						continue;
+
+					defenseVal = kvp.Value.Value;
+					break;
 				}
+
+				if (defenseResult != null)
+					defenseResult(defenseVal);
 			},
 			OnPlayFabError);
 	}

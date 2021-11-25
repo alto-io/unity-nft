@@ -12,12 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d0199c11aa6f514784c5c69cd8378d8, type: 3}
   m_Name: PlayFabEditorPrefsSO
   m_EditorClassIdentifier: 
-  DevAccountEmail: marc@altitude-games.com
-  DevAccountToken: dweyxwhiks4577xntsc7h3muhfhbjfaxjzxqmecuwr3sjjb8trrc9nrgzaaokifyzh3sfzry5888injrrcymnzj3kfnp99d1bu8eg71zrxenpqhx633yky851e4388tysxan444mo4fbeiybcgbhkczc5m7wau6juke4xtq9uzw51dtxd4gdamqmygspwise3ozsxuho
-  SelectedStudio: OP Games
-  SdkPath: Assets/PlayFabSDK
+  DevAccountEmail: 
+  DevAccountToken: 
+  SelectedStudio: 
+  SdkPath: 
   EdExPath: 
   LocalCloudScriptPath: 
   PanelIsShown: 0
-  curMainMenuIdx: 1
+  curMainMenuIdx: 0
   curSubMenuIdx: 0
