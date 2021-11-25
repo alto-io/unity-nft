@@ -12,19 +12,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6f3f3cf4767986d42b32e13d835f81e3, type: 3}
   m_Name: DataSkills
   m_EditorClassIdentifier: 
-  Json: '{"Data":[{"Name":"Stun","Description":"Stun your target lol","VFXPrefab":"","Icon":"","CooldownSecs":3,"Damage":15,"Heal":"","StunSecs":1.5,"DamageAdd":"","DefenseAdd":"","AttackSpeedAdd":"","Duration":""},{"Name":"Heal","Description":"Heal
-    yourself","VFXPrefab":"","Icon":"","CooldownSecs":3,"Damage":"","Heal":25,"StunSecs":"","DamageAdd":"","DefenseAdd":"","AttackSpeedAdd":"","Duration":""},{"Name":"Damage
-    Boost","Description":"Attack+","VFXPrefab":"","Icon":"","CooldownSecs":2.5,"Damage":"","Heal":"","StunSecs":"","DamageAdd":20,"DefenseAdd":"","AttackSpeedAdd":"","Duration":2},{"Name":"Sword
-    Swing","Description":"Damage enemies around you","VFXPrefab":"","Icon":"","CooldownSecs":3.5,"Damage":20,"Heal":"","StunSecs":"","DamageAdd":"","DefenseAdd":"","AttackSpeedAdd":"","Duration":""}]}'
+  Json: '{"Data":[{"Name":"Stun","Description":"Stun your target lol","VFXPrefab":"","Icon":"","CooldownSecs":5,"Damage":"","Heal":"","StunSecs":1.25,"DamageAdd":"","DefenseAdd":"","AttackSpeedAdd":"","Duration":""},{"Name":"Heal","Description":"Heal
+    yourself","VFXPrefab":"","Icon":"","CooldownSecs":5,"Damage":"","Heal":35,"StunSecs":"","DamageAdd":"","DefenseAdd":"","AttackSpeedAdd":"","Duration":""},{"Name":"Damage
+    Boost","Description":"Attack+","VFXPrefab":"","Icon":"","CooldownSecs":2.5,"Damage":"","Heal":"","StunSecs":"","DamageAdd":20,"DefenseAdd":"","AttackSpeedAdd":"","Duration":2},{"Name":"SwordSwing","Description":"Damage
+    enemies around you","VFXPrefab":"","Icon":"","CooldownSecs":8,"Damage":"","Heal":"","StunSecs":3,"DamageAdd":"","DefenseAdd":"","AttackSpeedAdd":"","Duration":""},{"Name":"Gunfire","Description":"Damage
+    with short stun","VFXPrefab":"","Icon":"","CooldownSecs":3,"Damage":"","Heal":"","StunSecs":"","DamageAdd":"","DefenseAdd":"","AttackSpeedAdd":"","Duration":""},{"Name":"Flurry","Description":"Quick
+    damage attack","VFXPrefab":"","Icon":"","CooldownSecs":2,"Damage":"","Heal":"","StunSecs":0.25,"DamageAdd":"","DefenseAdd":"","AttackSpeedAdd":"","Duration":""},{"Name":"SmallHeal","Description":"","VFXPrefab":"","Icon":"","CooldownSecs":3,"Damage":"","Heal":10,"StunSecs":"","DamageAdd":"","DefenseAdd":"","AttackSpeedAdd":"","Duration":""}]}'
   Skills:
   - Name: Stun
     Description: Stun your target lol
     VFXPrefab: 
     Icon: 
-    CooldownSecs: 3
-    Damage: 15
+    CooldownSecs: 5
+    Damage: 0
     Heal: 0
-    StunSecs: 1.5
+    StunSecs: 1.25
     DamageAdd: 0
     DefenseAdd: 0
     AttackSpeedAdd: 0
@@ -32,9 +34,9 @@ MonoBehaviour:
     Description: Heal yourself
     VFXPrefab: 
     Icon: 
-    CooldownSecs: 3
+    CooldownSecs: 5
     Damage: 0
-    Heal: 25
+    Heal: 35
     StunSecs: 0
     DamageAdd: 0
     DefenseAdd: 0
@@ -50,13 +52,46 @@ MonoBehaviour:
     DamageAdd: 20
     DefenseAdd: 0
     AttackSpeedAdd: 0
-  - Name: Sword Swing
+  - Name: SwordSwing
     Description: Damage enemies around you
     VFXPrefab: 
     Icon: 
-    CooldownSecs: 3.5
-    Damage: 20
+    CooldownSecs: 8
+    Damage: 0
     Heal: 0
+    StunSecs: 3
+    DamageAdd: 0
+    DefenseAdd: 0
+    AttackSpeedAdd: 0
+  - Name: Gunfire
+    Description: Damage with short stun
+    VFXPrefab: 
+    Icon: 
+    CooldownSecs: 3
+    Damage: 0
+    Heal: 0
+    StunSecs: 0
+    DamageAdd: 0
+    DefenseAdd: 0
+    AttackSpeedAdd: 0
+  - Name: Flurry
+    Description: Quick damage attack
+    VFXPrefab: 
+    Icon: 
+    CooldownSecs: 2
+    Damage: 0
+    Heal: 0
+    StunSecs: 0.25
+    DamageAdd: 0
+    DefenseAdd: 0
+    AttackSpeedAdd: 0
+  - Name: SmallHeal
+    Description: 
+    VFXPrefab: 
+    Icon: 
+    CooldownSecs: 3
+    Damage: 0
+    Heal: 10
     StunSecs: 0
     DamageAdd: 0
     DefenseAdd: 0
