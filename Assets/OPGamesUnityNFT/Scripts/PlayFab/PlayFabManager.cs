@@ -23,6 +23,7 @@ public class PlayFabManager : MonoBehaviour
 	static public PlayFabManager Instance { get { return instance; } }
 
 	public bool IsLoggedIn { get; private set; }
+	public string DisplayName { get; private set; }
 
 	private string playFabId;
 	private string entityId;
@@ -47,6 +48,7 @@ public class PlayFabManager : MonoBehaviour
 		var parameters = new GetPlayerCombinedInfoRequestParams
 		{
 			GetPlayerStatistics = true,
+			GetPlayerProfile = true,
 		};
 
 		var request = new LoginWithCustomIDRequest 
@@ -76,11 +78,14 @@ public class PlayFabManager : MonoBehaviour
 				},
 				(result) => { Debug.LogFormat("Display name updated to {0}", result.DisplayName); },
 				OnPlayFabError);
+
+			SetInitialMMR();
 		}
 
 		var payload = result.InfoResultPayload;
 		if (payload != null)
 		{
+			DisplayName = payload.PlayerProfile.DisplayName;
 			//if (payload.PlayerStatistics != null)
 			//{
 			//	foreach (var s in payload.PlayerStatistics)
@@ -89,14 +94,6 @@ public class PlayFabManager : MonoBehaviour
 			//	}
 			//}
 		}
-
-		RequestMatchmaking(
-				(result) =>
-				{
-					Debug.LogFormat("Got opponent {0}, {1}\n{2}",
-							result.PlayFabId, result.DisplayName, result.Defense);
-				},
-				(error) => Debug.LogError(error));
 	}
 
 	private void OnPlayFabError(PlayFabError error)
@@ -196,6 +193,21 @@ public class PlayFabManager : MonoBehaviour
 					defenseResult(defenseVal);
 			},
 			OnPlayFabError);
+	}
+
+	private void SetInitialMMR()
+	{
+		List<StatisticUpdate> list = new List<StatisticUpdate>();
+		list.Add(new StatisticUpdate
+			{
+				StatisticName = "MMR",
+				Value = 1000
+			});
+
+		PlayFabClientAPI.UpdatePlayerStatistics(
+			new UpdatePlayerStatisticsRequest { Statistics = list },
+			null,
+			null);
 	}
 }
 

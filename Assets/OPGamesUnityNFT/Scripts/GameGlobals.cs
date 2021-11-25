@@ -15,6 +15,9 @@ static public class GameGlobals
 
 	static public List<SelectedInfo> Offense = new List<SelectedInfo>();
 	static public List<SelectedInfo> Defense = new List<SelectedInfo>();
+
+	static public List<SelectedInfo> Enemy = new List<SelectedInfo>();
+	static public PVPPlayerModel EnemyModel = null;
 }
 
 }
