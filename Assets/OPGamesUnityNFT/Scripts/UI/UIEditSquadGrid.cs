@@ -26,11 +26,18 @@ public class UIEditSquadGrid : MonoBehaviour, IDragHandler, IBeginDragHandler, I
 
 	private void OnEnable()
 	{
-		if (isOffense) selected = GameGlobals.Offense;
-		else           selected = GameGlobals.Defense;
-
 		InitGridButtons();
-		InitCharacters();
+		if (isOffense) 
+		{
+			selected = GameGlobals.Offense;
+			InitCharacters(selected);
+			InitCharacters(GameGlobals.Enemy);
+		}
+		else           
+		{
+			selected = GameGlobals.Defense;
+			InitCharacters(selected);
+		}
 	}
 
 	private void InitGridButtons()
@@ -46,7 +53,7 @@ public class UIEditSquadGrid : MonoBehaviour, IDragHandler, IBeginDragHandler, I
 		}
 
 		int x = 0;
-		int y = 2;
+		int y = 5;
 		int len = gridButtonsParent.childCount;
 		for (int i=0; i<len; i++)
 		{
@@ -72,11 +79,10 @@ public class UIEditSquadGrid : MonoBehaviour, IDragHandler, IBeginDragHandler, I
 		initialized = true;
 	}
 
-	private void InitCharacters()
+	private void InitCharacters(List<GameGlobals.SelectedInfo> list)
 	{
 		NFTManager mgr = NFTManager.Instance;
 
-		var list = selected;
 		for (int i=0; i<list.Count; i++)
 		{
 			var info = list[i];
@@ -99,7 +105,7 @@ public class UIEditSquadGrid : MonoBehaviour, IDragHandler, IBeginDragHandler, I
 
 	private Vector2Int GetFreeCell()
 	{
-		for (int y = 0; y<Constants.GridRows; y++)
+		for (int y = 0; y<Constants.GridRows/2; y++)
 		{
 			for (int x = 0; x<Constants.GridCols; x++)
 			{
@@ -206,7 +212,7 @@ public class UIEditSquadGrid : MonoBehaviour, IDragHandler, IBeginDragHandler, I
 	private bool IsValidCoord(Vector2Int c)
 	{
 		return c.x >= 0 && c.x < Constants.GridCols &&
-			   c.y >= 0 && c.y < Constants.GridRows;
+			   c.y >= 0 && c.y < Constants.GridRows/2;
 	}
 
 	private Vector2Int GetPosFromCellName(string n)
@@ -227,7 +233,7 @@ public class UIEditSquadGrid : MonoBehaviour, IDragHandler, IBeginDragHandler, I
 		Debug.Log("AssignFinalPositions");
 		for (int x=0; x<Constants.GridCols; x++)
 		{
-			for (int y=0; y<Constants.GridRows; y++)
+			for (int y=0; y<Constants.GridRows/2; y++)
 			{
 				if (cellIndex[x,y] == -1) continue;
 

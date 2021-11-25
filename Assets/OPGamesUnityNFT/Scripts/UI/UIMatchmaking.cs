@@ -103,6 +103,10 @@ public class UIMatchmaking : MonoBehaviour
 			var s = def.List[i];
 			enemyCards[i].Fill(nft.GetNFTItemDataById(s.Id));
 
+			// mirror the pos
+			s.Pos.y = Constants.GridRows - s.Pos.y - 1;
+			s.Pos.x = Constants.GridCols - s.Pos.x - 1;
+
 			GameGlobals.Enemy.Add(s);
 		}
 	}
