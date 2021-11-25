@@ -9,10 +9,12 @@ using System.Collections;
 namespace OPGames.NFT
 {
 
-public class UIEditSquadGrid : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHandler
+public class UIEditSquadGrid : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHandler, IPointerDownHandler, IPointerUpHandler, IPointerClickHandler
 {
 	[SerializeField] private RectTransform gridButtonsParent;
 	[SerializeField] private bool isOffense;
+	[SerializeField] private UINFTItem playerCard;
+	[SerializeField] private UINFTItem enemyCard;
 
 	private Image[,] cellImage = new Image[Constants.GridCols,Constants.GridRows];
 	private int[,] cellIndex = new int[Constants.GridCols,Constants.GridRows];
@@ -121,6 +123,22 @@ public class UIEditSquadGrid : MonoBehaviour, IDragHandler, IBeginDragHandler, I
 		return null;
 	}
 
+	public void OnPointerDown(PointerEventData eventData)
+	{
+		Debug.Log("OnPointerDown");
+		OnBeginDrag(eventData);
+	}
+
+	public void OnPointerClick(PointerEventData eventData)
+	{
+		Debug.Log("OnPointerClick");
+		OnBeginDrag(eventData);
+	}
+
+	public void OnPointerUp(PointerEventData eventData)
+	{
+	}
+
 	public void OnBeginDrag(PointerEventData eventData)
 	{
 		var go = GetCell(eventData);
@@ -133,8 +151,12 @@ public class UIEditSquadGrid : MonoBehaviour, IDragHandler, IBeginDragHandler, I
 
 		var imageCurr = cellImage[coord.x, coord.y];
 		if (imageCurr.sprite == null)
+		{
+			ClearPreviewCard();
 			return;
+		}
 
+		SetPreviewCard(coord);
 		prevCoord = coord;
 	}
 
@@ -142,7 +164,6 @@ public class UIEditSquadGrid : MonoBehaviour, IDragHandler, IBeginDragHandler, I
 	{
 		OnDragInternal(eventData);
 	}
-
 
 	public void OnEndDrag(PointerEventData eventData)
 	{
@@ -215,6 +236,21 @@ public class UIEditSquadGrid : MonoBehaviour, IDragHandler, IBeginDragHandler, I
 				selected[index].Pos.Set(x,y);
 			}
 		}
+	}
+
+	private void SetPreviewCard(Vector2Int coord)
+	{
+		Debug.Log("SetPreviewCard");
+		int index = cellIndex[coord.x, coord.y];
+		string id = selected[index].Id;
+		var data = NFTManager.Instance.GetNFTItemDataById(id);
+		playerCard.Fill(data);
+		playerCard.gameObject.SetActive(true);
+	}
+
+	private void ClearPreviewCard()
+	{
+		playerCard.gameObject.SetActive(false);
 	}
 }
 
