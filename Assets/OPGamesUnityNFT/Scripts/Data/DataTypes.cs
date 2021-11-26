@@ -10,7 +10,7 @@ static public class Constants
 	public const int TicksPerSec = 20;
 	public const float TickDt = 1.0f / TicksPerSec;
 	public const int MoveTicks = 5;
-	public const int GridRows = 3;
+	public const int GridRows = 6;
 	public const int GridCols = 6;
 }
 

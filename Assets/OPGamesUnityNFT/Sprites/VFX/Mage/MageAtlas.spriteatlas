@@ -154,5 +154,5 @@ SpriteAtlas:
   - Magic0026
   - Magic0040
   m_RenderDataMap: {}
-  m_Tag: Mage
+  m_Tag: MageAtlas
   m_IsVariant: 0

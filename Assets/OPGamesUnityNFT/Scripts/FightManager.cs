@@ -58,10 +58,23 @@ public class FightManager : MonoBehaviour
 			}
 		}
 
-		foreach (var f in teamB)
+		for (int i=0; i<teamB.Count; i++)
 		{
+			var f = teamB[i];
+
 			f.SetTargets(teamA);
-			f.SetRandomTempNFT();
+
+			if (GameGlobals.Enemy.Count > i)
+			{
+				var info = GameGlobals.Enemy[i];
+				f.SetNFT(info.Id);
+				f.transform.position = grid.GridToWorld(info.Pos);
+			}
+			else
+			{
+				f.SetRandomTempNFT();
+			}
+				
 		}
 
 		FightSim.GridObj = grid;

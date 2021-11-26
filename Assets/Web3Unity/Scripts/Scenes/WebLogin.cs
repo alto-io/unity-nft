@@ -34,6 +34,7 @@ public class WebLogin : MonoBehaviour
         {
             // get loginMessage from jslib
             string loginMessage = LoginMessage();
+			Debug.LogFormat("VerifySignature {0}", loginMessage);
 
             if (loginMessage == "") return;
 

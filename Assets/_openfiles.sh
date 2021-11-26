@@ -1,5 +1,4 @@
 #!/bin/sh
 
-cd OPGamesUnityNFT/Scripts/
 ctags -R .
-vim `find . -name "*.cs"`
+vim `find ./OPGamesUnityNFT/Scripts/ -name "*.cs"`
