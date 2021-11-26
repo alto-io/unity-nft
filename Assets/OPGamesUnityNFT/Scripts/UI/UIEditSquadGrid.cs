@@ -89,7 +89,8 @@ public class UIEditSquadGrid : MonoBehaviour, IDragHandler, IBeginDragHandler, I
 			var nft = mgr.GetNFTItemDataById(info.Id);
 			if (nft == null) continue;
 
-			if (info.Pos.x == -1 || info.Pos.y == -1)
+			if (info.Pos.x < 0 || info.Pos.y < 0 || 
+				info.Pos.x > Constants.GridCols || info.Pos.y > Constants.GridRows)
 			{
 				info.Pos = GetFreeCell();
 			}

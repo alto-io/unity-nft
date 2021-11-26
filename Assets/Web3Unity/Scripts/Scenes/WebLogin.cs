@@ -2,6 +2,7 @@
 using System.Runtime.InteropServices;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using OPGames.NFT;
 
 #if UNITY_WEBGL
 public class WebLogin : MonoBehaviour
@@ -57,6 +58,7 @@ public class WebLogin : MonoBehaviour
 
             // save account for next scene
             _Config.Account = account;
+			GameGlobals.Wallet = account;
 
             // reset login message
             ResetLoginMessage();

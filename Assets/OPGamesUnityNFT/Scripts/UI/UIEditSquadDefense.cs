@@ -28,6 +28,11 @@ public class UIEditSquadDefense : MonoBehaviour
 		if (grid != null)
 			grid.AssignFinalPositions();
 
+		if (GameGlobals.Offense.Count == 0)
+		{
+			GameGlobals.CopyList(GameGlobals.Offense, GameGlobals.Defense);
+		}
+
 		SaveManager.Instance.Save();
 		UIManager.Close();
 	}

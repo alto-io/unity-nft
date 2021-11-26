@@ -62,22 +62,26 @@ public class SaveManager : MonoBehaviour
 
 	public void Load()
 	{
-		loaded = true;
-		var str = PlayerPrefs.GetString("Save", "");
-		if (str == "")
-			return;
+		//loaded = true;
+		//var str = PlayerPrefs.GetString("Save", "");
+		//if (str == "")
+		//	return;
 
-		data = JsonUtility.FromJson<SaveData>(str);
-		if (data == null)
-			return;
+		//data = JsonUtility.FromJson<SaveData>(str);
+		//if (data == null)
+		//	return;
 
-		GameGlobals.Offense = data.Offense;
-		GameGlobals.Defense = data.Defense;
-		Debug.LogFormat("Load: {0}", str);
+		//GameGlobals.Offense = data.Offense;
+		//GameGlobals.Defense = data.Defense;
+		//Debug.LogFormat("Load: {0}", str);
 	}
 
 	public void Save()
 	{
+		data.Wallet = GameGlobals.Wallet;
+		data.Offense = GameGlobals.Offense;
+		data.Defense = GameGlobals.Defense;
+
 		var str = JsonUtility.ToJson(data);
 		PlayerPrefs.SetString("Save", str);
 		Debug.LogFormat("Save: {0}", str);

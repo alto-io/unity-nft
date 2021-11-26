@@ -18,8 +18,36 @@ public class UINFTItem : MonoBehaviour
 		return image.sprite;
 	}
 
+	public void Fill(string id)
+	{
+		var nftMgr = NFTManager.Instance;
+		var nft = nftMgr.GetNFTItemDataById(id);
+		if (nft != null)
+		{
+			Fill(nft);
+			return;
+		}
+
+		// try to get it from opensea
+		string[] s = id.Split('-');
+		if (s.Length >= 2)
+		{
+			string contract = s[0];
+			string token = s[1];
+
+			nftMgr.QueryNFT(contract, new string[] { token }, () =>
+				{
+					Fill(nftMgr.GetNFTItemDataById(id));
+				});
+		}
+
+	}
+
 	public void Fill(NFTItemData nft)
 	{
+		if (nft == null)
+			return;
+
 		if (textName != null) 
 		{
 			if (string.IsNullOrEmpty(nft.Name))

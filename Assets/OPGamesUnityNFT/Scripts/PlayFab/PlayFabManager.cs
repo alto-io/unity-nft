@@ -5,6 +5,10 @@ using PlayFab.ClientModels;
 using PlayFab.Json;
 using System.Collections.Generic;
 
+
+// TODO
+// Clean up this shit code
+
 namespace OPGames.NFT
 {
 
@@ -49,6 +53,7 @@ public class PlayFabManager : MonoBehaviour
 		{
 			GetPlayerStatistics = true,
 			GetPlayerProfile = true,
+			GetUserData = true,
 		};
 
 		var request = new LoginWithCustomIDRequest 
@@ -80,19 +85,27 @@ public class PlayFabManager : MonoBehaviour
 				OnPlayFabError);
 
 			SetInitialMMR();
+
+			DisplayName = _Config.Account;
 		}
 
 		var payload = result.InfoResultPayload;
-		if (payload != null)
+		if (payload != null && result.NewlyCreated == false)
 		{
 			DisplayName = payload.PlayerProfile.DisplayName;
-			//if (payload.PlayerStatistics != null)
-			//{
-			//	foreach (var s in payload.PlayerStatistics)
-			//	{
-			//		Debug.Log($"{s.StatisticName} = {s.Value}");
-			//	}
-			//}
+
+			if (payload.UserData.ContainsKey("Offense"))
+			{
+				var list = ParseSquadData(payload.UserData["Offense"].Value);
+				if (list != null)
+					GameGlobals.Offense = list;
+			}
+			if (payload.UserData.ContainsKey("Defense"))
+			{
+				var list = ParseSquadData(payload.UserData["Defense"].Value);
+				if (list != null)
+					GameGlobals.Defense = list;
+			}
 		}
 	}
 
@@ -149,23 +162,23 @@ public class PlayFabManager : MonoBehaviour
 
 				Debug.LogFormat("Getting data for {0} {1}", entry.PlayFabId, entry.DisplayName);
 				GetUserInternalData(
-						entry.PlayFabId, 
-						(result) =>
+					entry.PlayFabId, 
+					(result) =>
+					{
+						if (string.IsNullOrEmpty(result) == false)
 						{
-							if (string.IsNullOrEmpty(result) == false)
-							{
-								resultCallback(new PVPPlayerModel
-									{
-										DisplayName = entry.DisplayName,
-										PlayFabId = entry.PlayFabId,
-										Defense = result
-									});
-							}
-							else
-							{
-								errorCallback("No defensive lineup");
-							}
-						});
+							resultCallback(new PVPPlayerModel
+								{
+									DisplayName = entry.DisplayName,
+									PlayFabId = entry.PlayFabId,
+									Defense = result
+								});
+						}
+						else
+						{
+							errorCallback("No defensive lineup");
+						}
+					});
 			}, 
 			OnPlayFabError);
 	}
@@ -208,6 +221,15 @@ public class PlayFabManager : MonoBehaviour
 			new UpdatePlayerStatisticsRequest { Statistics = list },
 			null,
 			null);
+	}
+
+	private List<GameGlobals.SelectedInfo> ParseSquadData(string json)
+	{
+		var temp = JsonUtility.FromJson<SaveDataSelectedList>(json);
+		if (temp != null)
+			return temp.List;
+
+		return null;
 	}
 }
 

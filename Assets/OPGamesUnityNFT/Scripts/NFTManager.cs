@@ -176,46 +176,58 @@ public class NFTManager : MonoBehaviour
 
 	private IEnumerator QueryFakeNFTs()
 	{
-		const string api = "https://api.opensea.io/api/v1/assets?asset_contract_address={0}";
-
 		DataNFTFake[] fakes = Resources.LoadAll<DataNFTFake>("");
 		foreach (var f in fakes)
 		{
 			if (f.Enabled == false)
 				continue;
 
-			string url = string.Format(api, f.ContractAddr);
+			yield return StartCoroutine(f.ContractAddr, f.TokenIds);
+		}
+	}
 
-			foreach (string tokenId in f.TokenIds)
+	public void QueryNFT(string contract, string[] tokenIds, System.Action onDone = null)
+	{
+		StartCoroutine(QueryNFTCR(contract, tokenIds, onDone));
+	}
+
+	private IEnumerator QueryNFTCR(string contract, string[] tokenIds, System.Action onDone = null)
+	{
+		const string api = "https://api.opensea.io/api/v1/assets?asset_contract_address={0}";
+		string url = string.Format(api, contract);
+
+		foreach (string tokenId in tokenIds)
+		{
+			url += "&token_ids=" + tokenId;
+		}
+
+		using (var www = UnityWebRequest.Get(url))
+		{
+			yield return www.SendWebRequest();
+			var json = www.downloadHandler.text;
+
+			OpenSeaAssets result = JsonUtility.FromJson<OpenSeaAssets>(json);
+			if (result != null)
 			{
-				url += "&token_ids=" + tokenId;
-			}
-
-			using (var www = UnityWebRequest.Get(url))
-			{
-				yield return www.SendWebRequest();
-				var json = www.downloadHandler.text;
-
-				OpenSeaAssets result = JsonUtility.FromJson<OpenSeaAssets>(json);
-				if (result != null)
+				foreach (var a in result.assets)
 				{
-					foreach (var a in result.assets)
-					{
-						Debug.Log(a.ToString());
+					Debug.Log(a.ToString());
 
-						NFTItemData item = new NFTItemData();
-						item.TokenId = a.token_id;
-						item.Contract = a.asset_contract.address;
-						item.Name = a.name;
-						item.Description = a.description;
-						item.ImageURL = a.image_preview_url;
+					NFTItemData item = new NFTItemData();
+					item.TokenId = a.token_id;
+					item.Contract = a.asset_contract.address;
+					item.Name = a.name;
+					item.Description = a.description;
+					item.ImageURL = a.image_preview_url;
 
-						loadedNFTs.Add(item);
+					loadedNFTs.Add(item);
 
-					}
 				}
 			}
 		}
+
+		if (onDone != null)
+			onDone();
 	}
 
 	private void LoadTempNFT()
