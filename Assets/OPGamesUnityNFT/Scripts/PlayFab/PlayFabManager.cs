@@ -16,6 +16,7 @@ namespace OPGames.NFT
 public class PVPPlayerModel
 {
 	public string DisplayName;
+	public string Wallet;
 	public string PlayFabId;
 	public string Defense;
 }
@@ -76,23 +77,18 @@ public class PlayFabManager : MonoBehaviour
 
 		if (result.NewlyCreated)
 		{
-			PlayFabClientAPI.UpdateUserTitleDisplayName(
-				new UpdateUserTitleDisplayNameRequest
-				{
-					DisplayName = _Config.Account
-				},
-				(result) => { Debug.LogFormat("Display name updated to {0}", result.DisplayName); },
-				OnPlayFabError);
+			SetDisplayName(_Config.Account);
 
 			SetInitialMMR();
-
-			DisplayName = _Config.Account;
 		}
 
 		var payload = result.InfoResultPayload;
 		if (payload != null && result.NewlyCreated == false)
 		{
 			DisplayName = payload.PlayerProfile.DisplayName;
+
+			if (string.IsNullOrEmpty(DisplayName))
+				SetDisplayName(_Config.Account);
 
 			if (payload.UserData.ContainsKey("Offense"))
 			{
@@ -107,6 +103,22 @@ public class PlayFabManager : MonoBehaviour
 					GameGlobals.Defense = list;
 			}
 		}
+	}
+
+	public void SetDisplayName(string newName)
+	{
+		if (newName.Length > 25)
+			newName = newName.Substring(0,24);
+
+		PlayFabClientAPI.UpdateUserTitleDisplayName(
+			new UpdateUserTitleDisplayNameRequest
+			{
+				DisplayName = newName
+			},
+			(result) => { Debug.LogFormat("Display name updated to {0}", result.DisplayName); },
+			OnPlayFabError);
+
+		DisplayName = newName;
 	}
 
 	private void OnPlayFabError(PlayFabError error)

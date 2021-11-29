@@ -14,6 +14,9 @@ namespace OPGames.NFT
 public class UIFight : MonoBehaviour
 {
 	[SerializeField]
+	private Text textEnemyName;
+
+	[SerializeField]
 	private TextMeshProUGUI text;
 
 	[SerializeField]
@@ -32,6 +35,8 @@ public class UIFight : MonoBehaviour
 
 	private void Start()
 	{
+		if (textEnemyName != null && GameGlobals.EnemyModel != null)
+			textEnemyName.text = GameGlobals.EnemyModel.DisplayName;
 	}
 
 	public void OnBtnBack()
