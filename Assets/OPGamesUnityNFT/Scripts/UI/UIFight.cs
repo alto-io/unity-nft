@@ -30,7 +30,7 @@ public class UIFight : MonoBehaviour
 
 	private float speed = 1.0f;
 
-	private float[] speedValues = new float[] { 1, 0.5f, 0.25f };
+	private float[] speedValues = new float[] { 1f, 0.5f, 2f };
 	private int speedIndex = 0;
 
 	private void Start()
