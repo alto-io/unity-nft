@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
@@ -304,6 +305,9 @@ public class FightManager : MonoBehaviour
 		{
 			ui.SetTextAnimationTrigger("End", strLose);
 		}
+
+		yield return new WaitForSeconds(2.0f);
+		SceneManager.LoadScene(1);
 	}
 
 	private void TickBuffs()
