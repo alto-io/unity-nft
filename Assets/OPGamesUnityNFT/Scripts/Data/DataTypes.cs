@@ -12,6 +12,7 @@ static public class Constants
 	public const int MoveTicks = 5;
 	public const int GridRows = 6;
 	public const int GridCols = 6;
+	public const float OffenseSetupTime = 30.0f;
 }
 
 [System.Serializable]

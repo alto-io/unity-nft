@@ -1,18 +1,33 @@
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using System;
-using System.Collections.Generic;
-using System.Collections;
+using TMPro;
 
 namespace OPGames.NFT
 {
 
 public class UIEditSquadOffense : MonoBehaviour
 {
-	[SerializeField]
-	private UIEditSquadGrid grid;
+	private float timeLeft = Constants.OffenseSetupTime;
+
+	[SerializeField] private UIEditSquadGrid grid;
+	[SerializeField] private TextMeshProUGUI textTime;
+
+	private void OnEnable()
+	{
+		timeLeft = Constants.OffenseSetupTime;
+	}
+
+	private void Update()
+	{
+		timeLeft -= Time.deltaTime;
+		if (timeLeft <= 0.0f)
+			OnBtnConfirm();
+
+		int displayTime = (int)Mathf.Clamp(timeLeft, 0.0f, Constants.OffenseSetupTime);
+		textTime.text = displayTime.ToString();
+	}
 
 	public void OnBtnConfirm()
 	{

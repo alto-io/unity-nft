@@ -180,19 +180,14 @@ public class PlayFabManager : MonoBehaviour
 					entry.PlayFabId, 
 					(result) =>
 					{
-						if (string.IsNullOrEmpty(result) == false)
-						{
-							resultCallback(new PVPPlayerModel
-								{
-									DisplayName = entry.DisplayName,
-									PlayFabId = entry.PlayFabId,
-									Defense = result
-								});
-						}
-						else
-						{
-							errorCallback("No defensive lineup");
-						}
+						var model = new PVPPlayerModel
+							{
+								DisplayName = entry.DisplayName,
+								PlayFabId = entry.PlayFabId,
+								Defense = result
+							};
+
+						resultCallback(model);
 					});
 			}, 
 			OnPlayFabError);

@@ -10,11 +10,11 @@ namespace OPGames.NFT
 
 public class UIMatchmaking : MonoBehaviour
 {
-	public TextMeshProUGUI playerName;
-	public TextMeshProUGUI enemyName;
+	[SerializeField] private TextMeshProUGUI playerName;
+	[SerializeField] private TextMeshProUGUI enemyName;
 
-	public UINFTItem[] playerCards;
-	public UINFTItem[] enemyCards;
+	[SerializeField] private UINFTItem[] playerCards;
+	[SerializeField] private UINFTItem[] enemyCards;
 
 	private void OnEnable()
 	{
@@ -39,22 +39,25 @@ public class UIMatchmaking : MonoBehaviour
 						result.PlayFabId, result.DisplayName, result.Defense);
 				model = result;
 			},
-			(error) => errorMsg = error);
+			(error) => 
+			{
+				Debug.LogError(error);
+				errorMsg = error;
+			});
 
 		while (model == null && errorMsg == null)
 			yield return new WaitForSeconds(0.1f);
 
-		if (model != null)
+		if (model == null)
 		{
-			GameGlobals.EnemyModel = model;
-			FillEnemy(model);
-			yield return new WaitForSeconds(3.0f);
-		}
-		else
-		{
-			// TODO: load random
+			model = new PVPPlayerModel();
+			model.DisplayName = "Bot";
 		}
 
+		GameGlobals.EnemyModel = model;
+		FillEnemy(model);
+
+		yield return new WaitForSeconds(3.0f);
 		UIManager.Open(UIType.EditSquadOff);
 		//SceneManager.LoadScene(2);
 	}
