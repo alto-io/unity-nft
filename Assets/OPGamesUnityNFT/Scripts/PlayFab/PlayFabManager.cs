@@ -107,6 +107,9 @@ public class PlayFabManager : MonoBehaviour
 
 	public void SetDisplayName(string newName)
 	{
+		if (string.IsNullOrEmpty(newName))
+			return;
+
 		if (newName.Length > 25)
 			newName = newName.Substring(0,24);
 
