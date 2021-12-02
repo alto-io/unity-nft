@@ -11,6 +11,12 @@ public class UIMainMenu : MonoBehaviour
 	[SerializeField] private GameObject uiLeaderboard;
 	[SerializeField] private GameObject uiHistory;
 
+	private void Start()
+	{
+		if (uiSettings != null) uiSettings.SetActive(false);
+		if (uiLeaderboard != null) uiLeaderboard.SetActive(false);
+		if (uiHistory != null) uiHistory.SetActive(false);
+	}
 
 	public void OnBtnPlay()
 	{
