@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 1387775765177852263}
   - component: {fileID: 1926244346527721546}
   m_Layer: 5
-  m_Name: BattlePoints
+  m_Name: TextStatValue
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -145,6 +145,7 @@ GameObject:
   - component: {fileID: 3032320288847205802}
   - component: {fileID: 7932639812492174917}
   - component: {fileID: 6817461329020829788}
+  - component: {fileID: 7422516465642589241}
   m_Layer: 5
   m_Name: RankingCell
   m_TagString: Untagged
@@ -213,6 +214,21 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &7422516465642589241
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2827613035741552325}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56d7def854cbb714889a0f8f4759df52, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  textDisplayName: {fileID: 6544214961311396232}
+  textPosition: {fileID: 9137988381047060733}
+  textStatValue: {fileID: 1926244346527721546}
 --- !u!1 &2876157289020228479
 GameObject:
   m_ObjectHideFlags: 0
@@ -225,7 +241,7 @@ GameObject:
   - component: {fileID: 6497013665646076629}
   - component: {fileID: 9137988381047060733}
   m_Layer: 5
-  m_Name: TextRank
+  m_Name: TextPosition
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -364,7 +380,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &6969897925897756994
 RectTransform:
   m_ObjectHideFlags: 0
@@ -434,7 +450,7 @@ GameObject:
   - component: {fileID: 2879416405021330337}
   - component: {fileID: 6544214961311396232}
   m_Layer: 5
-  m_Name: PlayerName
+  m_Name: TextDisplayName
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -487,7 +503,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Playername
+  m_text: 1234567890123456789012345
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5dc6623c0c28cbd45a9ca93225ab6823, type: 2}
   m_sharedMaterial: {fileID: -4135914767460993514, guid: 5dc6623c0c28cbd45a9ca93225ab6823, type: 2}
@@ -514,10 +530,10 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 67.85
-  m_fontSizeBase: 80
+  m_fontSize: 60
+  m_fontSizeBase: 60
   m_fontWeight: 400
-  m_enableAutoSizing: 1
+  m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 16
@@ -532,7 +548,7 @@ MonoBehaviour:
   m_charWidthMaxAdj: 0
   m_enableWordWrapping: 1
   m_wordWrappingRatios: 0.4
-  m_overflowMode: 0
+  m_overflowMode: 1
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1

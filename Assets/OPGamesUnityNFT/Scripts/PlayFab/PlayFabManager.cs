@@ -34,6 +34,8 @@ public class PlayFabManager : MonoBehaviour
 	private string entityId;
 	private string entityType;
 
+	public List<PlayerLeaderboardEntry> Leaderboard = new List<PlayerLeaderboardEntry>();
+
 	// Make sure to have only one instance of this class.
 	private void Awake()
 	{
@@ -163,7 +165,7 @@ public class PlayFabManager : MonoBehaviour
 		{
 				StatisticName = "MMR",
 				PlayFabId = playFabId,
-				MaxResultsCount = 20
+				MaxResultsCount = 40
 		};
 
 		PlayFabClientAPI.GetLeaderboardAroundPlayer(
@@ -240,6 +242,78 @@ public class PlayFabManager : MonoBehaviour
 			return temp.List;
 
 		return null;
+	}
+
+	public void RequestLeaderboard(Action onDone)
+	{
+		Leaderboard.Clear();
+		RequestLeaderboardAroundPlayer(() =>
+		{
+			RequestLeaderboardTop(() =>
+			{
+				if (onDone != null)
+					onDone();
+
+				Leaderboard.Sort((a,b) => (a.Position - b.Position));
+			});
+		});
+	}
+
+	private void RequestLeaderboardAroundPlayer(Action onDone)
+	{
+		var request = new GetLeaderboardAroundPlayerRequest 
+		{
+			StatisticName = "MMR",
+			PlayFabId = playFabId,
+			MaxResultsCount = 40
+		};
+
+		PlayFabClientAPI.GetLeaderboardAroundPlayer(
+			request,
+			(result) =>
+			{
+				foreach (var entry in result.Leaderboard)
+				{
+					if (entry == null) continue;
+					Leaderboard.Add(entry);
+				}
+				if (onDone != null) onDone();
+			},
+			(error) => 
+			{
+				OnPlayFabError(error);
+				if (onDone != null) onDone();
+			});
+	}
+
+	private void RequestLeaderboardTop(Action onDone)
+	{
+		var request = new GetLeaderboardRequest 
+		{
+			StatisticName = "MMR",
+			StartPosition = 0,
+			MaxResultsCount = 50
+		};
+
+		PlayFabClientAPI.GetLeaderboard(
+			request,
+			(result) =>
+			{
+				foreach (var entry in result.Leaderboard)
+				{
+					if (entry == null) continue;
+					var found = Leaderboard.Find(l => l.PlayFabId == entry.PlayFabId);
+					if (found != null) continue;
+
+					Leaderboard.Add(entry);
+				}
+				if (onDone != null) onDone();
+			},
+			(error) => 
+			{
+				OnPlayFabError(error);
+				if (onDone != null) onDone();
+			});
 	}
 }
 
