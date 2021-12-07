@@ -65,6 +65,12 @@ public class NFTManager : MonoBehaviour
 	// Add the common NFT loaders
 	private void Awake()
 	{
+		Env.Load();
+		if (_Config.Account == _Config.AccountEmpty)
+		{
+			_Config.Account = Env.Wallet;
+		}
+
 		if (instance != null)
 		{
 			Destroy(gameObject);

@@ -295,15 +295,29 @@ public class FightManager : MonoBehaviour
 		{
 			f.enabled = false;
 		}
+
+		string enemyId = GameGlobals.EnemyModel.PlayFabId;
+		var pf = PlayFabManager.Instance;
 		
 		// Animate result
 		if (IsTeamAlive(teamA))
 		{
 			ui.SetTextAnimationTrigger("End", strWin);
+
+			if (string.IsNullOrEmpty(enemyId) == false)
+			{
+				pf.SetBattleResult(enemyId, true);
+			}
+
 		}
 		else
 		{
 			ui.SetTextAnimationTrigger("End", strLose);
+
+			if (string.IsNullOrEmpty(enemyId) == false)
+			{
+				pf.SetBattleResult(enemyId, false);
+			}
 		}
 
 		yield return new WaitForSeconds(2.0f);

@@ -73,5 +73,10 @@ public class OpenSeaAssets
 }
 
 
+[System.Serializable]
+public class EnvData
+{
+	public string wallet;
+}
 
 }

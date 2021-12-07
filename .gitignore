@@ -86,3 +86,4 @@ token.json
 Assets/StreamingAssets
 ServerData/
 .vsconfig
+Assets/Resources/env*

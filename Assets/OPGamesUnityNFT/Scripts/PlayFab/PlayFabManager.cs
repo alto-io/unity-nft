@@ -77,6 +77,8 @@ public class PlayFabManager : MonoBehaviour
 		entityId = result.EntityToken.Entity.Id;
         entityType = result.EntityToken.Entity.Type;
 
+		Debug.Log("Login success");
+
 		if (result.NewlyCreated)
 		{
 			SetDisplayName(_Config.Account);
@@ -87,7 +89,8 @@ public class PlayFabManager : MonoBehaviour
 		var payload = result.InfoResultPayload;
 		if (payload != null && result.NewlyCreated == false)
 		{
-			DisplayName = payload.PlayerProfile.DisplayName;
+			if (payload.PlayerProfile != null)
+				DisplayName = payload.PlayerProfile.DisplayName;
 
 			if (string.IsNullOrEmpty(DisplayName))
 				SetDisplayName(_Config.Account);
@@ -105,6 +108,13 @@ public class PlayFabManager : MonoBehaviour
 					GameGlobals.Defense = list;
 			}
 		}
+
+		PlayFabClientAPI.ExecuteCloudScript(new ExecuteCloudScriptRequest()
+				{
+					FunctionName = "setInitialMMR",
+				},
+				(result) => Debug.Log(result.ToString()),
+				OnPlayFabError);
 	}
 
 	public void SetDisplayName(string newName)
@@ -174,6 +184,15 @@ public class PlayFabManager : MonoBehaviour
 			{
 				result.Leaderboard.RemoveAll((x) => x.PlayFabId == this.playFabId);
 				int len   = result.Leaderboard.Count;
+
+				if (len <= 0)
+				{
+					if (errorCallback != null)
+						errorCallback("No other players");
+
+					return;
+				}
+
 				int index = UnityEngine.Random.Range(0, len);
 				var entry = result.Leaderboard[index];
 
@@ -231,7 +250,7 @@ public class PlayFabManager : MonoBehaviour
 
 		PlayFabClientAPI.UpdatePlayerStatistics(
 			new UpdatePlayerStatisticsRequest { Statistics = list },
-			null,
+			(result) => Debug.Log("Set statistics success"),
 			null);
 	}
 
@@ -314,6 +333,17 @@ public class PlayFabManager : MonoBehaviour
 				OnPlayFabError(error);
 				if (onDone != null) onDone();
 			});
+	}
+
+	public void SetBattleResult(string enemyIdVal, bool isWinVal)
+	{
+		PlayFabClientAPI.ExecuteCloudScript(new ExecuteCloudScriptRequest()
+			{
+				FunctionName = "battleResult",
+				FunctionParameter = new { enemyId = enemyIdVal, isWin = isWinVal }
+			},
+			(result) => Debug.Log(result.ToString()),
+			OnPlayFabError);
 	}
 }
 
