@@ -266,6 +266,10 @@ function IncMMR(playfabId, delta) {
     }
 
     var newMMR = currMMR + delta;
+
+    if (newMMR < 0)
+        newMMR = 0;
+
     var updates = [];
     updates.push({
         StatisticName: App.Statistics.MMR,
