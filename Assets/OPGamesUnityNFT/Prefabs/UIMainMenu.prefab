@@ -1067,7 +1067,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 5457090437096141596}
         m_TargetAssemblyTypeName: OPGames.NFT.UIMainMenu, Assembly-CSharp
-        m_MethodName: OnBtnHistory
+        m_MethodName: OnBtnLeaderboard
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2339,7 +2339,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 5457090437096141596}
         m_TargetAssemblyTypeName: OPGames.NFT.UIMainMenu, Assembly-CSharp
-        m_MethodName: OnBtnLeaderboard
+        m_MethodName: OnBtnHistory
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -3953,11 +3953,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 5194851697969315316, guid: 1edfba4fe3755ba4b8527335f4f7defe, type: 3}
       propertyPath: m_AnchorMax.x
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5194851697969315316, guid: 1edfba4fe3755ba4b8527335f4f7defe, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5194851697969315316, guid: 1edfba4fe3755ba4b8527335f4f7defe, type: 3}
       propertyPath: m_AnchorMin.y
@@ -3977,15 +3977,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5194851699327390948, guid: 1edfba4fe3755ba4b8527335f4f7defe, type: 3}
       propertyPath: m_AnchorMax.x
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5194851699327390948, guid: 1edfba4fe3755ba4b8527335f4f7defe, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5194851699327390948, guid: 1edfba4fe3755ba4b8527335f4f7defe, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 0
+      value: -17
       objectReference: {fileID: 0}
     - target: {fileID: 5194851699338356616, guid: 1edfba4fe3755ba4b8527335f4f7defe, type: 3}
       propertyPath: m_Pivot.x
@@ -4074,6 +4074,10 @@ PrefabInstance:
     - target: {fileID: 5194851699338356617, guid: 1edfba4fe3755ba4b8527335f4f7defe, type: 3}
       propertyPath: m_Name
       value: LeaderboardModal
+      objectReference: {fileID: 0}
+    - target: {fileID: 5194851699338356617, guid: 1edfba4fe3755ba4b8527335f4f7defe, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5610670467469107526, guid: 1edfba4fe3755ba4b8527335f4f7defe, type: 3}
       propertyPath: m_AnchorMax.y

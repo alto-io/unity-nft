@@ -42,11 +42,12 @@ public class UILeaderboard : MonoBehaviour
 		Debug.LogFormat("Leadboard");
 		foreach (var p in pf.Leaderboard)
 		{
+			bool isPlayer = p.PlayFabId == pf.PlayFabId;
 			if (free.Count > 0)
 			{
 				var i = free[free.Count-1];
 				free.RemoveAt(free.Count-1);
-				i.Fill(p.Position, p.DisplayName, p.StatValue);
+				i.Fill(p.Position, p.DisplayName, p.StatValue, isPlayer);
 				i.gameObject.SetActive(true);
 				i.transform.SetAsLastSibling();
 				used.Add(i);
@@ -55,7 +56,7 @@ public class UILeaderboard : MonoBehaviour
 			{
 				GameObject clone = Instantiate(itemPrefab, content);
 				var i = clone.GetComponent<UILeaderboardItem>();
-				i.Fill(p.Position, p.DisplayName, p.StatValue);
+				i.Fill(p.Position, p.DisplayName, p.StatValue, isPlayer);
 				i.gameObject.SetActive(true);
 				used.Add(i);
 			}

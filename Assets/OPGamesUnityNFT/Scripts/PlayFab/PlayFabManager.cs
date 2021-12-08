@@ -29,6 +29,7 @@ public class PlayFabManager : MonoBehaviour
 
 	public bool IsLoggedIn { get; private set; }
 	public string DisplayName { get; private set; }
+	public string PlayFabId { get { return playFabId; } }
 
 	private string playFabId;
 	private string entityId;
