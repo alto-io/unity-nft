@@ -17,6 +17,7 @@ public enum UIType
 	Matchmaking = 7,
 	EditSquadOff = 8,
 	NFTList = 9,
+	EnterName = 10,
 }
 
 public class UIManager : MonoBehaviour

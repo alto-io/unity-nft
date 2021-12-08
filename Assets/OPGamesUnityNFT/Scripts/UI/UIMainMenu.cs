@@ -16,6 +16,11 @@ public class UIMainMenu : MonoBehaviour
 		if (uiSettings != null) uiSettings.SetActive(false);
 		if (uiLeaderboard != null) uiLeaderboard.SetActive(false);
 		if (uiHistory != null) uiHistory.SetActive(false);
+
+//		if (PlayFabManager.Instance.IsNewPlayer)
+//		{
+//			UIManager.Open(UIType.EnterName);
+//		}
 	}
 
 	public void OnBtnPlay()

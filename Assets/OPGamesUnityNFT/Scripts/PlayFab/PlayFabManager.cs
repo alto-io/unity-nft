@@ -30,6 +30,7 @@ public class PlayFabManager : MonoBehaviour
 	public bool IsLoggedIn { get; private set; }
 	public string DisplayName { get; private set; }
 	public string PlayFabId { get { return playFabId; } }
+	public bool IsNewPlayer { get; private set; }
 
 	private string playFabId;
 	private string entityId;
@@ -87,9 +88,13 @@ public class PlayFabManager : MonoBehaviour
 
 		if (result.NewlyCreated)
 		{
+			IsNewPlayer = true;
 			SetDisplayName(_Config.Account);
-
 			SetInitialMMR();
+
+			Debug.Log("New Player");
+
+			UIManager.Open(UIType.EnterName);
 		}
 
 		var payload = result.InfoResultPayload;
