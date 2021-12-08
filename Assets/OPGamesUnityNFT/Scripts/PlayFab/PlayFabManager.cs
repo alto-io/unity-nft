@@ -59,10 +59,15 @@ public class PlayFabManager : MonoBehaviour
 			GetUserData = true,
 		};
 
+		string wallet = _Config.Account;
+#if UNITY_EDITOR
+		wallet = SystemInfo.deviceUniqueIdentifier;
+#endif
+
 		var request = new LoginWithCustomIDRequest 
 		{ 
 			// TODO: replace this. it can't be just the wallet address
-			CustomId = _Config.Account, 
+			CustomId = wallet,
 			CreateAccount = true,
 			InfoRequestParameters = parameters,
 		};

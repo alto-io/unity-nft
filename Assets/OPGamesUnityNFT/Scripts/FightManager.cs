@@ -93,7 +93,6 @@ public class FightManager : MonoBehaviour
 
 		Debug.Log($"Num Events {events.Count}");
 		SaveReplayFull();
-
 		PlayFight();
 	}
 
@@ -134,6 +133,9 @@ public class FightManager : MonoBehaviour
 
 		var json = JsonUtility.ToJson(replayFull);
 		//Debug.Log(json);
+
+		// TODO: save replay in cloud
+		// save match result here
 	}
 
 	public void LoadReplayFromFile()
@@ -305,9 +307,7 @@ public class FightManager : MonoBehaviour
 			ui.SetTextAnimationTrigger("End", strWin);
 
 			if (string.IsNullOrEmpty(enemyId) == false)
-			{
 				pf.SetBattleResult(enemyId, true);
-			}
 
 		}
 		else
@@ -315,9 +315,7 @@ public class FightManager : MonoBehaviour
 			ui.SetTextAnimationTrigger("End", strLose);
 
 			if (string.IsNullOrEmpty(enemyId) == false)
-			{
 				pf.SetBattleResult(enemyId, false);
-			}
 		}
 
 		yield return new WaitForSeconds(2.0f);

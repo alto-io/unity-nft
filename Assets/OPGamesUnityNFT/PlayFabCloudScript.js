@@ -259,7 +259,6 @@ function IncMMR(playfabId, delta) {
     const statistics = App.GetPlayerStatistics(playfabId, [App.Statistics.MMR]);
     const statisticMMR = statistics.find(s => s.StatisticName === App.Statistics.MMR);
 
-
     var currMMR = 1000;
 
     if (App.IsNull(statisticMMR) == false) {
@@ -280,6 +279,7 @@ handlers.battleResult = function (args, context) {
     var loser = null;
     var enemyId = null;
     var isWin = true;
+
     if (args) {
         if (args.hasOwnProperty("enemyId")) {
             enemyId = args.enemyId;
@@ -293,15 +293,12 @@ handlers.battleResult = function (args, context) {
     if (enemyId == "" || enemyId == null)
         return;
 
-    if (isWin)
-    {
+    if (isWin) {
         IncMMR(currentPlayerId, 50);
-        IncMMR(enemyId, -30);
-    }
-    else
-    {
-        IncMMR(enemyId, 30);
-        IncMMR(currentPlayerId, -30);
+        IncMMR(enemyId, -20);
+    } else {
+        IncMMR(currentPlayerId, -35);
+        IncMMR(enemyId, 35);
     }
 }
 
