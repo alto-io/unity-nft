@@ -19,6 +19,7 @@ public class PVPPlayerModel
 	public string Wallet;
 	public string PlayFabId;
 	public string Defense;
+	public int MMR;
 }
 
 public class PlayFabManager : MonoBehaviour
@@ -31,6 +32,7 @@ public class PlayFabManager : MonoBehaviour
 	public string DisplayName { get; private set; }
 	public string PlayFabId { get { return playFabId; } }
 	public bool IsNewPlayer { get; private set; }
+	public int MMR { get; private set; }
 
 	private string playFabId;
 	private string entityId;
@@ -90,9 +92,8 @@ public class PlayFabManager : MonoBehaviour
 		{
 			IsNewPlayer = true;
 			SetDisplayName(_Config.Account);
-			SetInitialMMR();
 
-			Debug.Log("New Player");
+			MMR = 1000;
 
 			UIManager.Open(UIType.EnterName);
 		}
@@ -118,14 +119,24 @@ public class PlayFabManager : MonoBehaviour
 				if (list != null)
 					GameGlobals.Defense = list;
 			}
+			if (payload.PlayerStatistics != null)
+			{
+				foreach (var s in payload.PlayerStatistics)
+				{
+					if (s.StatisticName == "MMR")
+					{
+						MMR = s.Value;
+					}
+				}
+			}
 		}
 
 		PlayFabClientAPI.ExecuteCloudScript(new ExecuteCloudScriptRequest()
-				{
-					FunctionName = "setInitialMMR",
-				},
-				(result) => Debug.Log(result.ToString()),
-				OnPlayFabError);
+			{
+				FunctionName = "setInitialMMR",
+			},
+			(result) => Debug.Log(result.ToString()),
+			OnPlayFabError);
 	}
 
 	public void SetDisplayName(string newName)
@@ -184,17 +195,23 @@ public class PlayFabManager : MonoBehaviour
 	{
 		var request = new GetLeaderboardAroundPlayerRequest 
 		{
-				StatisticName = "MMR",
-				PlayFabId = playFabId,
-				MaxResultsCount = 40
+			StatisticName = "MMR",
+			PlayFabId = playFabId,
+			MaxResultsCount = 40
 		};
 
 		PlayFabClientAPI.GetLeaderboardAroundPlayer(
 			request,
 			(result) => 
 			{
-				result.Leaderboard.RemoveAll((x) => x.PlayFabId == this.playFabId);
-				int len   = result.Leaderboard.Count;
+				var player = result.Leaderboard.Find((x) => x.PlayFabId == this.playFabId);
+				if (player != null)
+				{
+					MMR = player.StatValue;
+					result.Leaderboard.Remove(player);
+				}
+
+				int len = result.Leaderboard.Count;
 
 				if (len <= 0)
 				{
@@ -216,7 +233,8 @@ public class PlayFabManager : MonoBehaviour
 							{
 								DisplayName = entry.DisplayName,
 								PlayFabId = entry.PlayFabId,
-								Defense = result
+								Defense = result,
+								MMR = entry.StatValue
 							};
 
 						resultCallback(model);
@@ -248,21 +266,6 @@ public class PlayFabManager : MonoBehaviour
 					defenseResult(defenseVal);
 			},
 			OnPlayFabError);
-	}
-
-	private void SetInitialMMR()
-	{
-		List<StatisticUpdate> list = new List<StatisticUpdate>();
-		list.Add(new StatisticUpdate
-			{
-				StatisticName = "MMR",
-				Value = 1000
-			});
-
-		PlayFabClientAPI.UpdatePlayerStatistics(
-			new UpdatePlayerStatisticsRequest { Statistics = list },
-			(result) => Debug.Log("Set statistics success"),
-			null);
 	}
 
 	private List<GameGlobals.SelectedInfo> ParseSquadData(string json)

@@ -50,6 +50,12 @@ public class UIManager : MonoBehaviour
 		Open(UIType.MainMenu);
 	}
 
+	private void OnDestroy()
+	{
+		if (_instance == this)
+			_instance = null;
+	}
+
 	static public void Open(UIType t)
 	{
 		foreach (var i in _instance.Items)

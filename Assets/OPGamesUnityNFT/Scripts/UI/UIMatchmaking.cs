@@ -11,7 +11,9 @@ namespace OPGames.NFT
 public class UIMatchmaking : MonoBehaviour
 {
 	[SerializeField] private TextMeshProUGUI playerName;
+	[SerializeField] private TextMeshProUGUI playerBP;
 	[SerializeField] private TextMeshProUGUI enemyName;
+	[SerializeField] private TextMeshProUGUI enemyBP;
 
 	[SerializeField] private UINFTItem[] playerCards;
 	[SerializeField] private UINFTItem[] enemyCards;
@@ -52,6 +54,7 @@ public class UIMatchmaking : MonoBehaviour
 		{
 			model = new PVPPlayerModel();
 			model.DisplayName = "Bot";
+			model.MMR = 1000;
 		}
 
 		GameGlobals.EnemyModel = model;
@@ -107,6 +110,7 @@ public class UIMatchmaking : MonoBehaviour
 		var nft = NFTManager.Instance;
 
 		playerName.text = pf.DisplayName;
+		playerBP.text = pf.MMR.ToString();
 
 		for (int i=0; i<playerCards.Length; i++)
 		{
@@ -125,6 +129,7 @@ public class UIMatchmaking : MonoBehaviour
 		var nft = NFTManager.Instance;
 
 		enemyName.text = model.DisplayName;
+		enemyBP.text = model.MMR.ToString();
 
 		var def = JsonUtility.FromJson<SaveDataSelectedList>(model.Defense);
 		if (def == null || def.List == null || def.List.Count == 0)
