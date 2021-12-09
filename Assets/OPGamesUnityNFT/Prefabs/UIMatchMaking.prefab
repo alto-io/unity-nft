@@ -729,7 +729,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerName: {fileID: 7823257383787444987}
+  playerBP: {fileID: 6445572850178007994}
   enemyName: {fileID: 257168640352277554}
+  enemyBP: {fileID: 3245014474169843466}
   playerCards:
   - {fileID: 3668121889783711991}
   - {fileID: 3115633651524717977}

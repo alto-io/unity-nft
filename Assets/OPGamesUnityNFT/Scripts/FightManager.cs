@@ -12,6 +12,7 @@ public class FightManager : MonoBehaviour
 {
 	[SerializeField] private List<FightChar> fighters;
 	[SerializeField] private UIFight ui;
+	[SerializeField] private UIBattleResult uiResult;
 
 	[Header("Strings")]
 	[SerializeField] private string strFight;
@@ -300,26 +301,29 @@ public class FightManager : MonoBehaviour
 
 		string enemyId = GameGlobals.EnemyModel.PlayFabId;
 		var pf = PlayFabManager.Instance;
+		bool isPlayerWin = false;
 		
 		// Animate result
 		if (IsTeamAlive(teamA))
 		{
 			ui.SetTextAnimationTrigger("End", strWin);
-
-			if (string.IsNullOrEmpty(enemyId) == false)
-				pf.SetBattleResult(enemyId, true);
-
+			isPlayerWin = true;
 		}
 		else
 		{
 			ui.SetTextAnimationTrigger("End", strLose);
-
-			if (string.IsNullOrEmpty(enemyId) == false)
-				pf.SetBattleResult(enemyId, false);
 		}
 
+		if (string.IsNullOrEmpty(enemyId) == false)
+			pf.SetBattleResult(enemyId, isPlayerWin);
+
 		yield return new WaitForSeconds(2.0f);
-		SceneManager.LoadScene(1);
+
+		if (uiResult != null)
+		{
+			uiResult.gameObject.SetActive(true);
+			uiResult.SetBattleResult(isPlayerWin);
+		}
 	}
 
 	private void TickBuffs()
