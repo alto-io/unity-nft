@@ -44,6 +44,9 @@ public class UINFTSelect : MonoBehaviour
 		if (isOffense) selected = GameGlobals.Offense;
 		else           selected = GameGlobals.Defense;
 
+		if (btnNext != null)
+			btnNext.gameObject.SetActive(isOffense);
+
 		StartCoroutine(FillCR());
 	}
 
