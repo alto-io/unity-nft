@@ -290,7 +290,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.09803922, g: 0.48235294, b: 1, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -765,6 +765,10 @@ PrefabInstance:
       propertyPath: isOffense
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 1489916204038492120, guid: 400adee4062c2aa45b0c7c1a5cb06839, type: 3}
+      propertyPath: m_text
+      value: Let's go!
+      objectReference: {fileID: 0}
     - target: {fileID: 2920444957272317837, guid: 400adee4062c2aa45b0c7c1a5cb06839, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -777,6 +781,22 @@ PrefabInstance:
       propertyPath: m_Value
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 2920444957349027419, guid: 400adee4062c2aa45b0c7c1a5cb06839, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2920444957349027419, guid: 400adee4062c2aa45b0c7c1a5cb06839, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2920444957349027419, guid: 400adee4062c2aa45b0c7c1a5cb06839, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2920444957349027419, guid: 400adee4062c2aa45b0c7c1a5cb06839, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2920444958049208914, guid: 400adee4062c2aa45b0c7c1a5cb06839, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
@@ -788,6 +808,26 @@ PrefabInstance:
     - target: {fileID: 2920444958049208914, guid: 400adee4062c2aa45b0c7c1a5cb06839, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
       value: OPGames.NFT.UINFTList, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 2920444958049208915, guid: 400adee4062c2aa45b0c7c1a5cb06839, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 219763c90c1453e48b52723c9880b9c0, type: 3}
+    - target: {fileID: 2920444958049208917, guid: 400adee4062c2aa45b0c7c1a5cb06839, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2920444958049208917, guid: 400adee4062c2aa45b0c7c1a5cb06839, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2920444958049208917, guid: 400adee4062c2aa45b0c7c1a5cb06839, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2920444958049208917, guid: 400adee4062c2aa45b0c7c1a5cb06839, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2920444958057766768, guid: 400adee4062c2aa45b0c7c1a5cb06839, type: 3}
       propertyPath: m_AnchorMax.x

@@ -1478,8 +1478,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0.0002746582, y: 0.0014801025}
-  m_SizeDelta: {x: 0.00042725, y: 0.0029907}
+  m_AnchoredPosition: {x: -0.000030517578, y: 0.0014801025}
+  m_SizeDelta: {x: 86.923, y: 0.003}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3541828619498767532
 CanvasRenderer:
@@ -1509,7 +1509,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: AVATAR BATTLER
+  m_text: 'ARCADEUM
+
+    ARENA'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 6b0d85f3a4f8ae84ebe90b6bcd9b3eb4, type: 2}
   m_sharedMaterial: {fileID: 1342655895531253904, guid: 6b0d85f3a4f8ae84ebe90b6bcd9b3eb4, type: 2}

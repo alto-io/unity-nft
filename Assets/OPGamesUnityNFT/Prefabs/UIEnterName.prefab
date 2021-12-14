@@ -65,7 +65,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Welcome to \nAvatar Battler"
+  m_text: "Welcome to \nARCADEUM ARENA"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 6b0d85f3a4f8ae84ebe90b6bcd9b3eb4, type: 2}
   m_sharedMaterial: {fileID: 1342655895531253904, guid: 6b0d85f3a4f8ae84ebe90b6bcd9b3eb4, type: 2}
