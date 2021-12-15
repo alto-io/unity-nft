@@ -331,18 +331,22 @@ public class FightChar : MonoBehaviour
 		if (info != null && info.Prefab != null)
 		{
 			GameObject clone = Instantiate(info.Prefab);
-			clone.transform.position = transform.position;
-			clone.transform.LookAt(t.transform.position);
+			var position = t.transform.position;
+			position.z -= 0.4f;
+			position.y -= 0.3f;
+			//clone.transform.LookAt(t.transform.position);
 
 			if (isMelee)
 			{
 				// don't move, just use dotween to trigger destroy *hack*
-				clone.transform.DOMove(transform.position, 1.0f)
+				clone.transform.position = position;
+				clone.transform.DOMove(position, 1.0f)
 					.OnComplete(()=> { Destroy(clone); });
 			}
 			else
 			{
-				clone.transform.DOMove(t.transform.position, 0.5f)
+				clone.transform.position = transform.position;
+				clone.transform.DOMove(position, 1.0f)
 					.OnComplete(()=> { Destroy(clone); });
 			}
 		}
