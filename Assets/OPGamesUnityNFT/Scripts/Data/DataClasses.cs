@@ -45,7 +45,7 @@ public class DataClasses : ScriptableObject
 		public int Agility;
 		public float CritChance;
 
-		public string ProjectileName;
+		public string VFXAttack;
 		public string Skills;
 	}
 

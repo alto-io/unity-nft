@@ -13,9 +13,11 @@ MonoBehaviour:
   m_Name: DataVFX
   m_EditorClassIdentifier: 
   InfoList:
-  - Name: VFXFireball
-    Prefab: {fileID: 7583439706937504739, guid: f6f264f9a98789a45861cfcc26f04649, type: 3}
+  - Name: VFXMageAttack
+    Prefab: {fileID: 5831225205493937320, guid: 2ef8999d0c85a154a85f4792257aacfd, type: 3}
   - Name: VFXLaser
     Prefab: {fileID: 7583439706937504739, guid: 1dd908f121726dd41a17af128fc3c1f0, type: 3}
   - Name: VFXBullet
     Prefab: {fileID: 7583439706937504739, guid: fb916362d14704d4b9818e4f9e1ef7a1, type: 3}
+  - Name: VFXKnightAttack
+    Prefab: {fileID: 2082054566704292595, guid: 84c59dbf31f81fa4d82cf0d2c2e02313, type: 3}

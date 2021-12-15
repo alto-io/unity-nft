@@ -64,7 +64,7 @@ public class FightChar : MonoBehaviour
 	private float stunDuration = 0;
 	private float critChance;
 	private string charName = "";
-	private string projectilePrefab = "";
+	private string vfxAttack = "";
 
 	private DataClasses.ClassStatsRow classInfo;
 
@@ -325,17 +325,24 @@ public class FightChar : MonoBehaviour
 	{
 		AnimationTrigger("Attack" + evt.Dir.ToString());
 
-		if (isMelee == false)
-		{
-			var t = targets.Find((c) => (c.Id == evt.Targ));
+		var t = targets.Find((c) => (c.Id == evt.Targ));
 
-			var info = DataVFX.Instance.GetByName(projectilePrefab);
-			if (info != null && info.Prefab != null)
+		var info = DataVFX.Instance.GetByName(vfxAttack);
+		if (info != null && info.Prefab != null)
+		{
+			GameObject clone = Instantiate(info.Prefab);
+			clone.transform.position = transform.position;
+			clone.transform.LookAt(t.transform.position);
+
+			if (isMelee)
 			{
-				GameObject clone = Instantiate(info.Prefab);
-				clone.transform.position = transform.position;
-				clone.transform.LookAt(t.transform.position);
-				var projectile = clone.transform.DOMove(t.transform.position, 0.5f)
+				// don't move, just use dotween to trigger destroy *hack*
+				clone.transform.DOMove(transform.position, 1.0f)
+					.OnComplete(()=> { Destroy(clone); });
+			}
+			else
+			{
+				clone.transform.DOMove(t.transform.position, 0.5f)
 					.OnComplete(()=> { Destroy(clone); });
 			}
 		}
@@ -470,69 +477,6 @@ public class FightChar : MonoBehaviour
 		}
 	}
 
-	private void UpdateStateIdle()
-	{
-		if (cooldownACurr <= 0)
-			DecideAction();
-	}
-
-	private void UpdateStateMove()
-	{
-		transform.position = Vector3.Lerp(moveStart, moveEnd, 1.0f - (cooldownACurr / moveDuration));
-
-		if (cooldownACurr <= 0)
-		{
-			transform.position = moveEnd;
-			moveStart = moveEnd;
-			cooldownACurr = 0.05f;
-			stateCurr = State.Idle;
-		}
-	}
-
-	private void UpdateStateAttack()
-	{
-		if (targetCurr == null || targetCurr.IsAlive == false)
-		{
-			DecideAction();
-			return;
-		}
-
-		if (cooldownACurr <= 0)
-		{
-			string trigger = "AttackNorth";
-			Vector3 targetPos = targetCurr.transform.position;
-			Vector3 currPos = transform.position;
-			if (targetPos.x < currPos.x)
-			{
-				trigger = "AttackWest";
-			}
-			else if (targetPos.x > currPos.x)
-			{
-				trigger = "AttackEast";
-			}
-			else if (targetPos.y < currPos.y)
-			{
-				trigger = "AttackSouth";
-			}
-
-			animator.SetTrigger(trigger);
-
-			if (isMelee == false)
-			{
-				var info = DataVFX.Instance.GetByName(projectilePrefab);
-				if (info != null && info.Prefab != null)
-				{
-					GameObject clone = Instantiate(info.Prefab);
-					clone.transform.position = transform.position;
-					clone.transform.LookAt(targetCurr.transform.position);
-					var projectile = clone.transform.DOMove(targetCurr.transform.position, 0.5f)
-						.OnComplete(()=> { Destroy(clone); OnAttackHitRanged(); });
-				}
-			}
-			ResetCooldown();
-		}
-	}
-
 	private FightChar FindTarget()
 	{
 		if (targets == null)
@@ -640,11 +584,11 @@ public class FightChar : MonoBehaviour
 		if (info == null)
 			return;
 
-		isMelee       = string.IsNullOrEmpty(classInfo.ProjectileName);
+		isMelee       = classInfo.AttackRange == 1;
 		critChance    = classInfo.CritChance;
 		hpCurr        = classInfo.HpVal;
 
-		projectilePrefab = classInfo.ProjectileName;
+		vfxAttack     = classInfo.VFXAttack;
 
 		cooldownA     = classInfo.AttackSpeedSecs;
 		cooldownACurr = cooldownA + Random.Range(0.0f, 0.5f); // add some randomness at the very start
@@ -707,26 +651,6 @@ public class FightChar : MonoBehaviour
 
 	private void Update()
 	{
-		return;
-
-		if (stunDuration > 0)
-		{
-			stunDuration -= Time.deltaTime;
-		}
-		else
-		{
-			cooldownSCurr -= Time.deltaTime;
-			cooldownACurr -= Time.deltaTime;
-		}
-
-		switch (stateCurr)
-		{
-			case State.Idle: UpdateStateIdle(); break;
-			case State.Move: UpdateStateMove(); break;
-			case State.Attack: UpdateStateAttack(); break;
-		}
-
-		RefreshSkillBar();
 	}
 
 #endregion
