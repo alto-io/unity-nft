@@ -52,6 +52,7 @@ public class UIBattleResult : MonoBehaviour
 
 	public void OnContinue()
 	{
+		Time.timeScale = 1.0f;
 		SceneManager.LoadScene(1);
 	}
 
