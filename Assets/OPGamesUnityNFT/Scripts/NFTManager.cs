@@ -161,9 +161,9 @@ public class NFTManager : MonoBehaviour
 					item.Name = a.name;
 					item.Description = a.description;
 					item.ImageURL = a.image_preview_url;
+					item.IsUsable = true;
 
 					loadedNFTs.Add(item);
-
 				}
 			}
 		}
@@ -219,6 +219,7 @@ public class NFTManager : MonoBehaviour
 					item.Name = a.name;
 					item.Description = a.description;
 					item.ImageURL = a.image_preview_url;
+					item.IsUsable = false;
 
 					loadedNFTs.Add(item);
 
@@ -254,6 +255,7 @@ public class NFTManager : MonoBehaviour
 			item.Texture = n.Texture;
 			item.Spr = n.Spr;
 			item.CharClass = n.CharClass;
+			item.IsUsable = true;
 
 			loadedNFTs.Add(item);
 		}

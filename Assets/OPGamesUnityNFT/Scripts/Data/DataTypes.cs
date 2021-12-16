@@ -31,6 +31,8 @@ public class NFTItemData
 	public Texture2D Texture;
 	public Sprite Spr;
 
+	public bool IsUsable = false;
+
 	public string UniqueId
 	{
 		get { return Contract + "-" + TokenId; }

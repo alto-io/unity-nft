@@ -81,6 +81,9 @@ public class UINFTSelect : MonoBehaviour
 
 		foreach (var n in list)
 		{
+			if (n.IsUsable == false)
+				continue;
+
 			GameObject clone = null;
 
 			if (listItems.ContainsKey(n.UniqueId))
