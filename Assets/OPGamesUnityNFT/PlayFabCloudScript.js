@@ -299,10 +299,10 @@ handlers.battleResult = function (args, context) {
 
     if (isWin) {
         IncMMR(currentPlayerId, 50);
-        IncMMR(enemyId, -20);
+        //IncMMR(enemyId, -20);
     } else {
         IncMMR(currentPlayerId, -35);
-        IncMMR(enemyId, 35);
+        //IncMMR(enemyId, 35);
     }
 }
 
