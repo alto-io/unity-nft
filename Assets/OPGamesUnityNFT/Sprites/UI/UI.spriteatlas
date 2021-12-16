@@ -35,7 +35,7 @@ SpriteAtlas:
     - {fileID: 102900000, guid: 20a07d85f39815346a444eed04058ece, type: 3}
     - {fileID: 102900000, guid: f4bdc4f52de036446b1990a1bea67fff, type: 3}
     - {fileID: 102900000, guid: f74ded1cda53ec445ae6300a9c8ad452, type: 3}
-    totalSpriteSurfaceArea: 1751648
+    totalSpriteSurfaceArea: 3825248
     bindAsDefault: 1
     isAtlasV2: 0
     cachedData: {fileID: 0}
@@ -48,6 +48,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 310889d8211cc1d418ee3c79e068da3a, type: 3}
   - {fileID: 21300000, guid: 4808699a85fede0458f59b3bf41617fe, type: 3}
   - {fileID: 21300000, guid: a996f5cab6bb70842bfde03a5dd27308, type: 3}
+  - {fileID: 21300000, guid: cca6904b6d2386545b5f1a044f353a8b, type: 3}
   - {fileID: 21300000, guid: c2e411ad9a1a24043bc08dce8150063d, type: 3}
   - {fileID: 21300000, guid: 2791337e23327f7498599a6f0728dff1, type: 3}
   - {fileID: 21300000, guid: 4ca7631f262289d4798f3cda00ff475b, type: 3}
@@ -59,6 +60,7 @@ SpriteAtlas:
   - purple_card
   - bar_filled
   - blue_card
+  - BG_2
   - arcadians
   - checkbox
   - red_card
