@@ -6,7 +6,7 @@ SpriteAtlas:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Slash
+  m_Name: VFXKnightAttackAtlas
   m_EditorData:
     serializedVersion: 2
     textureSettings:
@@ -108,5 +108,5 @@ SpriteAtlas:
   - slash0011
   - slash0004
   m_RenderDataMap: {}
-  m_Tag: Slash
+  m_Tag: VFXKnightAttackAtlas
   m_IsVariant: 0

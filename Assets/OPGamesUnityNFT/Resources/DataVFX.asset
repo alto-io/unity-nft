@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: DataVFX
   m_EditorClassIdentifier: 
   InfoList:
-  - Name: VFXMageAttack
+  - Name: VFXWizardAttack
     Prefab: {fileID: 5831225205493937320, guid: 2ef8999d0c85a154a85f4792257aacfd, type: 3}
   - Name: VFXTechAttack
     Prefab: {fileID: 7583439706937504739, guid: 1dd908f121726dd41a17af128fc3c1f0, type: 3}
@@ -21,3 +21,5 @@ MonoBehaviour:
     Prefab: {fileID: 5831225205493937320, guid: 2ef8999d0c85a154a85f4792257aacfd, type: 3}
   - Name: VFXKnightAttack
     Prefab: {fileID: 2082054566704292595, guid: 84c59dbf31f81fa4d82cf0d2c2e02313, type: 3}
+  - Name: VFXAssassinAttack
+    Prefab: {fileID: 6799492288554299860, guid: c3c9e15d866bcf947b32b2925bf4f724, type: 3}

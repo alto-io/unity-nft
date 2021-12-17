@@ -1,0 +1,94 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!687078895 &4343727234628468602
+SpriteAtlas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: VFXAssassinAtlas
+  m_EditorData:
+    serializedVersion: 2
+    textureSettings:
+      serializedVersion: 2
+      anisoLevel: 1
+      compressionQuality: 50
+      maxTextureSize: 2048
+      textureCompression: 0
+      filterMode: 0
+      generateMipMaps: 0
+      readable: 0
+      crunchedCompression: 0
+      sRGB: 1
+    platformSettings:
+    - serializedVersion: 3
+      m_BuildTarget: DefaultTexturePlatform
+      m_MaxTextureSize: 2048
+      m_ResizeAlgorithm: 0
+      m_TextureFormat: -1
+      m_TextureCompression: 0
+      m_CompressionQuality: 50
+      m_CrunchedCompression: 0
+      m_AllowsAlphaSplitting: 0
+      m_Overridden: 0
+      m_AndroidETC2FallbackOverride: 0
+      m_ForceMaximumCompressionQuality_BC6H_BC7: 0
+    packingSettings:
+      serializedVersion: 2
+      padding: 4
+      blockOffset: 1
+      allowAlphaSplitting: 0
+      enableRotation: 1
+      enableTightPacking: 1
+    secondaryTextureSettings: {}
+    variantMultiplier: 1
+    packables:
+    - {fileID: 102900000, guid: 58fbf8d7b0ef2e44781086aeabbca7c3, type: 3}
+    totalSpriteSurfaceArea: 393984
+    bindAsDefault: 1
+    isAtlasV2: 0
+    cachedData: {fileID: 0}
+  m_MasterAtlas: {fileID: 0}
+  m_PackedSprites:
+  - {fileID: 21300000, guid: d62a3351ac59bb44e99970ef618eeba2, type: 3}
+  - {fileID: 21300000, guid: 8e03267150159ad48a109da76c76c2a0, type: 3}
+  - {fileID: 21300000, guid: 48a582a2acc3b6d4483f76659902763f, type: 3}
+  - {fileID: 21300000, guid: 7a7f1be26f7861843a377f21d2ba8581, type: 3}
+  - {fileID: 21300000, guid: d35de4f2801a04346852dfd4365c67d5, type: 3}
+  - {fileID: 21300000, guid: dec150850a42ccb44ab703c4f1d64b2e, type: 3}
+  - {fileID: 21300000, guid: e90f1638851d32d41b55c0cf66fe7169, type: 3}
+  - {fileID: 21300000, guid: f47ff0b8006069e4886c6639285daa84, type: 3}
+  - {fileID: 21300000, guid: 1b61c2d8aa78d73448e9cb8f62fef53c, type: 3}
+  - {fileID: 21300000, guid: 02173ae919b80804085b51cd0a5b4e13, type: 3}
+  - {fileID: 21300000, guid: 44abc30ad32fec447905e359ec286a4b, type: 3}
+  - {fileID: 21300000, guid: ed8b7f2a10232fa4496ee121430d3bad, type: 3}
+  - {fileID: 21300000, guid: 639fb83b50964974cbefd420e611ba33, type: 3}
+  - {fileID: 21300000, guid: 9601a7bb5141990468746d08ca2c77b6, type: 3}
+  - {fileID: 21300000, guid: 35204f6ce238deb428ef2fe5481352de, type: 3}
+  - {fileID: 21300000, guid: f4ca63cc33adece4bb0ce3c567857c9d, type: 3}
+  - {fileID: 21300000, guid: 18a8e52e08a22324ca6a7824c6d83891, type: 3}
+  - {fileID: 21300000, guid: 5e31336e3859790499e5d56bf010394c, type: 3}
+  - {fileID: 21300000, guid: e8f7acef7e6e2d945a83fae2b533f0d2, type: 3}
+  m_PackedSpriteNamesToIndex:
+  - claw0015
+  - claw0006
+  - claw0003
+  - claw0014
+  - claw0016
+  - claw0009
+  - claw0018
+  - claw0000
+  - claw0017
+  - claw0010
+  - claw0007
+  - claw0004
+  - claw0011
+  - claw0012
+  - claw0002
+  - claw0008
+  - claw0005
+  - claw0013
+  - claw0001
+  m_RenderDataMap: {}
+  m_Tag: VFXAssassinAtlas
+  m_IsVariant: 0

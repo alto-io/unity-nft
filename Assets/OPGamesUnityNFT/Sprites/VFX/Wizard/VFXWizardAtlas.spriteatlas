@@ -6,7 +6,7 @@ SpriteAtlas:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: MageAtlas
+  m_Name: VFXWizardAtlas
   m_EditorData:
     serializedVersion: 2
     textureSettings:
@@ -154,5 +154,5 @@ SpriteAtlas:
   - Magic0026
   - Magic0040
   m_RenderDataMap: {}
-  m_Tag: MageAtlas
+  m_Tag: VFXWizardAtlas
   m_IsVariant: 0
