@@ -1932,6 +1932,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: UIEnterName
       objectReference: {fileID: 0}
+    - target: {fileID: 4435151736459539299, guid: eb306657d2ccaf04fbfedf4025f22d72, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: eb306657d2ccaf04fbfedf4025f22d72, type: 3}
 --- !u!1001 &7316628763435632050
