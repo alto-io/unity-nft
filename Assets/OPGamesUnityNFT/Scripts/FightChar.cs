@@ -346,7 +346,8 @@ public class FightChar : MonoBehaviour
 			else
 			{
 				clone.transform.position = transform.position;
-				clone.transform.DOMove(position, 1.0f)
+				clone.transform.LookAt(t.transform.position);
+				clone.transform.DOMove(position, 0.5f)
 					.OnComplete(()=> { Destroy(clone); });
 			}
 		}
