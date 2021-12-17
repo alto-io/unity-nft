@@ -64,7 +64,7 @@ public class WebLogin : MonoBehaviour
             ResetLoginMessage();
 
             // load next scene
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+            SceneManager.LoadScene(1);
         }
         catch
         {
@@ -80,7 +80,7 @@ public class WebLogin : MonoBehaviour
     public void OnSkip()
     {
         // move to next scene
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+        SceneManager.LoadScene(1);
     }
 }
 #endif
