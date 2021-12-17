@@ -28,6 +28,7 @@ public class UIEnterName : MonoBehaviour
 		}
 
 		UIManager.Close();
+		UIManager.Open(UIType.MainMenu);
 	}
 }
 

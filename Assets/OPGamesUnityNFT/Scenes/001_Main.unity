@@ -427,7 +427,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3541828618712592118, guid: efff68db8a20d3145863109b83417149, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3541828619698380696, guid: efff68db8a20d3145863109b83417149, type: 3}
       propertyPath: m_AnchorMax.x
@@ -1931,14 +1931,6 @@ PrefabInstance:
     - target: {fileID: 4435151736459539299, guid: eb306657d2ccaf04fbfedf4025f22d72, type: 3}
       propertyPath: m_Name
       value: UIEnterName
-      objectReference: {fileID: 0}
-    - target: {fileID: 4435151736459539299, guid: eb306657d2ccaf04fbfedf4025f22d72, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4435151738334086680, guid: eb306657d2ccaf04fbfedf4025f22d72, type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: -10.738037
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: eb306657d2ccaf04fbfedf4025f22d72, type: 3}

@@ -48,7 +48,19 @@ public class UIManager : MonoBehaviour
 		foreach (var i in Items)
 			i.Go.SetActive(false);
 
-		Open(UIType.Loading);
+	}
+
+	private void Start()
+	{
+		var pf = PlayFabManager.Instance;
+		if (pf != null && pf.IsLoggedIn)
+		{
+			Open(UIType.MainMenu);
+		}
+		else
+		{
+			Open(UIType.Loading);
+		}
 	}
 
 	private void OnDestroy()
