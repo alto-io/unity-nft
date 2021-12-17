@@ -95,7 +95,13 @@ public class PlayFabManager : MonoBehaviour
 
 			MMR = 1000;
 
+			UIManager.Close();
 			UIManager.Open(UIType.EnterName);
+		}
+		else
+		{
+			UIManager.Close();
+			UIManager.Open(UIType.MainMenu);
 		}
 
 		var payload = result.InfoResultPayload;
@@ -137,6 +143,7 @@ public class PlayFabManager : MonoBehaviour
 			},
 			(result) => Debug.Log(result.ToString()),
 			OnPlayFabError);
+
 	}
 
 	public void SetDisplayName(string newName)

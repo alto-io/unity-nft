@@ -18,6 +18,7 @@ public enum UIType
 	EditSquadOff = 8,
 	NFTList = 9,
 	EnterName = 10,
+	Loading = 11,
 }
 
 public class UIManager : MonoBehaviour
@@ -47,7 +48,7 @@ public class UIManager : MonoBehaviour
 		foreach (var i in Items)
 			i.Go.SetActive(false);
 
-		Open(UIType.MainMenu);
+		Open(UIType.Loading);
 	}
 
 	private void OnDestroy()
@@ -81,11 +82,20 @@ public class UIManager : MonoBehaviour
 
 	static public void Close()
 	{
-		var top = _instance.UIStack.Pop();
-		var next = _instance.UIStack.Peek();
+		Item top = null;
+		Item next = null;
 
-		next.Go.SetActive(true);
-		top.Go.SetActive(false);
+		if (_instance.UIStack.Count > 0)
+			top = _instance.UIStack.Pop();
+
+		if (_instance.UIStack.Count > 0)
+			next = _instance.UIStack.Peek();
+
+		if (next != null)
+			next.Go.SetActive(true);
+
+		if (top != null)
+			top.Go.SetActive(false);
 	}
 }
 
