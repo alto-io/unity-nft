@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f88df1c1e86ce045a3ee4ad052c4191, type: 3}
   m_Name: DataClasses
   m_EditorClassIdentifier: 
-  JsonClassStats: '{"Data":[{"Name":"Knight","Hp":10,"HpVal":300,"AttackRange":1,"AttackSpeed":5,"AttackSpeedSecs":0.65,"SkillSpeed":6,"SkillSpeedSecs":2.1,"Damage":6,"DamageVal":22,"Defense":6,"DefenseVal":8,"Agility":4,"CritChance":0.15000000000000002,"VFXAttack":"VFXKnightAttack","Skills":"SwordSwing"},{"Name":"Wizard","Hp":3,"HpVal":160,"AttackRange":3,"AttackSpeed":4,"AttackSpeedSecs":0.72,"SkillSpeed":2,"SkillSpeedSecs":2.7,"Damage":9,"DamageVal":28,"Defense":3,"DefenseVal":6.5,"Agility":4,"CritChance":0.15000000000000002,"VFXAttack":"VFXWizardAttack","Skills":"Heal"},{"Name":"Assassin","Hp":5,"HpVal":200,"AttackRange":1,"AttackSpeed":8,"AttackSpeedSecs":0.44000000000000006,"SkillSpeed":8,"SkillSpeedSecs":1.8,"Damage":5,"DamageVal":20,"Defense":3,"DefenseVal":6.5,"Agility":7,"CritChance":0.22500000000000003,"VFXAttack":"VFXAssassinAttack","Skills":"Flurry"},{"Name":"Tech","Hp":6,"HpVal":220,"AttackRange":2,"AttackSpeed":5,"AttackSpeedSecs":0.65,"SkillSpeed":5,"SkillSpeedSecs":2.25,"Damage":4,"DamageVal":18,"Defense":4,"DefenseVal":7,"Agility":6,"CritChance":0.2,"VFXAttack":"VFXTechAttack","Skills":"Stun"},{"Name":"Gunner","Hp":8,"HpVal":260,"AttackRange":3,"AttackSpeed":6,"AttackSpeedSecs":0.5800000000000001,"SkillSpeed":4,"SkillSpeedSecs":2.4,"Damage":5,"DamageVal":20,"Defense":2,"DefenseVal":6,"Agility":5,"CritChance":0.175,"VFXAttack":"VFXGunnerAttack","Skills":"SmallHeal,
+  JsonClassStats: '{"Data":[{"Name":"Knight","Hp":10,"HpVal":300,"AttackRange":1,"AttackSpeed":5,"AttackSpeedSecs":0.65,"SkillSpeed":6,"SkillSpeedSecs":2.1,"Damage":6,"DamageVal":22,"Defense":6,"DefenseVal":8,"Agility":5,"CritChance":0.175,"VFXAttack":"VFXKnightAttack","Skills":"SwordSwing"},{"Name":"Wizard","Hp":3,"HpVal":160,"AttackRange":3,"AttackSpeed":4,"AttackSpeedSecs":0.72,"SkillSpeed":2,"SkillSpeedSecs":2.7,"Damage":9,"DamageVal":28,"Defense":3,"DefenseVal":6.5,"Agility":4,"CritChance":0.15000000000000002,"VFXAttack":"VFXWizardAttack","Skills":"Heal"},{"Name":"Assassin","Hp":5,"HpVal":200,"AttackRange":1,"AttackSpeed":8,"AttackSpeedSecs":0.44000000000000006,"SkillSpeed":8,"SkillSpeedSecs":1.8,"Damage":5,"DamageVal":20,"Defense":3,"DefenseVal":6.5,"Agility":7,"CritChance":0.22500000000000003,"VFXAttack":"VFXAssassinAttack","Skills":"Flurry"},{"Name":"Tech","Hp":6,"HpVal":220,"AttackRange":2,"AttackSpeed":5,"AttackSpeedSecs":0.65,"SkillSpeed":5,"SkillSpeedSecs":2.25,"Damage":4,"DamageVal":18,"Defense":4,"DefenseVal":7,"Agility":6,"CritChance":0.2,"VFXAttack":"VFXTechAttack","Skills":"Stun"},{"Name":"Gunner","Hp":8,"HpVal":260,"AttackRange":3,"AttackSpeed":6,"AttackSpeedSecs":0.5800000000000001,"SkillSpeed":4,"SkillSpeedSecs":2.4,"Damage":5,"DamageVal":20,"Defense":2,"DefenseVal":6,"Agility":5,"CritChance":0.175,"VFXAttack":"VFXGunnerAttack","Skills":"SmallHeal,
     Flurry"}]}'
   Classes:
   - Name: Knight
@@ -27,8 +27,8 @@ MonoBehaviour:
     DamageVal: 22
     Defense: 6
     DefenseVal: 8
-    Agility: 4
-    CritChance: 0.15
+    Agility: 5
+    CritChance: 0.175
     VFXAttack: VFXKnightAttack
     Skills: SwordSwing
   - Name: Wizard

@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6f3f3cf4767986d42b32e13d835f81e3, type: 3}
   m_Name: DataSkills
   m_EditorClassIdentifier: 
-  Json: '{"Data":[{"Name":"Stun","Description":"Stun your target lol","VFXPrefab":"","Icon":"","CooldownSecs":5,"Damage":"","Heal":"","StunSecs":1.25,"DamageAdd":"","DefenseAdd":"","AttackSpeedAdd":"","Duration":""},{"Name":"Heal","Description":"Heal
-    yourself","VFXPrefab":"","Icon":"","CooldownSecs":5,"Damage":"","Heal":35,"StunSecs":"","DamageAdd":"","DefenseAdd":"","AttackSpeedAdd":"","Duration":""},{"Name":"Damage
+  Json: '{"Data":[{"Name":"Stun","Description":"Stun your target lol","VFXPrefab":"","Icon":"","CooldownSecs":5,"Damage":"","Heal":"","StunSecs":2,"DamageAdd":"","DefenseAdd":"","AttackSpeedAdd":"","Duration":""},{"Name":"Heal","Description":"Heal
+    yourself","VFXPrefab":"","Icon":"","CooldownSecs":6,"Damage":"","Heal":50,"StunSecs":"","DamageAdd":"","DefenseAdd":"","AttackSpeedAdd":"","Duration":""},{"Name":"Damage
     Boost","Description":"Attack+","VFXPrefab":"","Icon":"","CooldownSecs":2.5,"Damage":"","Heal":"","StunSecs":"","DamageAdd":20,"DefenseAdd":"","AttackSpeedAdd":"","Duration":2},{"Name":"SwordSwing","Description":"Damage
-    enemies around you","VFXPrefab":"","Icon":"","CooldownSecs":8,"Damage":"","Heal":"","StunSecs":3,"DamageAdd":"","DefenseAdd":"","AttackSpeedAdd":"","Duration":""},{"Name":"Gunfire","Description":"Damage
+    enemies around you","VFXPrefab":"","Icon":"","CooldownSecs":8,"Damage":"","Heal":"","StunSecs":1,"DamageAdd":"","DefenseAdd":"","AttackSpeedAdd":"","Duration":""},{"Name":"Gunfire","Description":"Damage
     with short stun","VFXPrefab":"","Icon":"","CooldownSecs":3,"Damage":"","Heal":"","StunSecs":"","DamageAdd":"","DefenseAdd":"","AttackSpeedAdd":"","Duration":""},{"Name":"Flurry","Description":"Quick
     damage attack","VFXPrefab":"","Icon":"","CooldownSecs":2,"Damage":"","Heal":"","StunSecs":0.25,"DamageAdd":"","DefenseAdd":"","AttackSpeedAdd":"","Duration":""},{"Name":"SmallHeal","Description":"","VFXPrefab":"","Icon":"","CooldownSecs":3,"Damage":"","Heal":10,"StunSecs":"","DamageAdd":"","DefenseAdd":"","AttackSpeedAdd":"","Duration":""}]}'
   Skills:
@@ -26,7 +26,7 @@ MonoBehaviour:
     CooldownSecs: 5
     Damage: 0
     Heal: 0
-    StunSecs: 1.25
+    StunSecs: 2
     DamageAdd: 0
     DefenseAdd: 0
     AttackSpeedAdd: 0
@@ -34,9 +34,9 @@ MonoBehaviour:
     Description: Heal yourself
     VFXPrefab: 
     Icon: 
-    CooldownSecs: 5
+    CooldownSecs: 6
     Damage: 0
-    Heal: 35
+    Heal: 50
     StunSecs: 0
     DamageAdd: 0
     DefenseAdd: 0
@@ -59,7 +59,7 @@ MonoBehaviour:
     CooldownSecs: 8
     Damage: 0
     Heal: 0
-    StunSecs: 3
+    StunSecs: 1
     DamageAdd: 0
     DefenseAdd: 0
     AttackSpeedAdd: 0
